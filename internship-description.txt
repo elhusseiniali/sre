@@ -1,0 +1,44 @@
+Title: Algorithms for Forward reachability verification of lossy channel
+machines
+
+
+Lossy Channel Machines (LCMs) are a variant of fifo automata with decidable
+verification problems [Fin94,AJ96,CFP96]. In a landmark article, Abdulla et
+al. showed how Simple Regular Expressions (SREs) were an effective data
+structure for handling downward-closed sets of LCM configurations
+[ACBJ04]. All the basic operations needed in symbolic model-checking can be
+performed on SREs by means of simple polynomial-times algorithms, including
+the post-image by loops iterated arbitrarily many times, an operation called
+"loop acceleration" in the verification trade.
+
+The goal of the internship is to compare alternative to SREs
+and see if some offer significant speep-up in actual LCM verification.
+The two main options are: 
+- SREs as terms, with entailment test in quadratic time, as used in [ACBJ04];
+- SREs as terms with maximal sharing of identical (sub)terms via
+hash-consing techniques [BRB90], allowing unit-time entailment test.
+
+Beyond these, and depending on time, other representations of
+downward-closed sets can be included in the test, like canonical DFAs.
+
+
+Bibliography:
+[ACBJ04] P. A. Abdulla, A. Collomb-Annichini, A. Bouajjani, and B. Jonsson.
+ Using forward reachability analysis for verification of lossy channel systems.
+ Formal Methods in System Design, 25(1):39--65, 2004.
+
+[AJ96] P. A. Abdulla and B. Jonsson.
+ Verifying programs with unreliable channels.
+ Information and Computation, 127(2):91--101, 1996.
+
+[BRB90] K. S. Brace, R. L. Rudell, and R. E. Bryant.
+ Efficient implementation of a BDD package.
+ In Proc. 27th ACM/IEEE Design Automation Conf. (DAC'90), Orlando, FL, USA, June 1990, pages 40--45. IEEE Comp. Soc. Press, 1990.
+
+[CFP96] G. Cécé, A. Finkel, and S. Purushothaman Iyer.
+ Unreliable channels are easier to verify than perfect channels.
+ Information and Computation, 124(1):20--31, 1996.
+
+[Fin94] A. Finkel.
+ Decidability of the termination problem for completely specificied protocols.
+ Distributed Computing, 7(3):129--135, 1994.
