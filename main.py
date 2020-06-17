@@ -1,18 +1,60 @@
+from abc import ABC, abstractmethod
 
-class StarAtom():
+
+class Alphabet():
+    """
+    An alphabet is just a set of letters.
+    """
+    def __init__(self, *args):
+        """
+        TODO:
+            - Make sure no special symbols are allowed?
+        """
+        self.letters = set(args)
+
+
+class Atom(ABC):
+    """
+    Base Atom class.
+    """
+    def __init__(self, alphabet):
+        self.alphabet = alphabet
+
+    @abstractmethod
+    def print(self):
+        pass
+
+
+class StarAtom(Atom):
     """
     A star atom is an atom of the form (p1 + ... + pn)*
     """
-    def __init__(self, *args):
+    def __init__(self, *args, alphabet):
+        """
+        TODO:
+            - Check that args are in alphabet.letters
+        """
+        super().__init__(alphabet)
         self.value = set(args)
 
+    def print(self):
+        print(self.value)
 
-class LetterAtom():
+
+class LetterAtom(Atom):
     """
     A letter-atom is an atom of the form a+Ɛ
     """
-    def __init__(self, letter):
+    def __init__(self, alphabet, letter):
+        """
+        TODO:
+            - Check that letter is in alphabet.letters
+        """
+        super().__init__(alphabet)
         self.value = letter
+
+    def print(self):
+        print(self.value)
 
 
 class Product():
@@ -22,7 +64,7 @@ class Product():
     def __init__(self, *args):
         """
         TODO:
-            - Check that args only has atoms
+            - Check that args are atoms
             - Make immutable
         """
         self.value = list(args)
@@ -35,7 +77,7 @@ class SRE():
     def __init__(self, *args):
         """
         TODO:
-            - Check that args only has products
+            - Check that args are products
             - Make immutable
         """
         self.value = set(args)
