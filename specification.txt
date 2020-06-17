@@ -22,9 +22,17 @@ I. Data types:
           algorithm)
         > need to add the following
           operations (for all lemmas from [ABJ04]):
-          >> compare two SREs
+          >> compare two SREs for entailment
           >> normalize an SRE
           >> take the left-quotient of an SRE
+     5. Actions and action sequences:
+        an action is either !w (sending word w) or ?w (reading w)
+        we need p⊗ops [lem 6.1] and p⊗ops^* [lem 6.4]
+	this involves computing λ(ops), deciding x ≼_c y and x ≼⁺ y among other things
+     6. Channel contents: 
+         our LCSes have several channels so channel contents are tuples of words, not just single words. 
+         Also an action is really some mapping C -> {?,!}×M^* (see p44).
+	
 
 II. AN ALTERNATIVE IMPLEMENTATION
 The alternative data structure for SREs relies on hash-consing.
