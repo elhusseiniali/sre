@@ -1,25 +1,32 @@
-(I don't know what is the proper form for this kind of specification, but
-I'll write my thoughts anyway. Hopefully this text will evolve through
-questions & answers. -phs)
+I. Data types:
+###############
+    1. alphabet:
+        1.1. just a set of letters
+        > need to add print
+        > need to decide on allowed/prohibited characters
+    2. atoms:
+        2.1. of two kinds:
+            2.1.1. star atoms (a set of letters from an alphabet)
+            2.1.2. letter atoms (just a letter from an alphabet)
+        > need to add print
+        > need to add type-checking
+    3. products:
+        3.1. a concatenation of atoms (i.e. a list)
+        > need to add print
+        > need to add type-checking
+    4. SREs:
+        4.1. a set of products
+        > need to add print
+        > need to add type-checking
+        > might need to add some way of sorting (specifically for entailment
+          algorithm)
+        > need to add the following
+          operations (for all lemmas from [ABJ04]):
+          >> compare two SREs
+          >> normalize an SRE
+          >> take the left-quotient of an SRE
 
-
-1. SRES
-
-SREs are defined with three basic types:
-- atoms,
-- products,
-- sres.
-I think we need to distinguish between the three types.
-Then a product is a sequence of atoms and a sre is a set/list/.. ? of
-products. The algorithm for entailment may require that products composing
-in a sre are sorted linearly in some canonical way. 
-
-Needed operations are: building sres, comparing them, normalizing, taking
-left quotients, in fact all operations needed for Lem A1-3 from [ACBJ04],
-also Lem 4.2, 4.3, 5.2, 5.4, 6.1 etc.
-
-2. AN ALTERNATIVE IMPLEMENTATION
-
+II. AN ALTERNATIVE IMPLEMENTATION
 The alternative data structure for SREs relies on hash-consing.
 This means that when constructing a new sre/product/atom, we check whether
 the same sre has already been constructed (and stored in some appropriate
@@ -27,11 +34,9 @@ hash-table) in which case we reuse the same object. In principles, the same
 operations are performed but some algorithms may be specific, e.g., the
 check for equality does not follow [ACBJ04] anymore.
 
-3. LCMS
-
+III. LCMS
 In order to reproduce the verification of LCMs reported in [ACBJ04], we'll
 need a data structure for LCMs. Basically they are directed graphs with
 edges carrying actions like !a or ?b. I'd plead for allowing sequences of
 actions on edges. It seems that some examples in [ACBJ04] require computing
 products of LCMs.
-
