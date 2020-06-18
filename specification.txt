@@ -1,19 +1,29 @@
 I. Data types:
 ###############
-    1. alphabet:
+    1. alphabets & words & channel names:
         1.1. just a set of letters
         > need to add print
-        > need to decide on allowed/prohibited characters
+        > need to decide on allowed characters: see what the examples in ACBJ04 look like and
+	decide on a compromise.
+        u ≼ v, u≼⁺v, .. see ACBJ04,§6	
     2. atoms:
         2.1. of two kinds:
-            2.1.1. star atoms (a set of letters from an alphabet)
+            2.1.1. star atoms (a set of letters from an alphabet, including ∅)
             2.1.2. letter atoms (just a letter from an alphabet)
         > need to add print
         > need to add type-checking
+	> comparing for inclusion
+	> decide if e₁⋅absorbs?(e₂) or e₂.absorbs(e₁) i.e. absorption
+	> selector functions: e.starp():Bool or e.is_star():Bool
     3. products:
         3.1. a concatenation of atoms (i.e. a list)
         > need to add print
         > need to add type-checking
+	> normalization
+	> entailment among products
+	> equivalence, can be faster than two-way entailment
+	> _find_a_better_name (p,e)= find & split p = e1...en in p1.ei.p2 such that ei is first atom with
+	e⊑ei.
     4. SREs:
         4.1. a set of products
         > need to add print
@@ -26,9 +36,10 @@ I. Data types:
           >> normalize an SRE
           >> take the left-quotient of an SRE
      5. Actions and action sequences:
-        an action is either !w (sending word w) or ?w (reading w)
+        an action is either cᵢ!w (sending word w) or cⱼ?w (reading w on channel j)
         we need p⊗ops [lem 6.1] and p⊗ops^* [lem 6.4]
-	this involves computing λ(ops), deciding x ≼_c y and x ≼⁺ y among other things
+	this involves computing λ(ops), deciding x ≼_c y and x ≼⁺ y among other things where x & y are
+	from ops
      6. Channel contents: 
          our LCSes have several channels so channel contents are tuples of words, not just single words. 
          Also an action is really some mapping C -> {?,!}×M^* (see p44).
