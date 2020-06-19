@@ -5,7 +5,7 @@ I. Data types:
         > need to add print
         > need to decide on allowed characters: see what the examples in ACBJ04 look like and
 	decide on a compromise.
-        u ≼ v, u≼⁺v, .. see ACBJ04,§6	
+        u ≼ v, u≼⁺v, .. see ACBJ04,§6
     2. atoms:
         2.1. of two kinds:
             2.1.1. star atoms (a set of letters from an alphabet, including ∅)
@@ -40,10 +40,10 @@ I. Data types:
         we need p⊗ops [lem 6.1] and p⊗ops^* [lem 6.4]
 	this involves computing λ(ops), deciding x ≼_c y and x ≼⁺ y among other things where x & y are
 	from ops
-     6. Channel contents: 
-         our LCSes have several channels so channel contents are tuples of words, not just single words. 
+     6. Channel contents:
+         our LCSes have several channels so channel contents are tuples of words, not just single words.
          Also an action is really some mapping C -> {?,!}×M^* (see p44).
-	
+
 
 II. AN ALTERNATIVE IMPLEMENTATION
 The alternative data structure for SREs relies on hash-consing.
@@ -59,3 +59,5 @@ need a data structure for LCMs. Basically they are directed graphs with
 edges carrying actions like !a or ?b. I'd plead for allowing sequences of
 actions on edges. It seems that some examples in [ACBJ04] require computing
 products of LCMs.
+This is one interesting library that we can use to implement LCMs:
+https://github.com/pytransitions/transitions/blob/master/README.md

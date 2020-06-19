@@ -4,13 +4,24 @@ from abc import ABC, abstractmethod
 class Alphabet():
     """
     An alphabet is just a set of letters.
+
+    TODO:
+        - Check letters before object creation
     """
     def __init__(self, *args):
-        """
-        TODO:
-            - Make sure no special symbols are allowed?
-        """
         self.letters = set(args)
+    def has_letter(self, letter):
+        """
+        Input:
+            Letter
+        Output:
+            True if letter is in the alphabet
+            False otherwise
+        """
+        return letter in self.letters
+
+    def print(self):
+        print(self.letters)
 
 
 class Atom(ABC):
