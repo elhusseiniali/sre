@@ -10,6 +10,7 @@ class Alphabet():
     """
     def __init__(self, *args):
         self.letters = set(args)
+
     def has_letter(self, letter):
         """
         Input:
