@@ -61,3 +61,9 @@ actions on edges. It seems that some examples in [ACBJ04] require computing
 products of LCMs.
 This is one interesting library that we can use to implement LCMs:
 https://github.com/pytransitions/transitions/blob/master/README.md
+
+
+IV. Documentation:
+We are using pdoc3 (https://pdoc3.github.io/pdoc/) for documentation.
+It can be generated using:
+'pdoc3 --html models.py --force'

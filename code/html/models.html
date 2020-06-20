@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>models API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>models</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from abc import ABC, abstractmethod
+
+
+class Alphabet():
+    &#34;&#34;&#34;
+    An alphabet is just a set of letters.
+    &#34;&#34;&#34;
+    def __init__(self, *args):
+        &#34;&#34;&#34;
+        TODO:
+            - Check letters before object creation
+        &#34;&#34;&#34;
+        self.letters = set(args)
+
+    def has_letter(self, letter):
+        &#34;&#34;&#34;
+        Input:
+            Letter
+        Output:
+            True if letter is in the alphabet.
+            False otherwise.
+        &#34;&#34;&#34;
+        return letter in self.letters
+
+    def print(self):
+        print(self.letters)
+
+
+class Atom(ABC):
+    &#34;&#34;&#34;
+    Base Atom class.
+    &#34;&#34;&#34;
+    def __init__(self, alphabet):
+        self.alphabet = alphabet
+
+    @abstractmethod
+    def print(self):
+        pass
+
+
+class StarAtom(Atom):
+    &#34;&#34;&#34;
+    A star atom is an atom of the form (p1 + ... + pn)*
+    &#34;&#34;&#34;
+    def __init__(self, *args, alphabet):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that args are in alphabet.letters
+        &#34;&#34;&#34;
+        super().__init__(alphabet)
+        self.value = set(args)
+
+    def print(self):
+        print(self.value)
+
+
+class LetterAtom(Atom):
+    &#34;&#34;&#34;
+    A letter-atom is an atom of the form a+Ɛ
+    &#34;&#34;&#34;
+    def __init__(self, alphabet, letter):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that letter is in alphabet.letters
+        &#34;&#34;&#34;
+        super().__init__(alphabet)
+        self.value = letter
+
+    def print(self):
+        print(self.value)
+
+
+class Product():
+    &#34;&#34;&#34;
+    A product is a concatenation (a list) of atoms.
+    &#34;&#34;&#34;
+    def __init__(self, *args):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that args are atoms
+            - Make immutable
+        &#34;&#34;&#34;
+        self.value = list(args)
+
+
+class SRE():
+    &#34;&#34;&#34;
+    An SRE is a set of products.
+    &#34;&#34;&#34;
+    def __init__(self, *args):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that args are products
+            - Make immutable
+        &#34;&#34;&#34;
+        self.value = set(args)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="models.Alphabet"><code class="flex name class">
+<span>class <span class="ident">Alphabet</span></span>
+<span>(</span><span>*args)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An alphabet is just a set of letters.</p>
+<h2 id="todo">Todo</h2>
+<ul>
+<li>Check letters before object creation</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Alphabet():
+    &#34;&#34;&#34;
+    An alphabet is just a set of letters.
+    &#34;&#34;&#34;
+    def __init__(self, *args):
+        &#34;&#34;&#34;
+        TODO:
+            - Check letters before object creation
+        &#34;&#34;&#34;
+        self.letters = set(args)
+
+    def has_letter(self, letter):
+        &#34;&#34;&#34;
+        Input:
+            Letter
+        Output:
+            True if letter is in the alphabet.
+            False otherwise.
+        &#34;&#34;&#34;
+        return letter in self.letters
+
+    def print(self):
+        print(self.letters)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="models.Alphabet.has_letter"><code class="name flex">
+<span>def <span class="ident">has_letter</span></span>(<span>self, letter)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="input">Input</h2>
+<p>Letter</p>
+<h2 id="output">Output</h2>
+<p>True if letter is in the alphabet.
+False otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_letter(self, letter):
+    &#34;&#34;&#34;
+    Input:
+        Letter
+    Output:
+        True if letter is in the alphabet.
+        False otherwise.
+    &#34;&#34;&#34;
+    return letter in self.letters</code></pre>
+</details>
+</dd>
+<dt id="models.Alphabet.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print(self):
+    print(self.letters)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="models.Atom"><code class="flex name class">
+<span>class <span class="ident">Atom</span></span>
+<span>(</span><span>alphabet)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base Atom class.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Atom(ABC):
+    &#34;&#34;&#34;
+    Base Atom class.
+    &#34;&#34;&#34;
+    def __init__(self, alphabet):
+        self.alphabet = alphabet
+
+    @abstractmethod
+    def print(self):
+        pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="models.LetterAtom" href="#models.LetterAtom">LetterAtom</a></li>
+<li><a title="models.StarAtom" href="#models.StarAtom">StarAtom</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="models.Atom.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def print(self):
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="models.LetterAtom"><code class="flex name class">
+<span>class <span class="ident">LetterAtom</span></span>
+<span>(</span><span>alphabet, letter)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A letter-atom is an atom of the form a+Ɛ</p>
+<h2 id="todo">Todo</h2>
+<ul>
+<li>Check that letter is in alphabet.letters</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LetterAtom(Atom):
+    &#34;&#34;&#34;
+    A letter-atom is an atom of the form a+Ɛ
+    &#34;&#34;&#34;
+    def __init__(self, alphabet, letter):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that letter is in alphabet.letters
+        &#34;&#34;&#34;
+        super().__init__(alphabet)
+        self.value = letter
+
+    def print(self):
+        print(self.value)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="models.Atom" href="#models.Atom">Atom</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="models.LetterAtom.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print(self):
+    print(self.value)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="models.Product"><code class="flex name class">
+<span>class <span class="ident">Product</span></span>
+<span>(</span><span>*args)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A product is a concatenation (a list) of atoms.</p>
+<h2 id="todo">Todo</h2>
+<ul>
+<li>Check that args are atoms</li>
+<li>Make immutable</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Product():
+    &#34;&#34;&#34;
+    A product is a concatenation (a list) of atoms.
+    &#34;&#34;&#34;
+    def __init__(self, *args):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that args are atoms
+            - Make immutable
+        &#34;&#34;&#34;
+        self.value = list(args)</code></pre>
+</details>
+</dd>
+<dt id="models.SRE"><code class="flex name class">
+<span>class <span class="ident">SRE</span></span>
+<span>(</span><span>*args)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An SRE is a set of products.</p>
+<h2 id="todo">Todo</h2>
+<ul>
+<li>Check that args are products</li>
+<li>Make immutable</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SRE():
+    &#34;&#34;&#34;
+    An SRE is a set of products.
+    &#34;&#34;&#34;
+    def __init__(self, *args):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that args are products
+            - Make immutable
+        &#34;&#34;&#34;
+        self.value = set(args)</code></pre>
+</details>
+</dd>
+<dt id="models.StarAtom"><code class="flex name class">
+<span>class <span class="ident">StarAtom</span></span>
+<span>(</span><span>*args, alphabet)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A star atom is an atom of the form (p1 + &hellip; + pn)*</p>
+<h2 id="todo">Todo</h2>
+<ul>
+<li>Check that args are in alphabet.letters</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StarAtom(Atom):
+    &#34;&#34;&#34;
+    A star atom is an atom of the form (p1 + ... + pn)*
+    &#34;&#34;&#34;
+    def __init__(self, *args, alphabet):
+        &#34;&#34;&#34;
+        TODO:
+            - Check that args are in alphabet.letters
+        &#34;&#34;&#34;
+        super().__init__(alphabet)
+        self.value = set(args)
+
+    def print(self):
+        print(self.value)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="models.Atom" href="#models.Atom">Atom</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="models.StarAtom.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print(self):
+    print(self.value)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="models.Alphabet" href="#models.Alphabet">Alphabet</a></code></h4>
+<ul class="">
+<li><code><a title="models.Alphabet.has_letter" href="#models.Alphabet.has_letter">has_letter</a></code></li>
+<li><code><a title="models.Alphabet.print" href="#models.Alphabet.print">print</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="models.Atom" href="#models.Atom">Atom</a></code></h4>
+<ul class="">
+<li><code><a title="models.Atom.print" href="#models.Atom.print">print</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="models.LetterAtom" href="#models.LetterAtom">LetterAtom</a></code></h4>
+<ul class="">
+<li><code><a title="models.LetterAtom.print" href="#models.LetterAtom.print">print</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="models.Product" href="#models.Product">Product</a></code></h4>
+</li>
+<li>
+<h4><code><a title="models.SRE" href="#models.SRE">SRE</a></code></h4>
+</li>
+<li>
+<h4><code><a title="models.StarAtom" href="#models.StarAtom">StarAtom</a></code></h4>
+<ul class="">
+<li><code><a title="models.StarAtom.print" href="#models.StarAtom.print">print</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
