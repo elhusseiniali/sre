@@ -5,12 +5,24 @@ class Alphabet():
     """
     An alphabet is just a set of letters.
     """
-    def __init__(self, *args):
+    def __init__(self, letters):
         """
+        Input:
+            letters: list-like.
         TODO:
             - Check letters before object creation
         """
-        self.letters = set(args)
+        self.letters = set(letters)
+
+    def __new__(cls, letters):
+        """
+        Only create an alphabet if all letters are in
+        the English alphabet.
+        """
+        for letter in letters:
+            if not str(letter).isalpha():
+                raise TypeError("An alphabet can only have English letter!!")
+        return super().__new__(cls)
 
     def has_letter(self, letter):
         """
