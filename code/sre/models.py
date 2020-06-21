@@ -8,9 +8,8 @@ class Alphabet():
     def __init__(self, letters):
         """
         Input:
-            letters: list-like.
-        TODO:
-            - Check letters before object creation
+            letters: list-like. Every letter has to be in the English alphabet.
+            Can take a singleton character, or a set of chars.
         """
         self.letters = set(letters)
 
@@ -54,13 +53,23 @@ class StarAtom(Atom):
     """
     A star atom is an atom of the form (p1 + ... + pn)*
     """
-    def __init__(self, *args, alphabet):
+    def __init__(self, alphabet, letters):
+        super().__init__(letters)
+        self.value = set(letters)
+
+    def __new__(cls, alphabet, letters):
         """
-        TODO:
-            - Check that args are in alphabet.letters
+        Only create an atom if all letters are in
+        the same (valid) alphabet.
         """
-        super().__init__(alphabet)
-        self.value = set(args)
+        if not isinstance(alphabet, Alphabet):
+            raise TypeError("You need to pass an Alphabet object!")
+
+        for letter in letters:
+            if not alphabet.has_letter(letter):
+                raise ValueError("You can only use letters of the"
+                                 + " same alphabet!!")
+        return super().__new__(cls)
 
     def print(self):
         print(self.value)
@@ -71,12 +80,25 @@ class LetterAtom(Atom):
     A letter-atom is an atom of the form a+Ɛ
     """
     def __init__(self, alphabet, letter):
-        """
-        TODO:
-            - Check that letter is in alphabet.letters
-        """
         super().__init__(alphabet)
-        self.value = letter
+        self.value = str(letter)
+
+    def __new__(cls, alphabet, letter):
+        """
+        Only create an atom if all letters are in
+        the same (valid) alphabet.
+        """
+        if not len(letter) == 1:
+            raise TypeError("This is a letter atom."
+                            + " You can only have one letter!!")
+        if not isinstance(alphabet, Alphabet):
+            raise TypeError("You need to pass an Alphabet object!")
+
+        if not alphabet.has_letter(letter):
+            raise ValueError("You can only use letters of the"
+                             + " same alphabet!!")
+
+        return super().__new__(cls)
 
     def print(self):
         print(self.value)
