@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
-<title>models API documentation</title>
+<title>sre.models API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>models</code></h1>
+<h1 class="title">Module <code>sre.models</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -31,12 +31,23 @@ class Alphabet():
     &#34;&#34;&#34;
     An alphabet is just a set of letters.
     &#34;&#34;&#34;
-    def __init__(self, *args):
+    def __init__(self, letters):
         &#34;&#34;&#34;
-        TODO:
-            - Check letters before object creation
+        Input:
+            letters: list-like. Every letter has to be in the English alphabet.
+            Can take a singleton character, or a set of chars.
         &#34;&#34;&#34;
-        self.letters = set(args)
+        self.letters = set(letters)
+
+    def __new__(cls, letters):
+        &#34;&#34;&#34;
+        Only create an alphabet if all letters are in
+        the English alphabet.
+        &#34;&#34;&#34;
+        for letter in letters:
+            if not str(letter).isalpha():
+                raise TypeError(&#34;An alphabet can only have English letter!!&#34;)
+        return super().__new__(cls)
 
     def has_letter(self, letter):
         &#34;&#34;&#34;
@@ -68,13 +79,23 @@ class StarAtom(Atom):
     &#34;&#34;&#34;
     A star atom is an atom of the form (p1 + ... + pn)*
     &#34;&#34;&#34;
-    def __init__(self, *args, alphabet):
+    def __init__(self, alphabet, letters):
+        super().__init__(letters)
+        self.value = set(letters)
+
+    def __new__(cls, alphabet, letters):
         &#34;&#34;&#34;
-        TODO:
-            - Check that args are in alphabet.letters
+        Only create an atom if all letters are in
+        the same (valid) alphabet.
         &#34;&#34;&#34;
-        super().__init__(alphabet)
-        self.value = set(args)
+        if not isinstance(alphabet, Alphabet):
+            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
+
+        for letter in letters:
+            if not alphabet.has_letter(letter):
+                raise ValueError(&#34;You can only use letters of the&#34;
+                                 + &#34; same alphabet!!&#34;)
+        return super().__new__(cls)
 
     def print(self):
         print(self.value)
@@ -85,12 +106,25 @@ class LetterAtom(Atom):
     A letter-atom is an atom of the form a+Ɛ
     &#34;&#34;&#34;
     def __init__(self, alphabet, letter):
-        &#34;&#34;&#34;
-        TODO:
-            - Check that letter is in alphabet.letters
-        &#34;&#34;&#34;
         super().__init__(alphabet)
-        self.value = letter
+        self.value = str(letter)
+
+    def __new__(cls, alphabet, letter):
+        &#34;&#34;&#34;
+        Only create an atom if all letters are in
+        the same (valid) alphabet.
+        &#34;&#34;&#34;
+        if not len(letter) == 1:
+            raise TypeError(&#34;This is a letter atom.&#34;
+                            + &#34; You can only have one letter!!&#34;)
+        if not isinstance(alphabet, Alphabet):
+            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
+
+        if not alphabet.has_letter(letter):
+            raise ValueError(&#34;You can only use letters of the&#34;
+                             + &#34; same alphabet!!&#34;)
+
+        return super().__new__(cls)
 
     def print(self):
         print(self.value)
@@ -131,16 +165,15 @@ class SRE():
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="models.Alphabet"><code class="flex name class">
+<dt id="sre.models.Alphabet"><code class="flex name class">
 <span>class <span class="ident">Alphabet</span></span>
-<span>(</span><span>*args)</span>
+<span>(</span><span>letters)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>An alphabet is just a set of letters.</p>
-<h2 id="todo">Todo</h2>
-<ul>
-<li>Check letters before object creation</li>
-</ul></div>
+<h2 id="input">Input</h2>
+<p>letters: list-like. Every letter has to be in the English alphabet.
+Can take a singleton character, or a set of chars.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -149,12 +182,23 @@ class SRE():
     &#34;&#34;&#34;
     An alphabet is just a set of letters.
     &#34;&#34;&#34;
-    def __init__(self, *args):
+    def __init__(self, letters):
         &#34;&#34;&#34;
-        TODO:
-            - Check letters before object creation
+        Input:
+            letters: list-like. Every letter has to be in the English alphabet.
+            Can take a singleton character, or a set of chars.
         &#34;&#34;&#34;
-        self.letters = set(args)
+        self.letters = set(letters)
+
+    def __new__(cls, letters):
+        &#34;&#34;&#34;
+        Only create an alphabet if all letters are in
+        the English alphabet.
+        &#34;&#34;&#34;
+        for letter in letters:
+            if not str(letter).isalpha():
+                raise TypeError(&#34;An alphabet can only have English letter!!&#34;)
+        return super().__new__(cls)
 
     def has_letter(self, letter):
         &#34;&#34;&#34;
@@ -171,7 +215,7 @@ class SRE():
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="models.Alphabet.has_letter"><code class="name flex">
+<dt id="sre.models.Alphabet.has_letter"><code class="name flex">
 <span>def <span class="ident">has_letter</span></span>(<span>self, letter)</span>
 </code></dt>
 <dd>
@@ -195,7 +239,7 @@ False otherwise.</p></div>
     return letter in self.letters</code></pre>
 </details>
 </dd>
-<dt id="models.Alphabet.print"><code class="name flex">
+<dt id="sre.models.Alphabet.print"><code class="name flex">
 <span>def <span class="ident">print</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -210,7 +254,7 @@ False otherwise.</p></div>
 </dd>
 </dl>
 </dd>
-<dt id="models.Atom"><code class="flex name class">
+<dt id="sre.models.Atom"><code class="flex name class">
 <span>class <span class="ident">Atom</span></span>
 <span>(</span><span>alphabet)</span>
 </code></dt>
@@ -237,12 +281,12 @@ False otherwise.</p></div>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="models.LetterAtom" href="#models.LetterAtom">LetterAtom</a></li>
-<li><a title="models.StarAtom" href="#models.StarAtom">StarAtom</a></li>
+<li><a title="sre.models.LetterAtom" href="#sre.models.LetterAtom">LetterAtom</a></li>
+<li><a title="sre.models.StarAtom" href="#sre.models.StarAtom">StarAtom</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="models.Atom.print"><code class="name flex">
+<dt id="sre.models.Atom.print"><code class="name flex">
 <span>def <span class="ident">print</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -258,16 +302,12 @@ def print(self):
 </dd>
 </dl>
 </dd>
-<dt id="models.LetterAtom"><code class="flex name class">
+<dt id="sre.models.LetterAtom"><code class="flex name class">
 <span>class <span class="ident">LetterAtom</span></span>
 <span>(</span><span>alphabet, letter)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A letter-atom is an atom of the form a+Ɛ</p>
-<h2 id="todo">Todo</h2>
-<ul>
-<li>Check that letter is in alphabet.letters</li>
-</ul></div>
+<div class="desc"><p>A letter-atom is an atom of the form a+Ɛ</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -277,24 +317,37 @@ def print(self):
     A letter-atom is an atom of the form a+Ɛ
     &#34;&#34;&#34;
     def __init__(self, alphabet, letter):
-        &#34;&#34;&#34;
-        TODO:
-            - Check that letter is in alphabet.letters
-        &#34;&#34;&#34;
         super().__init__(alphabet)
-        self.value = letter
+        self.value = str(letter)
+
+    def __new__(cls, alphabet, letter):
+        &#34;&#34;&#34;
+        Only create an atom if all letters are in
+        the same (valid) alphabet.
+        &#34;&#34;&#34;
+        if not len(letter) == 1:
+            raise TypeError(&#34;This is a letter atom.&#34;
+                            + &#34; You can only have one letter!!&#34;)
+        if not isinstance(alphabet, Alphabet):
+            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
+
+        if not alphabet.has_letter(letter):
+            raise ValueError(&#34;You can only use letters of the&#34;
+                             + &#34; same alphabet!!&#34;)
+
+        return super().__new__(cls)
 
     def print(self):
         print(self.value)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="models.Atom" href="#models.Atom">Atom</a></li>
+<li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="models.LetterAtom.print"><code class="name flex">
+<dt id="sre.models.LetterAtom.print"><code class="name flex">
 <span>def <span class="ident">print</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -309,7 +362,7 @@ def print(self):
 </dd>
 </dl>
 </dd>
-<dt id="models.Product"><code class="flex name class">
+<dt id="sre.models.Product"><code class="flex name class">
 <span>class <span class="ident">Product</span></span>
 <span>(</span><span>*args)</span>
 </code></dt>
@@ -337,7 +390,7 @@ def print(self):
         self.value = list(args)</code></pre>
 </details>
 </dd>
-<dt id="models.SRE"><code class="flex name class">
+<dt id="sre.models.SRE"><code class="flex name class">
 <span>class <span class="ident">SRE</span></span>
 <span>(</span><span>*args)</span>
 </code></dt>
@@ -365,16 +418,12 @@ def print(self):
         self.value = set(args)</code></pre>
 </details>
 </dd>
-<dt id="models.StarAtom"><code class="flex name class">
+<dt id="sre.models.StarAtom"><code class="flex name class">
 <span>class <span class="ident">StarAtom</span></span>
-<span>(</span><span>*args, alphabet)</span>
+<span>(</span><span>alphabet, letters)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A star atom is an atom of the form (p1 + &hellip; + pn)*</p>
-<h2 id="todo">Todo</h2>
-<ul>
-<li>Check that args are in alphabet.letters</li>
-</ul></div>
+<div class="desc"><p>A star atom is an atom of the form (p1 + &hellip; + pn)*</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -383,25 +432,35 @@ def print(self):
     &#34;&#34;&#34;
     A star atom is an atom of the form (p1 + ... + pn)*
     &#34;&#34;&#34;
-    def __init__(self, *args, alphabet):
+    def __init__(self, alphabet, letters):
+        super().__init__(letters)
+        self.value = set(letters)
+
+    def __new__(cls, alphabet, letters):
         &#34;&#34;&#34;
-        TODO:
-            - Check that args are in alphabet.letters
+        Only create an atom if all letters are in
+        the same (valid) alphabet.
         &#34;&#34;&#34;
-        super().__init__(alphabet)
-        self.value = set(args)
+        if not isinstance(alphabet, Alphabet):
+            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
+
+        for letter in letters:
+            if not alphabet.has_letter(letter):
+                raise ValueError(&#34;You can only use letters of the&#34;
+                                 + &#34; same alphabet!!&#34;)
+        return super().__new__(cls)
 
     def print(self):
         print(self.value)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="models.Atom" href="#models.Atom">Atom</a></li>
+<li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="models.StarAtom.print"><code class="name flex">
+<dt id="sre.models.StarAtom.print"><code class="name flex">
 <span>def <span class="ident">print</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -428,34 +487,34 @@ def print(self):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="models.Alphabet" href="#models.Alphabet">Alphabet</a></code></h4>
+<h4><code><a title="sre.models.Alphabet" href="#sre.models.Alphabet">Alphabet</a></code></h4>
 <ul class="">
-<li><code><a title="models.Alphabet.has_letter" href="#models.Alphabet.has_letter">has_letter</a></code></li>
-<li><code><a title="models.Alphabet.print" href="#models.Alphabet.print">print</a></code></li>
+<li><code><a title="sre.models.Alphabet.has_letter" href="#sre.models.Alphabet.has_letter">has_letter</a></code></li>
+<li><code><a title="sre.models.Alphabet.print" href="#sre.models.Alphabet.print">print</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="models.Atom" href="#models.Atom">Atom</a></code></h4>
+<h4><code><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></code></h4>
 <ul class="">
-<li><code><a title="models.Atom.print" href="#models.Atom.print">print</a></code></li>
+<li><code><a title="sre.models.Atom.print" href="#sre.models.Atom.print">print</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="models.LetterAtom" href="#models.LetterAtom">LetterAtom</a></code></h4>
+<h4><code><a title="sre.models.LetterAtom" href="#sre.models.LetterAtom">LetterAtom</a></code></h4>
 <ul class="">
-<li><code><a title="models.LetterAtom.print" href="#models.LetterAtom.print">print</a></code></li>
+<li><code><a title="sre.models.LetterAtom.print" href="#sre.models.LetterAtom.print">print</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="models.Product" href="#models.Product">Product</a></code></h4>
+<h4><code><a title="sre.models.Product" href="#sre.models.Product">Product</a></code></h4>
 </li>
 <li>
-<h4><code><a title="models.SRE" href="#models.SRE">SRE</a></code></h4>
+<h4><code><a title="sre.models.SRE" href="#sre.models.SRE">SRE</a></code></h4>
 </li>
 <li>
-<h4><code><a title="models.StarAtom" href="#models.StarAtom">StarAtom</a></code></h4>
+<h4><code><a title="sre.models.StarAtom" href="#sre.models.StarAtom">StarAtom</a></code></h4>
 <ul class="">
-<li><code><a title="models.StarAtom.print" href="#models.StarAtom.print">print</a></code></li>
+<li><code><a title="sre.models.StarAtom.print" href="#sre.models.StarAtom.print">print</a></code></li>
 </ul>
 </li>
 </ul>
