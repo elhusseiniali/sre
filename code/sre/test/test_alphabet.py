@@ -1,4 +1,5 @@
 from sre.models import Alphabet
+
 from hypothesis import given
 from hypothesis.strategies import characters, lists
 
