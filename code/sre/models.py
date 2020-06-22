@@ -39,10 +39,12 @@ class Alphabet():
 
 class Atom(ABC):
     """
-    Base Atom class.
+    Base (Abstract) Atom class.
+    """
     """
     def __init__(self, alphabet):
         self.alphabet = alphabet
+    """
 
     @abstractmethod
     def print(self):
@@ -53,14 +55,15 @@ class StarAtom(Atom):
     """
     A star atom is an atom of the form (p1 + ... + pn)*
     """
-    def __init__(self, alphabet, letters):
-        super().__init__(letters)
+    def __init__(self, letters):
+        super().__init__()
         self.value = set(letters)
 
-    def __new__(cls, alphabet, letters):
+    def __new__(cls, letters):
         """
         Only create an atom if all letters are in
         the same (valid) alphabet.
+        """
         """
         if not isinstance(alphabet, Alphabet):
             raise TypeError("You need to pass an Alphabet object!")
@@ -69,6 +72,7 @@ class StarAtom(Atom):
             if not alphabet.has_letter(letter):
                 raise ValueError("You can only use letters of the"
                                  + " same alphabet!!")
+        """
         return super().__new__(cls)
 
     def print(self):
@@ -77,16 +81,17 @@ class StarAtom(Atom):
 
 class LetterAtom(Atom):
     """
-    A letter-atom is an atom of the form a+Ɛ
+    A letter-atom is an atom of the form a+Ɛ.
     """
-    def __init__(self, alphabet, letter):
-        super().__init__(alphabet)
+    def __init__(self, letter):
+        super().__init__()
         self.value = str(letter)
 
-    def __new__(cls, alphabet, letter):
+    def __new__(cls, letter):
         """
         Only create an atom if all letters are in
         the same (valid) alphabet.
+        """
         """
         if not len(letter) == 1:
             raise TypeError("This is a letter atom."
@@ -97,6 +102,7 @@ class LetterAtom(Atom):
         if not alphabet.has_letter(letter):
             raise ValueError("You can only use letters of the"
                              + " same alphabet!!")
+        """
 
         return super().__new__(cls)
 
