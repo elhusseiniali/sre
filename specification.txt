@@ -1,22 +1,23 @@
 I. Data types:
 ###############
-    1. alphabets & words & channel names:
-        1.1. just a set of letters
+    1. alphabets & channel names:
+        1.1. just a set of valid 'letters' or 'messages'
         > need to add print
-        > need to decide on allowed characters: see what the examples in ACBJ04 look like and
-	decide on a compromise.
+        > need to decide on what a letter or message can be: see what the examples in ACBJ04 look like and decide on a compromise.
+    2. words:
         u ≼ v, u≼⁺v, .. see ACBJ04,§6
-    2. atoms:
-        2.1. of two kinds:
-            2.1.1. star atoms (a set of letters from an alphabet, including ∅)
-            2.1.2. letter atoms (just a letter from an alphabet)
+    3. atoms:
+        3.1. of two kinds:
+            3.1.1. star atoms (a set of letters from an alphabet, including ∅)
+            3.1.2. letter atoms (just a letter from an alphabet)
         > need to add print
         > need to add type-checking
 	> comparing for inclusion
 	> decide if e₁⋅absorbs?(e₂) or e₂.absorbs(e₁) i.e. absorption
-	> selector functions: e.starp():Bool or e.is_star():Bool
-    3. products:
-        3.1. a concatenation of atoms (i.e. a list)
+	> test functions: e.starp():Bool or e.is_star():Bool
+	> selector functions: e.alphabet(), e.letter()
+    4. products:
+        4.1. a concatenation of atoms (i.e. a list)
         > need to add print
         > need to add type-checking
 	> normalization
@@ -24,8 +25,8 @@ I. Data types:
 	> equivalence, can be faster than two-way entailment
 	> _find_a_better_name (p,e)= find & split p = e1...en in p1.ei.p2 such that ei is first atom with
 	e⊑ei.
-    4. SREs:
-        4.1. a set of products
+    5. SREs:
+        5.1. a set of products
         > need to add print
         > need to add type-checking
         > might need to add some way of sorting (specifically for entailment
