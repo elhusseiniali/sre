@@ -65,10 +65,8 @@ class Alphabet():
 
 class Atom(ABC):
     &#34;&#34;&#34;
-    Base Atom class.
+    Base (Abstract) Atom class.
     &#34;&#34;&#34;
-    def __init__(self, alphabet):
-        self.alphabet = alphabet
 
     @abstractmethod
     def print(self):
@@ -79,22 +77,19 @@ class StarAtom(Atom):
     &#34;&#34;&#34;
     A star atom is an atom of the form (p1 + ... + pn)*
     &#34;&#34;&#34;
-    def __init__(self, alphabet, letters):
-        super().__init__(letters)
+    def __init__(self, letters):
+        super().__init__()
         self.value = set(letters)
 
-    def __new__(cls, alphabet, letters):
+    def __new__(cls, letters):
         &#34;&#34;&#34;
-        Only create an atom if all letters are in
-        the same (valid) alphabet.
+        Only create an atom if all letters are alphanumeric.
+        TODO:
+            - Add better check than the placeholder
         &#34;&#34;&#34;
-        if not isinstance(alphabet, Alphabet):
-            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
-
         for letter in letters:
-            if not alphabet.has_letter(letter):
-                raise ValueError(&#34;You can only use letters of the&#34;
-                                 + &#34; same alphabet!!&#34;)
+            if letter == &#39;%&#39;:
+                raise ValueError(&#34;Can only be alphanumeric.&#34;)
         return super().__new__(cls)
 
     def print(self):
@@ -103,26 +98,19 @@ class StarAtom(Atom):
 
 class LetterAtom(Atom):
     &#34;&#34;&#34;
-    A letter-atom is an atom of the form a+Ɛ
+    A letter-atom is an atom of the form a+Ɛ.
     &#34;&#34;&#34;
-    def __init__(self, alphabet, letter):
-        super().__init__(alphabet)
+    def __init__(self, letter):
+        super().__init__()
         self.value = str(letter)
 
-    def __new__(cls, alphabet, letter):
+    def __new__(cls, letter):
         &#34;&#34;&#34;
-        Only create an atom if all letters are in
-        the same (valid) alphabet.
+        Only create an atom if it is made from a single letter.
         &#34;&#34;&#34;
         if not len(letter) == 1:
             raise TypeError(&#34;This is a letter atom.&#34;
                             + &#34; You can only have one letter!!&#34;)
-        if not isinstance(alphabet, Alphabet):
-            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
-
-        if not alphabet.has_letter(letter):
-            raise ValueError(&#34;You can only use letters of the&#34;
-                             + &#34; same alphabet!!&#34;)
 
         return super().__new__(cls)
 
@@ -256,20 +244,17 @@ False otherwise.</p></div>
 </dd>
 <dt id="sre.models.Atom"><code class="flex name class">
 <span>class <span class="ident">Atom</span></span>
-<span>(</span><span>alphabet)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base Atom class.</p></div>
+<div class="desc"><p>Base (Abstract) Atom class.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Atom(ABC):
     &#34;&#34;&#34;
-    Base Atom class.
+    Base (Abstract) Atom class.
     &#34;&#34;&#34;
-    def __init__(self, alphabet):
-        self.alphabet = alphabet
 
     @abstractmethod
     def print(self):
@@ -304,36 +289,29 @@ def print(self):
 </dd>
 <dt id="sre.models.LetterAtom"><code class="flex name class">
 <span>class <span class="ident">LetterAtom</span></span>
-<span>(</span><span>alphabet, letter)</span>
+<span>(</span><span>letter)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A letter-atom is an atom of the form a+Ɛ</p></div>
+<div class="desc"><p>A letter-atom is an atom of the form a+Ɛ.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class LetterAtom(Atom):
     &#34;&#34;&#34;
-    A letter-atom is an atom of the form a+Ɛ
+    A letter-atom is an atom of the form a+Ɛ.
     &#34;&#34;&#34;
-    def __init__(self, alphabet, letter):
-        super().__init__(alphabet)
+    def __init__(self, letter):
+        super().__init__()
         self.value = str(letter)
 
-    def __new__(cls, alphabet, letter):
+    def __new__(cls, letter):
         &#34;&#34;&#34;
-        Only create an atom if all letters are in
-        the same (valid) alphabet.
+        Only create an atom if it is made from a single letter.
         &#34;&#34;&#34;
         if not len(letter) == 1:
             raise TypeError(&#34;This is a letter atom.&#34;
                             + &#34; You can only have one letter!!&#34;)
-        if not isinstance(alphabet, Alphabet):
-            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
-
-        if not alphabet.has_letter(letter):
-            raise ValueError(&#34;You can only use letters of the&#34;
-                             + &#34; same alphabet!!&#34;)
 
         return super().__new__(cls)
 
@@ -420,7 +398,7 @@ def print(self):
 </dd>
 <dt id="sre.models.StarAtom"><code class="flex name class">
 <span>class <span class="ident">StarAtom</span></span>
-<span>(</span><span>alphabet, letters)</span>
+<span>(</span><span>letters)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A star atom is an atom of the form (p1 + &hellip; + pn)*</p></div>
@@ -432,22 +410,19 @@ def print(self):
     &#34;&#34;&#34;
     A star atom is an atom of the form (p1 + ... + pn)*
     &#34;&#34;&#34;
-    def __init__(self, alphabet, letters):
-        super().__init__(letters)
+    def __init__(self, letters):
+        super().__init__()
         self.value = set(letters)
 
-    def __new__(cls, alphabet, letters):
+    def __new__(cls, letters):
         &#34;&#34;&#34;
-        Only create an atom if all letters are in
-        the same (valid) alphabet.
+        Only create an atom if all letters are alphanumeric.
+        TODO:
+            - Add better check than the placeholder
         &#34;&#34;&#34;
-        if not isinstance(alphabet, Alphabet):
-            raise TypeError(&#34;You need to pass an Alphabet object!&#34;)
-
         for letter in letters:
-            if not alphabet.has_letter(letter):
-                raise ValueError(&#34;You can only use letters of the&#34;
-                                 + &#34; same alphabet!!&#34;)
+            if letter == &#39;%&#39;:
+                raise ValueError(&#34;Can only be alphanumeric.&#34;)
         return super().__new__(cls)
 
     def print(self):
