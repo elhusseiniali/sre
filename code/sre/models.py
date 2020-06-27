@@ -1,42 +1,6 @@
 from abc import ABC, abstractmethod
 
 
-class Alphabet():
-    """
-    An alphabet is just a set of letters.
-    """
-    def __init__(self, letters):
-        """
-        Input:
-            letters: list-like. Every letter has to be in the English alphabet.
-            Can take a singleton character, or a set of chars.
-        """
-        self.letters = set(letters)
-
-    def __new__(cls, letters):
-        """
-        Only create an alphabet if all letters are in
-        the English alphabet.
-        """
-        for letter in letters:
-            if not str(letter).isalpha():
-                raise TypeError("An alphabet can only have English letter!!")
-        return super().__new__(cls)
-
-    def has_letter(self, letter):
-        """
-        Input:
-            Letter
-        Output:
-            True if letter is in the alphabet.
-            False otherwise.
-        """
-        return letter in self.letters
-
-    def print(self):
-        print(self.letters)
-
-
 class Atom(ABC):
     """
     Base (Abstract) Atom class.
