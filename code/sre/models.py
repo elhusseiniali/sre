@@ -41,10 +41,6 @@ class Atom(ABC):
     """
     Base (Abstract) Atom class.
     """
-    """
-    def __init__(self, alphabet):
-        self.alphabet = alphabet
-    """
 
     @abstractmethod
     def print(self):
@@ -61,18 +57,13 @@ class StarAtom(Atom):
 
     def __new__(cls, letters):
         """
-        Only create an atom if all letters are in
-        the same (valid) alphabet.
+        Only create an atom if all letters are alphanumeric.
+        TODO:
+            - Add better check than the placeholder
         """
-        """
-        if not isinstance(alphabet, Alphabet):
-            raise TypeError("You need to pass an Alphabet object!")
-
         for letter in letters:
-            if not alphabet.has_letter(letter):
-                raise ValueError("You can only use letters of the"
-                                 + " same alphabet!!")
-        """
+            if letter == '%':
+                raise ValueError("Can only be alphanumeric.")
         return super().__new__(cls)
 
     def print(self):
@@ -89,20 +80,11 @@ class LetterAtom(Atom):
 
     def __new__(cls, letter):
         """
-        Only create an atom if all letters are in
-        the same (valid) alphabet.
-        """
+        Only create an atom if it is made from a single letter.
         """
         if not len(letter) == 1:
             raise TypeError("This is a letter atom."
                             + " You can only have one letter!!")
-        if not isinstance(alphabet, Alphabet):
-            raise TypeError("You need to pass an Alphabet object!")
-
-        if not alphabet.has_letter(letter):
-            raise ValueError("You can only use letters of the"
-                             + " same alphabet!!")
-        """
 
         return super().__new__(cls)
 
