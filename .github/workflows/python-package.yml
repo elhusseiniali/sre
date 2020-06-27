@@ -39,5 +39,4 @@ jobs:
         pytest
     - name: generate pdoc3 docs
       run: |
-        ls
-        pdoc --html --output-dir ../docs sre
+        pdoc --html --output-dir ./docs  code/sre --force
