@@ -100,3 +100,7 @@ class SRE():
         for product in products:
             if not isinstance(product, Product):
                 raise TypeError("You need to pass a valid product!")
+
+    def __repr__(self):
+        return ("SRE made with:\n"
+                f"{self.value}")
