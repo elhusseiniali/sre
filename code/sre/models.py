@@ -7,7 +7,7 @@ class Atom(ABC):
     """
 
     @abstractmethod
-    def print(self):
+    def __repr__(self):
         pass
 
 
@@ -30,8 +30,8 @@ class StarAtom(Atom):
                 raise ValueError("Can only be alphanumeric.")
         return super().__new__(cls)
 
-    def print(self):
-        print(self.value)
+    def __repr__(self):
+        return (f"StarAtom with {self.value}")
 
 
 class LetterAtom(Atom):
@@ -52,31 +52,51 @@ class LetterAtom(Atom):
 
         return super().__new__(cls)
 
-    def print(self):
-        print(self.value)
+    def __repr__(self):
+        return(f"LetterAtom with {self.value}")
 
 
 class Product():
     """
     A product is a concatenation (a list) of atoms.
     """
-    def __init__(self, *args):
+    def __init__(self, atoms):
         """
         TODO:
-            - Check that args are atoms
             - Make immutable
         """
-        self.value = list(args)
+        self.value = list(atoms)
+
+    def __new__(cls, atoms):
+        """
+        Only create a product from valid atoms.
+        """
+        for atom in atoms:
+            if not isinstance(atom, Atom):
+                raise TypeError("You need to pass a valid atom!")
+
+        return super().__new__(cls)
+
+    def __repr__(self):
+        return("Product with:\n"
+               f"{self.value}")
 
 
 class SRE():
     """
     An SRE is a set of products.
     """
-    def __init__(self, *args):
+    def __init__(self, products):
         """
         TODO:
-            - Check that args are products
             - Make immutable
         """
-        self.value = set(args)
+        self.value = set(products)
+
+    def __new__(cls, products):
+        """
+        Only create an SRE from valid products.
+        """
+        for product in products:
+            if not isinstance(product, Product):
+                raise TypeError("You need to pass a valid product!")
