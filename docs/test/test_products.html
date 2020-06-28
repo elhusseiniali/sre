@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
-<title>sre.test API documentation</title>
+<title>sre.test.test_products API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,32 +17,145 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>sre.test</code></h1>
+<h1 class="title">Module <code>sre.test.test_products</code></h1>
 </header>
 <section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from sre.models import StarAtom, LetterAtom
+from sre.models import Product
+
+from hypothesis import given
+from hypothesis.strategies import characters, lists
+
+
+class TestProduct():
+    @given(lists(characters(min_codepoint=97, max_codepoint=122)))
+    def test_star_atom(self, x):
+        e1 = StarAtom(letters=x)
+
+        p = Product([e1])
+        assert p
+
+    @given(characters(min_codepoint=97, max_codepoint=122))
+    def test_letter_atom(self, x):
+        e1 = LetterAtom(letter=x)
+
+        p = Product([e1])
+        assert p
+
+    @given(lists(characters(min_codepoint=97, max_codepoint=122)),
+           characters(min_codepoint=97, max_codepoint=122))
+    def test_mixed_atoms(self, x, y):
+        e1 = StarAtom(letters=x)
+        e2 = LetterAtom(letter=y)
+
+        p = Product([e1, e2])
+        assert p</code></pre>
+</details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="sre.test.test_atoms" href="test_atoms.html">sre.test.test_atoms</a></code></dt>
+<dt id="sre.test.test_products.TestProduct"><code class="flex name class">
+<span>class <span class="ident">TestProduct</span></span>
+</code></dt>
 <dd>
 <div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestProduct():
+    @given(lists(characters(min_codepoint=97, max_codepoint=122)))
+    def test_star_atom(self, x):
+        e1 = StarAtom(letters=x)
+
+        p = Product([e1])
+        assert p
+
+    @given(characters(min_codepoint=97, max_codepoint=122))
+    def test_letter_atom(self, x):
+        e1 = LetterAtom(letter=x)
+
+        p = Product([e1])
+        assert p
+
+    @given(lists(characters(min_codepoint=97, max_codepoint=122)),
+           characters(min_codepoint=97, max_codepoint=122))
+    def test_mixed_atoms(self, x, y):
+        e1 = StarAtom(letters=x)
+        e2 = LetterAtom(letter=y)
+
+        p = Product([e1, e2])
+        assert p</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.test.test_products.TestProduct.test_letter_atom"><code class="name flex">
+<span>def <span class="ident">test_letter_atom</span></span>(<span>self) -> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(characters(min_codepoint=97, max_codepoint=122))
+def test_letter_atom(self, x):
+    e1 = LetterAtom(letter=x)
+
+    p = Product([e1])
+    assert p</code></pre>
+</details>
 </dd>
-<dt><code class="name"><a title="sre.test.test_products" href="test_products.html">sre.test.test_products</a></code></dt>
+<dt id="sre.test.test_products.TestProduct.test_mixed_atoms"><code class="name flex">
+<span>def <span class="ident">test_mixed_atoms</span></span>(<span>self) -> NoneType</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(lists(characters(min_codepoint=97, max_codepoint=122)),
+       characters(min_codepoint=97, max_codepoint=122))
+def test_mixed_atoms(self, x, y):
+    e1 = StarAtom(letters=x)
+    e2 = LetterAtom(letter=y)
+
+    p = Product([e1, e2])
+    assert p</code></pre>
+</details>
 </dd>
-<dt><code class="name"><a title="sre.test.test_sre" href="test_sre.html">sre.test.test_sre</a></code></dt>
+<dt id="sre.test.test_products.TestProduct.test_star_atom"><code class="name flex">
+<span>def <span class="ident">test_star_atom</span></span>(<span>self) -> NoneType</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(lists(characters(min_codepoint=97, max_codepoint=122)))
+def test_star_atom(self, x):
+    e1 = StarAtom(letters=x)
+
+    p = Product([e1])
+    assert p</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -53,14 +166,19 @@
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="sre" href="../index.html">sre</a></code></li>
+<li><code><a title="sre.test" href="index.html">sre.test</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="sre.test.test_atoms" href="test_atoms.html">sre.test.test_atoms</a></code></li>
-<li><code><a title="sre.test.test_products" href="test_products.html">sre.test.test_products</a></code></li>
-<li><code><a title="sre.test.test_sre" href="test_sre.html">sre.test.test_sre</a></code></li>
+<li>
+<h4><code><a title="sre.test.test_products.TestProduct" href="#sre.test.test_products.TestProduct">TestProduct</a></code></h4>
+<ul class="">
+<li><code><a title="sre.test.test_products.TestProduct.test_letter_atom" href="#sre.test.test_products.TestProduct.test_letter_atom">test_letter_atom</a></code></li>
+<li><code><a title="sre.test.test_products.TestProduct.test_mixed_atoms" href="#sre.test.test_products.TestProduct.test_mixed_atoms">test_mixed_atoms</a></code></li>
+<li><code><a title="sre.test.test_products.TestProduct.test_star_atom" href="#sre.test.test_products.TestProduct.test_star_atom">test_star_atom</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

@@ -33,7 +33,7 @@ class Atom(ABC):
     &#34;&#34;&#34;
 
     @abstractmethod
-    def print(self):
+    def __repr__(self):
         pass
 
 
@@ -56,8 +56,8 @@ class StarAtom(Atom):
                 raise ValueError(&#34;Can only be alphanumeric.&#34;)
         return super().__new__(cls)
 
-    def print(self):
-        print(self.value)
+    def __repr__(self):
+        return (f&#34;StarAtom with {self.value}&#34;)
 
 
 class LetterAtom(Atom):
@@ -78,34 +78,58 @@ class LetterAtom(Atom):
 
         return super().__new__(cls)
 
-    def print(self):
-        print(self.value)
+    def __repr__(self):
+        return(f&#34;LetterAtom with {self.value}&#34;)
 
 
 class Product():
     &#34;&#34;&#34;
     A product is a concatenation (a list) of atoms.
     &#34;&#34;&#34;
-    def __init__(self, *args):
+    def __init__(self, atoms):
         &#34;&#34;&#34;
         TODO:
-            - Check that args are atoms
             - Make immutable
         &#34;&#34;&#34;
-        self.value = list(args)
+        self.value = list(atoms)
+
+    def __new__(cls, atoms):
+        &#34;&#34;&#34;
+        Only create a product from valid atoms.
+        &#34;&#34;&#34;
+        for atom in atoms:
+            if not isinstance(atom, Atom):
+                raise TypeError(&#34;You need to pass a valid atom!&#34;)
+
+        return super().__new__(cls)
+
+    def __repr__(self):
+        return(&#34;Product with:\n&#34;
+               f&#34;{self.value}&#34;)
 
 
 class SRE():
     &#34;&#34;&#34;
     An SRE is a set of products.
     &#34;&#34;&#34;
-    def __init__(self, *args):
+    def __init__(self, products):
         &#34;&#34;&#34;
         TODO:
-            - Check that args are products
             - Make immutable
         &#34;&#34;&#34;
-        self.value = set(args)</code></pre>
+        self.value = set(products)
+
+    def __new__(cls, products):
+        &#34;&#34;&#34;
+        Only create an SRE from valid products.
+        &#34;&#34;&#34;
+        for product in products:
+            if not isinstance(product, Product):
+                raise TypeError(&#34;You need to pass a valid product!&#34;)
+
+    def __repr__(self):
+        return (&#34;SRE made with:\n&#34;
+                f&#34;{self.value}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -132,7 +156,7 @@ class SRE():
     &#34;&#34;&#34;
 
     @abstractmethod
-    def print(self):
+    def __repr__(self):
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -144,23 +168,6 @@ class SRE():
 <li><a title="sre.models.LetterAtom" href="#sre.models.LetterAtom">LetterAtom</a></li>
 <li><a title="sre.models.StarAtom" href="#sre.models.StarAtom">StarAtom</a></li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="sre.models.Atom.print"><code class="name flex">
-<span>def <span class="ident">print</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def print(self):
-    pass</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 <dt id="sre.models.LetterAtom"><code class="flex name class">
 <span>class <span class="ident">LetterAtom</span></span>
@@ -190,40 +197,23 @@ def print(self):
 
         return super().__new__(cls)
 
-    def print(self):
-        print(self.value)</code></pre>
+    def __repr__(self):
+        return(f&#34;LetterAtom with {self.value}&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="sre.models.LetterAtom.print"><code class="name flex">
-<span>def <span class="ident">print</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def print(self):
-    print(self.value)</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 <dt id="sre.models.Product"><code class="flex name class">
 <span>class <span class="ident">Product</span></span>
-<span>(</span><span>*args)</span>
+<span>(</span><span>atoms)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A product is a concatenation (a list) of atoms.</p>
 <h2 id="todo">Todo</h2>
 <ul>
-<li>Check that args are atoms</li>
 <li>Make immutable</li>
 </ul></div>
 <details class="source">
@@ -234,24 +224,36 @@ def print(self):
     &#34;&#34;&#34;
     A product is a concatenation (a list) of atoms.
     &#34;&#34;&#34;
-    def __init__(self, *args):
+    def __init__(self, atoms):
         &#34;&#34;&#34;
         TODO:
-            - Check that args are atoms
             - Make immutable
         &#34;&#34;&#34;
-        self.value = list(args)</code></pre>
+        self.value = list(atoms)
+
+    def __new__(cls, atoms):
+        &#34;&#34;&#34;
+        Only create a product from valid atoms.
+        &#34;&#34;&#34;
+        for atom in atoms:
+            if not isinstance(atom, Atom):
+                raise TypeError(&#34;You need to pass a valid atom!&#34;)
+
+        return super().__new__(cls)
+
+    def __repr__(self):
+        return(&#34;Product with:\n&#34;
+               f&#34;{self.value}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="sre.models.SRE"><code class="flex name class">
 <span>class <span class="ident">SRE</span></span>
-<span>(</span><span>*args)</span>
+<span>(</span><span>products)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>An SRE is a set of products.</p>
 <h2 id="todo">Todo</h2>
 <ul>
-<li>Check that args are products</li>
 <li>Make immutable</li>
 </ul></div>
 <details class="source">
@@ -262,13 +264,24 @@ def print(self):
     &#34;&#34;&#34;
     An SRE is a set of products.
     &#34;&#34;&#34;
-    def __init__(self, *args):
+    def __init__(self, products):
         &#34;&#34;&#34;
         TODO:
-            - Check that args are products
             - Make immutable
         &#34;&#34;&#34;
-        self.value = set(args)</code></pre>
+        self.value = set(products)
+
+    def __new__(cls, products):
+        &#34;&#34;&#34;
+        Only create an SRE from valid products.
+        &#34;&#34;&#34;
+        for product in products:
+            if not isinstance(product, Product):
+                raise TypeError(&#34;You need to pass a valid product!&#34;)
+
+    def __repr__(self):
+        return (&#34;SRE made with:\n&#34;
+                f&#34;{self.value}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="sre.models.StarAtom"><code class="flex name class">
@@ -300,30 +313,14 @@ def print(self):
                 raise ValueError(&#34;Can only be alphanumeric.&#34;)
         return super().__new__(cls)
 
-    def print(self):
-        print(self.value)</code></pre>
+    def __repr__(self):
+        return (f&#34;StarAtom with {self.value}&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="sre.models.StarAtom.print"><code class="name flex">
-<span>def <span class="ident">print</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def print(self):
-    print(self.value)</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -343,15 +340,9 @@ def print(self):
 <ul>
 <li>
 <h4><code><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></code></h4>
-<ul class="">
-<li><code><a title="sre.models.Atom.print" href="#sre.models.Atom.print">print</a></code></li>
-</ul>
 </li>
 <li>
 <h4><code><a title="sre.models.LetterAtom" href="#sre.models.LetterAtom">LetterAtom</a></code></h4>
-<ul class="">
-<li><code><a title="sre.models.LetterAtom.print" href="#sre.models.LetterAtom.print">print</a></code></li>
-</ul>
 </li>
 <li>
 <h4><code><a title="sre.models.Product" href="#sre.models.Product">Product</a></code></h4>
@@ -361,9 +352,6 @@ def print(self):
 </li>
 <li>
 <h4><code><a title="sre.models.StarAtom" href="#sre.models.StarAtom">StarAtom</a></code></h4>
-<ul class="">
-<li><code><a title="sre.models.StarAtom.print" href="#sre.models.StarAtom.print">print</a></code></li>
-</ul>
 </li>
 </ul>
 </li>
