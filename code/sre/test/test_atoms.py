@@ -19,6 +19,13 @@ class TestStarAtom():
         e1 = StarAtom(letters=x)
         assert e1
 
+    @given(lists(characters(min_codepoint=97, max_codepoint=122)))
+    def test_naive_entailment_success(self, x):
+        e1 = StarAtom(letters=x)
+        e2 = StarAtom(letters=x)
+
+        assert e1.entails(e2) & e2.entails(e1)
+
 
 class TestLetterAtom():
     def test_creation(self):
@@ -29,3 +36,10 @@ class TestLetterAtom():
     def test_single_letter(self, x):
         e1 = LetterAtom(letter=x)
         assert e1
+
+    @given(characters(min_codepoint=97, max_codepoint=122))
+    def test_naive_entailment_success(self, x):
+        e1 = LetterAtom(letter=x)
+        e2 = LetterAtom(letter=x)
+
+        assert e1.entails(e2) & e2.entails(e1)

@@ -19,6 +19,19 @@ class StarAtom(Atom):
         super().__init__()
         self.value = set(letters)
 
+    def entails(self, atom):
+        """
+        Input:
+            Some atom
+        Output:
+            True if current atom (self) is a subset of input atom.
+            False otherwise.
+        """
+        if not isinstance(atom, Atom):
+            raise TypeError("You can only check if an atom"
+                            " entails another atom!")
+        return set(self.value).issubset(set(atom.value))
+
     def __new__(cls, letters):
         """
         Only create an atom if all letters are alphanumeric.
@@ -40,7 +53,21 @@ class LetterAtom(Atom):
     """
     def __init__(self, letter):
         super().__init__()
-        self.value = str(letter)
+        self.value = set(str(letter))
+
+    def entails(self, atom):
+        """
+        Input:
+            Some atom
+        Output:
+            True if current atom's letter is a subset of
+                 the input atom's letters.
+            False otherwise.
+        """
+        if not isinstance(atom, Atom):
+            raise TypeError("You can only check if an atom"
+                            " entails another atom!")
+        return set(self.value).issubset(set(atom.value))
 
     def __new__(cls, letter):
         """
