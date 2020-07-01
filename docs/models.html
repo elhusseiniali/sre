@@ -45,6 +45,19 @@ class StarAtom(Atom):
         super().__init__()
         self.value = set(letters)
 
+    def entails(self, atom):
+        &#34;&#34;&#34;
+        Input:
+            Some atom
+        Output:
+            True if current atom (self) is a subset of input atom.
+            False otherwise.
+        &#34;&#34;&#34;
+        if not isinstance(atom, Atom):
+            raise TypeError(&#34;You can only check if an atom&#34;
+                            &#34; entails another atom!&#34;)
+        return set(self.value).issubset(set(atom.value))
+
     def __new__(cls, letters):
         &#34;&#34;&#34;
         Only create an atom if all letters are alphanumeric.
@@ -66,7 +79,21 @@ class LetterAtom(Atom):
     &#34;&#34;&#34;
     def __init__(self, letter):
         super().__init__()
-        self.value = str(letter)
+        self.value = set(str(letter))
+
+    def entails(self, atom):
+        &#34;&#34;&#34;
+        Input:
+            Some atom
+        Output:
+            True if current atom&#39;s letter is a subset of
+                 the input atom&#39;s letters.
+            False otherwise.
+        &#34;&#34;&#34;
+        if not isinstance(atom, Atom):
+            raise TypeError(&#34;You can only check if an atom&#34;
+                            &#34; entails another atom!&#34;)
+        return set(self.value).issubset(set(atom.value))
 
     def __new__(cls, letter):
         &#34;&#34;&#34;
@@ -185,7 +212,21 @@ class SRE():
     &#34;&#34;&#34;
     def __init__(self, letter):
         super().__init__()
-        self.value = str(letter)
+        self.value = set(str(letter))
+
+    def entails(self, atom):
+        &#34;&#34;&#34;
+        Input:
+            Some atom
+        Output:
+            True if current atom&#39;s letter is a subset of
+                 the input atom&#39;s letters.
+            False otherwise.
+        &#34;&#34;&#34;
+        if not isinstance(atom, Atom):
+            raise TypeError(&#34;You can only check if an atom&#34;
+                            &#34; entails another atom!&#34;)
+        return set(self.value).issubset(set(atom.value))
 
     def __new__(cls, letter):
         &#34;&#34;&#34;
@@ -205,6 +246,38 @@ class SRE():
 <li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.models.LetterAtom.entails"><code class="name flex">
+<span>def <span class="ident">entails</span></span>(<span>self, atom)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="input">Input</h2>
+<p>Some atom</p>
+<h2 id="output">Output</h2>
+<p>True if current atom's letter is a subset of
+the input atom's letters.
+False otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def entails(self, atom):
+    &#34;&#34;&#34;
+    Input:
+        Some atom
+    Output:
+        True if current atom&#39;s letter is a subset of
+             the input atom&#39;s letters.
+        False otherwise.
+    &#34;&#34;&#34;
+    if not isinstance(atom, Atom):
+        raise TypeError(&#34;You can only check if an atom&#34;
+                        &#34; entails another atom!&#34;)
+    return set(self.value).issubset(set(atom.value))</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="sre.models.Product"><code class="flex name class">
 <span>class <span class="ident">Product</span></span>
@@ -302,6 +375,19 @@ class SRE():
         super().__init__()
         self.value = set(letters)
 
+    def entails(self, atom):
+        &#34;&#34;&#34;
+        Input:
+            Some atom
+        Output:
+            True if current atom (self) is a subset of input atom.
+            False otherwise.
+        &#34;&#34;&#34;
+        if not isinstance(atom, Atom):
+            raise TypeError(&#34;You can only check if an atom&#34;
+                            &#34; entails another atom!&#34;)
+        return set(self.value).issubset(set(atom.value))
+
     def __new__(cls, letters):
         &#34;&#34;&#34;
         Only create an atom if all letters are alphanumeric.
@@ -321,6 +407,36 @@ class SRE():
 <li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.models.StarAtom.entails"><code class="name flex">
+<span>def <span class="ident">entails</span></span>(<span>self, atom)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="input">Input</h2>
+<p>Some atom</p>
+<h2 id="output">Output</h2>
+<p>True if current atom (self) is a subset of input atom.
+False otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def entails(self, atom):
+    &#34;&#34;&#34;
+    Input:
+        Some atom
+    Output:
+        True if current atom (self) is a subset of input atom.
+        False otherwise.
+    &#34;&#34;&#34;
+    if not isinstance(atom, Atom):
+        raise TypeError(&#34;You can only check if an atom&#34;
+                        &#34; entails another atom!&#34;)
+    return set(self.value).issubset(set(atom.value))</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -343,6 +459,9 @@ class SRE():
 </li>
 <li>
 <h4><code><a title="sre.models.LetterAtom" href="#sre.models.LetterAtom">LetterAtom</a></code></h4>
+<ul class="">
+<li><code><a title="sre.models.LetterAtom.entails" href="#sre.models.LetterAtom.entails">entails</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="sre.models.Product" href="#sre.models.Product">Product</a></code></h4>
@@ -352,6 +471,9 @@ class SRE():
 </li>
 <li>
 <h4><code><a title="sre.models.StarAtom" href="#sre.models.StarAtom">StarAtom</a></code></h4>
+<ul class="">
+<li><code><a title="sre.models.StarAtom.entails" href="#sre.models.StarAtom.entails">entails</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
