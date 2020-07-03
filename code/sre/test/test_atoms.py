@@ -73,10 +73,6 @@ class TestLetterAtom():
     @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=2))
     @pytest.mark.xfail(raises=TypeError)
     def test_create_with_more_than_one_good_message(self, x):
-        """
-        If min_size is not 2: the constructor raises a TypeError when given
-        an empty string. See issue #1.
-        """
         e1 = LetterAtom(*x)
         e1
 

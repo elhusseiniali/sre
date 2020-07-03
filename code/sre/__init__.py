@@ -1,3 +1,3 @@
 import re
 
-ALLOWED_MESSAGES = re.compile('[a-z]+[0-9]*')
+ALLOWED_MESSAGES = re.compile('([a-z]+[0-9]*)*')
