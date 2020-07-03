@@ -6,10 +6,7 @@ from sre.models import StarAtom, LetterAtom
 from hypothesis import given
 from hypothesis.strategies import from_regex, lists
 
-import yaml
-
-config = yaml.safe_load(open('sre/config.yml'))
-PATTERN = config['allowed_messages']['pattern']
+from sre import ALLOWED_MESSAGES
 
 
 class TestBaseAtom():
@@ -33,17 +30,17 @@ class TestStarAtom():
         e1 = StarAtom(*['a', 'b', 'c'])
         assert e1
 
-    @given(from_regex(PATTERN, fullmatch=True))
+    @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_single_letter(self, x):
         e1 = StarAtom(x)
         assert e1
 
-    @given(lists(from_regex(PATTERN, fullmatch=True)))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
     def test_list_of_letters(self, x):
         e1 = StarAtom(*x)
         assert e1
 
-    @given(lists(from_regex(PATTERN, fullmatch=True)))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
     def test_naive_entailment_success(self, x):
         e1 = StarAtom(*x)
         e2 = StarAtom(*x)
@@ -56,12 +53,12 @@ class TestLetterAtom():
         e1 = LetterAtom(message='a')
         assert e1
 
-    @given(from_regex(PATTERN, fullmatch=True))
+    @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_single_letter(self, x):
         e1 = LetterAtom(message=x)
         assert e1
 
-    @given(from_regex(PATTERN, fullmatch=True))
+    @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_naive_entailment_success(self, x):
         e1 = LetterAtom(message=x)
         e2 = LetterAtom(message=x)

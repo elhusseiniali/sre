@@ -1,10 +1,7 @@
 from abc import ABC, abstractmethod
 import yaml
-import re
 
-config = yaml.safe_load(open('sre/config.yml'))
-PATTERN = config['allowed_messages']['pattern']
-ALLOWED_MESSAGES = re.compile(PATTERN)
+from sre import ALLOWED_MESSAGES
 
 
 class Atom(ABC):
