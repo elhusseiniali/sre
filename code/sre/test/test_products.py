@@ -12,23 +12,23 @@ class TestProduct():
     def test_star_atom(self, x):
         e1 = StarAtom(*x)
 
-        p = Product([e1])
+        p = Product(e1)
         assert p
 
     @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_letter_atom(self, x):
         e1 = LetterAtom(x)
 
-        p = Product([e1])
+        p = Product(e1)
         assert p
 
     @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
            from_regex(ALLOWED_MESSAGES, fullmatch=True))
-    def test_mixed_atoms(self, x, y):
+    def test_two_mixed_atoms(self, x, y):
         e1 = StarAtom(*x)
         e2 = LetterAtom(y)
 
-        p = Product([e1, e2])
+        p = Product(e1, e2)
         assert p
 
 

@@ -77,14 +77,14 @@ class Product():
     """
     A product is a concatenation (a list) of atoms.
     """
-    def __init__(self, atoms):
+    def __init__(self, *atoms):
         """
         TODO:
             - Make immutable
         """
         self.value = list(atoms)
 
-    def __new__(cls, atoms):
+    def __new__(cls, *atoms):
         """
         Only create a product from valid atoms.
         """
