@@ -1,4 +1,10 @@
 from abc import ABC, abstractmethod
+import yaml
+import re
+
+config = yaml.safe_load(open('sre/config.yml'))
+PATTERN = config['allowed_messages']['pattern']
+ALLOWED_MESSAGES = re.compile(PATTERN)
 
 
 class Atom(ABC):
@@ -39,8 +45,10 @@ class StarAtom(Atom):
             - Add better check than the placeholder
         """
         for message in messages:
-            if message == '%':
-                raise ValueError("Can only be alphanumeric.")
+            if not ALLOWED_MESSAGES.match(message):
+                raise ValueError("Message has to start with a lower-case "
+                                 "letter, and it can be followed by "
+                                 "a number.")
         return super().__new__(cls)
 
     def __repr__(self):
@@ -51,17 +59,17 @@ class LetterAtom(Atom):
     """
     A letter-atom is an atom of the form a+Ɛ.
     """
-    def __init__(self, letter):
+    def __init__(self, message):
         super().__init__()
-        self.value = set(str(letter))
+        self.value = set(str(message))
 
-    def __new__(cls, letter):
+    def __new__(cls, message):
         """
-        Only create an atom if it is made from a single letter.
+        Only create an atom if it is made from a single message.
         """
-        if not len(letter) == 1:
+        if not ALLOWED_MESSAGES.match(message):
             raise TypeError("This is a letter atom."
-                            + " You can only have one letter!!")
+                            + " You can only have one message!!")
 
         return super().__new__(cls)
 
