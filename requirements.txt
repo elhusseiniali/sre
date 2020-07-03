@@ -1,4 +1,4 @@
 hypothesis
 pdoc3
-yaml
+pyyaml
 re
