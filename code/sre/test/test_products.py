@@ -1,30 +1,32 @@
 from sre.models import StarAtom, LetterAtom
 from sre.models import Product
 
+from sre import ALLOWED_MESSAGES
+
 from hypothesis import given
-from hypothesis.strategies import characters, lists
+from hypothesis.strategies import from_regex, lists
 
 
 class TestProduct():
-    @given(lists(characters(min_codepoint=97, max_codepoint=122)))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
     def test_star_atom(self, x):
-        e1 = StarAtom(x)
+        e1 = StarAtom(*x)
 
         p = Product([e1])
         assert p
 
-    @given(characters(min_codepoint=97, max_codepoint=122))
+    @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_letter_atom(self, x):
-        e1 = LetterAtom(letter=x)
+        e1 = LetterAtom(x)
 
         p = Product([e1])
         assert p
 
-    @given(lists(characters(min_codepoint=97, max_codepoint=122)),
-           characters(min_codepoint=97, max_codepoint=122))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
+           from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_mixed_atoms(self, x, y):
         e1 = StarAtom(*x)
-        e2 = LetterAtom(letter=y)
+        e2 = LetterAtom(y)
 
         p = Product([e1, e2])
         assert p
