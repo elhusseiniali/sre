@@ -1,2 +1,4 @@
 hypothesis
 pdoc3
+yaml
+re
