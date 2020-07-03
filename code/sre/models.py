@@ -95,7 +95,8 @@ class Product():
         Only create a product from valid atoms.
         """
         for atom in atoms:
-            if not isinstance(atom, Atom):
+            if (not isinstance(atom, Atom)
+               and not isinstance(atom, Product)):
                 raise TypeError("You need to pass a valid atom!")
 
         return super().__new__(cls)
