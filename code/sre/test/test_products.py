@@ -8,7 +8,7 @@ from hypothesis.strategies import characters, lists
 class TestProduct():
     @given(lists(characters(min_codepoint=97, max_codepoint=122)))
     def test_star_atom(self, x):
-        e1 = StarAtom(letters=x)
+        e1 = StarAtom(x)
 
         p = Product([e1])
         assert p
@@ -23,14 +23,11 @@ class TestProduct():
     @given(lists(characters(min_codepoint=97, max_codepoint=122)),
            characters(min_codepoint=97, max_codepoint=122))
     def test_mixed_atoms(self, x, y):
-        e1 = StarAtom(letters=x)
+        e1 = StarAtom(*x)
         e2 = LetterAtom(letter=y)
 
         p = Product([e1, e2])
         assert p
-
-
-
 
 
 '''Some suggestions for more entailment tests:

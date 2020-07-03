@@ -10,15 +10,6 @@ class Atom(ABC):
     def __repr__(self):
         pass
 
-
-class StarAtom(Atom):
-    """
-    A star atom is an atom of the form (p1 + ... + pn)*
-    """
-    def __init__(self, letters):
-        super().__init__()
-        self.value = set(letters)
-
     def entails(self, atom):
         """
         Input:
@@ -32,14 +23,23 @@ class StarAtom(Atom):
                             " entails another atom!")
         return set(self.value).issubset(set(atom.value))
 
-    def __new__(cls, letters):
+
+class StarAtom(Atom):
+    """
+    A star atom is an atom of the form (p1 + ... + pn)*
+    """
+    def __init__(self, *messages):
+        super().__init__()
+        self.value = set(str(message) for message in messages)
+
+    def __new__(cls, *messages):
         """
-        Only create an atom if all letters are alphanumeric.
+        Only create an atom if all messages are alphanumeric.
         TODO:
             - Add better check than the placeholder
         """
-        for letter in letters:
-            if letter == '%':
+        for message in messages:
+            if message == '%':
                 raise ValueError("Can only be alphanumeric.")
         return super().__new__(cls)
 
@@ -54,20 +54,6 @@ class LetterAtom(Atom):
     def __init__(self, letter):
         super().__init__()
         self.value = set(str(letter))
-
-    def entails(self, atom):
-        """
-        Input:
-            Some atom
-        Output:
-            True if current atom's letter is a subset of
-                 the input atom's letters.
-            False otherwise.
-        """
-        if not isinstance(atom, Atom):
-            raise TypeError("You can only check if an atom"
-                            " entails another atom!")
-        return set(self.value).issubset(set(atom.value))
 
     def __new__(cls, letter):
         """
