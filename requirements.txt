@@ -1,4 +1,4 @@
 hypothesis
 pdoc3
-PyYAML-5.3.1
+PyYAML==5.3.1
 re
