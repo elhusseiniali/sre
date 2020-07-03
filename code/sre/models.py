@@ -59,13 +59,19 @@ class LetterAtom(Atom):
         super().__init__()
         self.value = set(str(message))
 
-    def __new__(cls, message):
+    def __new__(cls, message, *args):
         """
-        Only create an atom if it is made from a single message.
+        Only create an atom if it is made from a single allowed message.
         """
+        if not len(args) == 0:
+            raise TypeError("You can only pass a single message!")
+
+        if not isinstance(message, str):
+            raise TypeError("You can only pass a string!")
+
         if not ALLOWED_MESSAGES.match(message):
-            raise TypeError("This is a letter atom."
-                            + " You can only have one message!!")
+            raise ValueError("You can only pass an allowed message!"
+                             + " See docs for help.")
 
         return super().__new__(cls)
 
