@@ -128,6 +128,8 @@ class SRE():
             if not isinstance(product, Product):
                 raise TypeError("You need to pass a valid product!")
 
+        return super().__new__(cls)
+
     def __repr__(self):
         return ("SRE made with:\n"
                 f"{self.value}")

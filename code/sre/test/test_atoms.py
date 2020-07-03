@@ -1,7 +1,20 @@
+import pytest
+
+from sre.models import Atom
 from sre.models import StarAtom, LetterAtom
 
 from hypothesis import given
 from hypothesis.strategies import characters, lists
+
+
+class TestBaseAtom():
+    @pytest.mark.xfail(raises=TypeError)
+    def test_creation_fails(self):
+        """
+        This should throw a TypeError exception, because we cannot instantiate
+        an abstract class.
+        """
+        a = Atom()
 
 
 class TestStarAtom():
