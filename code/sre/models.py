@@ -36,6 +36,11 @@ class Atom(ABC):
 class StarAtom(Atom):
     """
     A star atom is an atom of the form (p1 + ... + pn)*
+    Usage:
+        messages: (two options)
+            i. either StarAtom(message1, message2, etc...)
+            ii. or StarAtom(set/list/tuple_of_messages)
+            Check test cases for examples.
     """
     def __new__(cls, *messages):
         """

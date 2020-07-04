@@ -4,7 +4,7 @@ from sre.models import Atom
 from sre.models import StarAtom, LetterAtom
 
 from hypothesis import given
-from hypothesis.strategies import from_regex, lists
+from hypothesis.strategies import from_regex, lists, sets
 
 from sre import ALLOWED_MESSAGES
 
@@ -35,7 +35,7 @@ class TestStarAtom():
         e1
 
     def test_list_creation(self):
-        # Use * if passing a list
+        # Use * if passing a list, set, or tuple
         e1 = StarAtom(*['a', 'b', 'c'])
         assert e1
 
@@ -61,6 +61,58 @@ class TestStarAtom():
         e2 = StarAtom(*x)
 
         assert e1.contains(e2) & e2.contains(e1)
+
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    def test_empty_entailment_success(self, x):
+        e1 = StarAtom(*x)
+        e2 = StarAtom()
+
+        assert e1.contains(e2)
+
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    def test_empty_entailment_failure(self, x):
+        e1 = StarAtom(*x)
+        e2 = StarAtom()
+
+        assert not e2.contains(e1)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    def test_entailment_success(self, x, y):
+        """
+        Input:
+            x, y: lists of allowed messages
+
+        e1 = StarAtom(x)
+        e2 = StarAtom(x UNION y)
+
+        Output:
+            True (e2 contains e1)
+        """
+        z = set.union(x, y)
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*z)
+
+        assert e2.contains(e1)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=2))
+    def test_entailment_failure(self, x, y):
+        """
+        Input:
+            x, y: lists of allowed messages
+
+        e1 = StarAtom(x)
+        e2 = StarAtom(x UNION y)
+
+        Output:
+            False (e1 does not contain e2)
+        """
+        z = set.union(x, y)
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*z)
+
+        assert not e1.contains(e2)
 
 
 class TestLetterAtom():
