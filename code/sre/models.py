@@ -9,9 +9,9 @@ class Atom(ABC):
     """
     def __init__(self, *messages):
         if messages:
-            self.value = set(str(message) for message in messages)
+            self.messages = set(str(message) for message in messages)
         else:
-            self.value = set()
+            self.messages = set()
 
     @abstractmethod
     def __repr__(self):
@@ -29,8 +29,8 @@ class Atom(ABC):
         """
         if not isinstance(atom, Atom):
             raise TypeError("You can only check if an atom"
-                            " entails another atom!")
-        return set(atom.value).issubset(set(self.value))
+                            " contains another atom!")
+        return set(atom.messages).issubset(set(self.messages))
 
 
 class StarAtom(Atom):
@@ -56,7 +56,7 @@ class StarAtom(Atom):
         return super().__new__(cls)
 
     def __repr__(self):
-        return (f"StarAtom with {self.value}")
+        return (f"StarAtom with {self.messages}")
 
 
 class LetterAtom(Atom):
@@ -89,7 +89,7 @@ class LetterAtom(Atom):
         return super().__new__(cls)
 
     def __repr__(self):
-        return(f"LetterAtom with {self.value}")
+        return(f"LetterAtom with {self.messages}")
 
 
 class Product():
@@ -101,7 +101,7 @@ class Product():
         TODO:
             - Make immutable
         """
-        self.value = list(atoms)
+        self.messages = list(atoms)
 
     def __new__(cls, *atoms):
         """
@@ -116,7 +116,7 @@ class Product():
 
     def __repr__(self):
         return("Product with:\n"
-               f"{self.value}")
+               f"{self.messages}")
 
 
 class SRE():
@@ -128,7 +128,7 @@ class SRE():
         TODO:
             - Make immutable
         """
-        self.value = set(products)
+        self.messages = set(products)
 
     def __new__(cls, products):
         """
@@ -142,4 +142,4 @@ class SRE():
 
     def __repr__(self):
         return ("SRE made with:\n"
-                f"{self.value}")
+                f"{self.messages}")
