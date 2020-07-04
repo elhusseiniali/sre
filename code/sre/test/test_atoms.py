@@ -25,6 +25,16 @@ class TestStarAtom():
         e1 = StarAtom('a', 'b', 'c')
         assert e1
 
+    @pytest.mark.xfail(raises=TypeError)
+    def test_empty_create(self):
+        e1 = StarAtom()
+        e1
+
+    @pytest.mark.xfail(raises=TypeError)
+    def test_empty_string_create(self):
+        e1 = StarAtom("")
+        e1
+
     def test_list_creation(self):
         # Use * if passing a list
         e1 = StarAtom(*['a', 'b', 'c'])
@@ -58,6 +68,16 @@ class TestLetterAtom():
     def test_creation(self):
         e1 = LetterAtom('a')
         assert e1
+
+    @pytest.mark.xfail(raises=TypeError)
+    def test_empty_create(self):
+        e1 = LetterAtom()
+        e1
+
+    @pytest.mark.xfail(raises=TypeError)
+    def test_empty_string_create(self):
+        e1 = LetterAtom("")
+        e1
 
     @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_single_letter(self, x):
