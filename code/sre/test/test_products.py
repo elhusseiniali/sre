@@ -8,7 +8,7 @@ from hypothesis.strategies import from_regex, lists
 
 
 class TestProduct():
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
     def test_star_atom(self, x):
         e1 = StarAtom(*x)
 
@@ -22,7 +22,7 @@ class TestProduct():
         p = Product(e1)
         assert p
 
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1),
            from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_two_mixed_atoms(self, x, y):
         e1 = StarAtom(*x)

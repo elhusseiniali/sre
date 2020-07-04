@@ -7,6 +7,9 @@ class Atom(ABC):
     """
     Base (Abstract) Atom class.
     """
+    def __init__(self, *messages):
+        super().__init__()
+        self.value = set(str(message) for message in messages)
 
     @abstractmethod
     def __repr__(self):
@@ -30,17 +33,19 @@ class StarAtom(Atom):
     """
     A star atom is an atom of the form (p1 + ... + pn)*
     """
-    def __init__(self, *messages):
-        super().__init__()
-        self.value = set(str(message) for message in messages)
-
     def __new__(cls, *messages):
         """
         Only create an atom if all messages are alphanumeric.
         TODO:
             - Add better check than the placeholder
         """
+        if not messages:
+            raise TypeError("You need to pass at least one message!")
+
         for message in messages:
+            if not message:
+                raise TypeError("You can't pass an empty string!")
+
             if not ALLOWED_MESSAGES.match(message):
                 raise ValueError("Message has to start with a lower-case "
                                  "letter, and it can be followed by "
@@ -55,27 +60,24 @@ class LetterAtom(Atom):
     """
     A letter-atom is an atom of the form a+Ɛ.
     """
-    def __init__(self, *message):
-        super().__init__()
-        self.value = str(message[0])
 
-    def __new__(cls, *message):
+    def __new__(cls, *messages):
         """
         Only create an atom if it is made from a single allowed message.
         """
-        if not message:
+        if not messages:
             raise TypeError("You need to pass at least one message!")
 
-        if not message[0]:
+        if not messages[0]:
             raise TypeError("You can't pass an empty string!")
 
-        if len(message) > 1:
+        if len(messages) > 1:
             raise TypeError("You can only pass a single message!")
 
-        if not isinstance(message[0], str):
+        if not isinstance(messages[0], str):
             raise TypeError("You can only pass a string!")
 
-        if not ALLOWED_MESSAGES.match(message[0]):
+        if not ALLOWED_MESSAGES.match(messages[0]):
             raise ValueError("You can only pass an allowed message!"
                              + " See docs for help.")
 

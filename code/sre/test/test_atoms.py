@@ -35,18 +35,18 @@ class TestStarAtom():
         e1 = StarAtom(x)
         assert e1
 
-    @given(lists(from_regex("[0-9]+", fullmatch=True)))
+    @given(lists(from_regex("[0-9]+", fullmatch=True), min_size=1))
     @pytest.mark.xfail(raises=ValueError)
     def test_creation_failure(self, x):
         e1 = StarAtom(*x)
         e1
 
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
     def test_list_of_letters(self, x):
         e1 = StarAtom(*x)
         assert e1
 
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
     def test_naive_entailment_success(self, x):
         e1 = StarAtom(*x)
         e2 = StarAtom(*x)
