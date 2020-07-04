@@ -55,21 +55,27 @@ class LetterAtom(Atom):
     """
     A letter-atom is an atom of the form a+Ɛ.
     """
-    def __init__(self, message):
+    def __init__(self, *message):
         super().__init__()
-        self.value = set(str(message))
+        self.value = str(message[0])
 
-    def __new__(cls, message, *args):
+    def __new__(cls, *message):
         """
         Only create an atom if it is made from a single allowed message.
         """
-        if not len(args) == 0:
+        if not message:
+            raise TypeError("You need to pass at least one message!")
+
+        if not message[0]:
+            raise TypeError("You can't pass an empty string!")
+
+        if len(message) > 1:
             raise TypeError("You can only pass a single message!")
 
-        if not isinstance(message, str):
+        if not isinstance(message[0], str):
             raise TypeError("You can only pass a string!")
 
-        if not ALLOWED_MESSAGES.match(message):
+        if not ALLOWED_MESSAGES.match(message[0]):
             raise ValueError("You can only pass an allowed message!"
                              + " See docs for help.")
 
