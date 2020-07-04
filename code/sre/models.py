@@ -8,25 +8,29 @@ class Atom(ABC):
     Base (Abstract) Atom class.
     """
     def __init__(self, *messages):
-        super().__init__()
-        self.value = set(str(message) for message in messages)
+        if messages:
+            self.value = set(str(message) for message in messages)
+        else:
+            self.value = set()
 
     @abstractmethod
     def __repr__(self):
         pass
 
-    def entails(self, atom):
+    def contains(self, atom):
         """
+        This is the symmetric function to Entailment as defined in Lemma 4.1.
+        in [ACBJ04].
         Input:
             Some atom
         Output:
-            True if current atom (self) is a subset of input atom.
+            True if input atom is a subset of (self) atom.
             False otherwise.
         """
         if not isinstance(atom, Atom):
             raise TypeError("You can only check if an atom"
                             " entails another atom!")
-        return set(self.value).issubset(set(atom.value))
+        return set(atom.value).issubset(set(self.value))
 
 
 class StarAtom(Atom):
@@ -35,21 +39,20 @@ class StarAtom(Atom):
     """
     def __new__(cls, *messages):
         """
-        Only create an atom if all messages are alphanumeric.
-        TODO:
-            - Add better check than the placeholder
+        Only create an atom if all messages are valid.
+        If no messages are passed, create an atom with
+        the empty set (i.e. the language with one word,
+        the empty sequence).
         """
-        if not messages:
-            raise TypeError("You need to pass at least one message!")
+        if messages:
+            for message in messages:
+                if not message:
+                    raise TypeError("You can't pass an empty string!")
 
-        for message in messages:
-            if not message:
-                raise TypeError("You can't pass an empty string!")
-
-            if not ALLOWED_MESSAGES.match(message):
-                raise ValueError("Message has to start with a lower-case "
-                                 "letter, and it can be followed by "
-                                 "a number.")
+                if not ALLOWED_MESSAGES.match(message):
+                    raise ValueError("Message has to start with a lower-case "
+                                     "letter, and it can be followed by "
+                                     "a number.")
         return super().__new__(cls)
 
     def __repr__(self):
@@ -63,23 +66,25 @@ class LetterAtom(Atom):
 
     def __new__(cls, *messages):
         """
-        Only create an atom if it is made from a single allowed message.
+        Only create an atom if it is made from a single
+        allowed message.
+        If no messages are passed, create an atom with
+        the empty set (i.e. the language with one word,
+        the empty sequence).
         """
-        if not messages:
-            raise TypeError("You need to pass at least one message!")
+        if messages:
+            if not messages[0]:
+                raise TypeError("You can't pass an empty string!")
 
-        if not messages[0]:
-            raise TypeError("You can't pass an empty string!")
+            if len(messages) > 1:
+                raise TypeError("You can only pass a single message!")
 
-        if len(messages) > 1:
-            raise TypeError("You can only pass a single message!")
+            if not isinstance(messages[0], str):
+                raise TypeError("You can only pass a string!")
 
-        if not isinstance(messages[0], str):
-            raise TypeError("You can only pass a string!")
-
-        if not ALLOWED_MESSAGES.match(messages[0]):
-            raise ValueError("You can only pass an allowed message!"
-                             + " See docs for help.")
+            if not ALLOWED_MESSAGES.match(messages[0]):
+                raise ValueError("You can only pass an allowed message!"
+                                 + " See docs for help.")
 
         return super().__new__(cls)
 

@@ -25,10 +25,9 @@ class TestStarAtom():
         e1 = StarAtom('a', 'b', 'c')
         assert e1
 
-    @pytest.mark.xfail(raises=TypeError)
     def test_empty_create(self):
         e1 = StarAtom()
-        e1
+        assert e1
 
     @pytest.mark.xfail(raises=TypeError)
     def test_empty_string_create(self):
@@ -61,7 +60,7 @@ class TestStarAtom():
         e1 = StarAtom(*x)
         e2 = StarAtom(*x)
 
-        assert e1.entails(e2) & e2.entails(e1)
+        assert e1.contains(e2) & e2.contains(e1)
 
 
 class TestLetterAtom():
@@ -69,10 +68,9 @@ class TestLetterAtom():
         e1 = LetterAtom('a')
         assert e1
 
-    @pytest.mark.xfail(raises=TypeError)
     def test_empty_create(self):
         e1 = LetterAtom()
-        e1
+        assert e1
 
     @pytest.mark.xfail(raises=TypeError)
     def test_empty_string_create(self):
@@ -107,4 +105,4 @@ class TestLetterAtom():
         e1 = LetterAtom(x)
         e2 = LetterAtom(x)
 
-        assert e1.entails(e2) & e2.entails(e1)
+        assert e1.contains(e2) & e2.contains(e1)
