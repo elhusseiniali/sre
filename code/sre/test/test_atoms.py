@@ -68,6 +68,7 @@ class TestLetterAtom():
         e1 = LetterAtom('a')
         assert e1
 
+    @pytest.mark.xfail(raises=TypeError)
     def test_empty_create(self):
         e1 = LetterAtom()
         assert e1

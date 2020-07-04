@@ -68,23 +68,24 @@ class LetterAtom(Atom):
         """
         Only create an atom if it is made from a single
         allowed message.
-        If no messages are passed, create an atom with
-        the empty set (i.e. the language with one word,
-        the empty sequence).
+        A message must be passed, because a LetterAtom
+        takes messages as arguments (as opposed to a sequence).
         """
-        if messages:
-            if not messages[0]:
-                raise TypeError("You can't pass an empty string!")
+        if not messages:
+            raise TypeError("You have to pass a message!")
 
-            if len(messages) > 1:
-                raise TypeError("You can only pass a single message!")
+        if not messages[0]:
+            raise TypeError("You can't pass an empty string!")
 
-            if not isinstance(messages[0], str):
-                raise TypeError("You can only pass a string!")
+        if len(messages) > 1:
+            raise TypeError("You can only pass a single message!")
 
-            if not ALLOWED_MESSAGES.match(messages[0]):
-                raise ValueError("You can only pass an allowed message!"
-                                 + " See docs for help.")
+        if not isinstance(messages[0], str):
+            raise TypeError("You can only pass a string!")
+
+        if not ALLOWED_MESSAGES.match(messages[0]):
+            raise ValueError("You can only pass an allowed message!"
+                             + " See docs for help.")
 
         return super().__new__(cls)
 
