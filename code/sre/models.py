@@ -51,6 +51,9 @@ class StarAtom(Atom):
         """
         if messages:
             for message in messages:
+                if message is None:
+                    raise TypeError("You can't pass None!")
+
                 if not message:
                     raise TypeError("You can't pass an empty string!")
 
@@ -79,6 +82,9 @@ class LetterAtom(Atom):
         if not messages:
             raise TypeError("You have to pass a message!")
 
+        if messages[0] is None:
+            raise TypeError("You can't pass None!")
+
         if not messages[0]:
             raise TypeError("You can't pass an empty string!")
 
@@ -102,21 +108,21 @@ class Product():
     """
     A product is a concatenation (a list) of atoms.
     """
-    def __init__(self, *atoms):
+    def __init__(self, *objects):
         """
         TODO:
             - Make immutable
         """
-        self.messages = list(atoms)
+        self.messages = list(objects)
 
-    def __new__(cls, *atoms):
+    def __new__(cls, *objects):
         """
-        Only create a product from valid atoms.
+        Only create a product from valid atoms or products.
         """
-        for atom in atoms:
-            if (not isinstance(atom, Atom)
-               and not isinstance(atom, Product)):
-                raise TypeError("You need to pass a valid atom!")
+        for object in objects:
+            if (not isinstance(object, Atom)
+               and not isinstance(object, Product)):
+                raise TypeError("You need to pass a valid atom or product!")
 
         return super().__new__(cls)
 
