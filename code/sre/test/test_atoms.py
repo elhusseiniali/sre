@@ -62,7 +62,7 @@ class TestStarAtom():
         e1 = StarAtom(x)
         assert e1
 
-    @given(lists(from_regex("[0-9]+", fullmatch=True), min_size=1))
+    @given(lists(from_regex("[0-9]+", fullmatch=True), min_size=0))
     @pytest.mark.xfail(raises=ValueError)
     def test_creation_failure(self, x):
         """
@@ -72,7 +72,7 @@ class TestStarAtom():
         e1 = StarAtom(*x)
         e1
 
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
     def test_list_of_letters(self, x):
         """
         Check that you can create a StarAtom using a list of allowed messages.
@@ -80,7 +80,7 @@ class TestStarAtom():
         e1 = StarAtom(*x)
         assert e1
 
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
     def test_naive_entailment_success(self, x):
         """
         Check that two StarAtoms, made from the same messages,
@@ -91,7 +91,7 @@ class TestStarAtom():
 
         assert e1.contains(e2) & e2.contains(e1)
 
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
     def test_empty_entailment_success(self, x):
         """
         Check that a StarAtom made with non-empty allowed messages contains
@@ -112,8 +112,8 @@ class TestStarAtom():
 
         assert not e2.contains(e1)
 
-    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1),
-           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
     def test_entailment_success(self, x, y):
         """
         Input:
@@ -131,7 +131,7 @@ class TestStarAtom():
 
         assert e2.contains(e1)
 
-    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1,
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
                 max_size=2),
            sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
     def test_entailment_failure(self, x, y):
