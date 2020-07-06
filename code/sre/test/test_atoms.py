@@ -137,7 +137,7 @@ class TestStarAtom():
     def test_entailment_failure(self, x, y):
         """
         Input:
-            x, y: lists of allowed messages
+            x, y: sets of allowed messages
 
         e1 = StarAtom(x)
         e2 = StarAtom(x UNION y)
