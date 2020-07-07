@@ -225,3 +225,19 @@ class TestLetterAtom():
         e2 = LetterAtom(x)
 
         assert e1.contains(e2) & e2.contains(e1)
+
+
+class TestMixedAtoms():
+    @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
+    def test_containment_failure(self, x):
+        e1 = LetterAtom(x)
+        e2 = StarAtom(x)
+
+        assert not e1.contains(e2) & e2.contains(e1)
+
+    @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
+    def test_empty_star_in_letter(self, x):
+        e1 = LetterAtom(x)
+        e2 = StarAtom()
+
+        assert e1.contains(e2)

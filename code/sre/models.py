@@ -26,10 +26,19 @@ class Atom(ABC):
         Output:
             True if input atom is a subset of (self) atom.
             False otherwise.
+        Note:
+            A StarAtom cannot be contained in a LetterAtom.
         """
         if not isinstance(atom, Atom):
             raise TypeError("You can only check if an atom"
                             " contains another atom!")
+        if (isinstance(self, LetterAtom)
+           and isinstance(atom, StarAtom)):
+            if atom.messages == set():
+                return True
+            else:
+                return False
+
         return set(atom.messages).issubset(set(self.messages))
 
 
