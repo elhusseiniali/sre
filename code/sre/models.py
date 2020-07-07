@@ -41,6 +41,11 @@ class Atom(ABC):
 
         return set(atom.messages).issubset(set(self.messages))
 
+    def __eq__(self, other):
+        if isinstance(self, type(other)):
+            return self.messages == other.messages
+        return False
+
 
 class StarAtom(Atom):
     """
@@ -116,7 +121,21 @@ class Product():
         TODO:
             - Make immutable
         """
-        self.messages = list(objects)
+        self.objects = []
+        for object in objects:
+            if isinstance(object, Product):
+                self.objects.append(object.objects)
+            else:
+                self.objects.append(object)
+
+    def contains(self, product):
+        e1 = self.objects[0]
+        e2 = product.objects[0]
+
+        p1 = self.objects[1:]
+        p2 = product.objects[1:]
+
+        return e1, e2, p1, p2
 
     def __new__(cls, *objects):
         """
@@ -129,9 +148,14 @@ class Product():
 
         return super().__new__(cls)
 
+    def __eq__(self, other):
+        if isinstance(self, type(other)):
+            return self.objects == other.objects
+        return False
+
     def __repr__(self):
         return("Product with:\n"
-               f"{self.messages}")
+               f"{self.objects}")
 
 
 class SRE():

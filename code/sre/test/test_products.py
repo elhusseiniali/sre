@@ -4,7 +4,9 @@ from sre.models import Product
 from sre import ALLOWED_MESSAGES
 
 from hypothesis import given
-from hypothesis.strategies import from_regex, lists
+from hypothesis.strategies import from_regex, lists, integers
+
+import pytest
 
 
 class TestProduct():
@@ -30,6 +32,12 @@ class TestProduct():
 
         p = Product(e1, e2)
         assert p
+
+    @given(lists(integers))
+    @pytest.mark.xfail(raises=TypeError)
+    def test_creation_from_bad_objects(self, x):
+        p = Product(*x)
+        p
 
 
 '''Some suggestions for more entailment tests:
