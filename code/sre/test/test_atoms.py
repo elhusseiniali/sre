@@ -37,7 +37,7 @@ class TestStarAtom():
         e1 = StarAtom()
         assert e1
 
-    @pytest.mark.xfail(raises=TypeError)
+    @pytest.mark.xfail(raises=ValueError)
     def test_empty_string_create_fail(self):
         """
         Check that we cannot create an object of type StarAtom
@@ -171,7 +171,7 @@ class TestLetterAtom():
         e1 = LetterAtom()
         assert e1
 
-    @pytest.mark.xfail(raises=TypeError)
+    @pytest.mark.xfail(raises=ValueError)
     def test_empty_string_create(self):
         """
         Check that we cannot create a LetterAtom with an empty string.

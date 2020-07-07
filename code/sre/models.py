@@ -54,9 +54,6 @@ class StarAtom(Atom):
                 if message is None:
                     raise TypeError("You can't pass None!")
 
-                if not message:
-                    raise TypeError("You can't pass an empty string!")
-
                 if not ALLOWED_MESSAGES.match(message):
                     raise ValueError("Message has to start with a lower-case "
                                      "letter, and it can be followed by "
@@ -84,9 +81,6 @@ class LetterAtom(Atom):
 
         if messages[0] is None:
             raise TypeError("You can't pass None!")
-
-        if not messages[0]:
-            raise TypeError("You can't pass an empty string!")
 
         if len(messages) > 1:
             raise TypeError("You can only pass a single message!")
