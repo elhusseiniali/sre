@@ -124,7 +124,8 @@ class Product():
         self.objects = []
         for object in objects:
             if isinstance(object, Product):
-                self.objects.append(object.objects)
+                for item in object.objects:
+                    self.objects.append(item)
             else:
                 self.objects.append(object)
 

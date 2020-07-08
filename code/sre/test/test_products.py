@@ -4,7 +4,7 @@ from sre.models import Product
 from sre import ALLOWED_MESSAGES
 
 from hypothesis import given
-from hypothesis.strategies import from_regex, lists, integers
+from hypothesis.strategies import from_regex, lists, integers, sets
 
 import pytest
 
@@ -38,6 +38,30 @@ class TestProduct():
     def test_creation_from_bad_objects(self, x):
         p = Product(*x)
         p
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    def test_create_from_product(self, x, y):
+        """
+        Check that a product made from products is a list of atoms (and not
+        a list of products and atoms).
+        """
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*y)
+
+        p1 = Product(e1)
+        p2 = Product(p1, e2)
+
+        """all_atom_messages = e1.messages.union(e2.messages)
+        all_product_items = []
+
+        for object in p2.objects:
+            for message in object.messages:
+                all_product_items.append(message)
+
+        assert all_atom_messages == set(all_product_items)"""
+
+        assert p2.objects == [e1, e2]
 
 
 '''Some suggestions for more entailment tests:
