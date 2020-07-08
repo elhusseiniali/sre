@@ -71,6 +71,20 @@ class TestProduct():
 
         assert p1.contains(p2) and p2.contains(p1)
 
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    def test_empty_containment_success(self, x):
+        p0 = Product()
+        p1 = Product(StarAtom(*x))
+
+        assert p1.contains(p0)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    def test_empty_containment_failure(self, x):
+        p0 = Product()
+        p1 = Product(StarAtom(*x))
+
+        assert not p0.contains(p1)
+
 
 '''Some suggestions for more entailment tests:
 Main interest is that it includes negative tests and non-trivial positive tests.
