@@ -63,6 +63,14 @@ class TestProduct():
 
         assert p2.objects == [e1, e2]
 
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    def test_containment_naive_success(self, x):
+        e1 = StarAtom(*x)
+        p1 = Product(e1)
+        p2 = Product(e1)
+
+        assert p1.contains(p2) and p2.contains(p1)
+
 
 '''Some suggestions for more entailment tests:
 Main interest is that it includes negative tests and non-trivial positive tests.

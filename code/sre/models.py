@@ -130,13 +130,44 @@ class Product():
                 self.objects.append(object)
 
     def contains(self, product):
+        if not isinstance(product, Product):
+            if isinstance(product, Atom):
+                product = Product(product)
+            else:
+                raise TypeError("You can only pass a product or an atom!")
+
+        if not product.objects:
+            # p contains epsilon
+            return True
+        if not self.objects:
+            # epsilon does not contain anything
+            return False
+
         e1 = self.objects[0]
         e2 = product.objects[0]
 
-        p1 = self.objects[1:]
-        p2 = product.objects[1:]
+        if (len(product.objects) > 1
+           and len(self.objects) > 1):
 
-        return e1, e2, p1, p2
+            p1 = Product(*self.objects[1:])
+            p2 = Product(*product.objects[1:])
+
+            print("First check")
+            print(e1, e2, self, p2)
+            if not e2.contains(e1) and p2.contains(self):
+                return True
+            print("Second check")
+            print(e1, e2, p1, p2)
+            if e1 == e2 and p2.contains(p1):
+                return True
+            print("Third check")
+            print(e1, e2, p1, product)
+            if e2.contains(e1) and product.contains(p1):
+                return True
+
+            return False
+        else:
+            return e2.contains(e1)
 
     def __new__(cls, *objects):
         """
