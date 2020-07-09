@@ -85,6 +85,15 @@ class TestProduct():
 
         assert not p0.contains(p1)
 
+    def test_containment_success(self):
+        e1 = StarAtom("start", "stop")
+        e2 = StarAtom("start")
+
+        p1 = Product(e1)
+        p2 = Product(e2)
+
+        assert p2.contains(p1)
+
 
 '''Some suggestions for more entailment tests:
 Main interest is that it includes negative tests and non-trivial positive tests.
