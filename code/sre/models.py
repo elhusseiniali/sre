@@ -34,14 +34,14 @@ class Atom(ABC):
                             " contains another atom!")
         if (isinstance(self, LetterAtom)
            and isinstance(atom, StarAtom)):
-            if atom.messages == set():
-                return True
-            else:
-                return False
-
-        return set(atom.messages).issubset(set(self.messages))
+            return atom.messages == set()
+        else:
+            return set(atom.messages).issubset(set(self.messages))
 
     def __eq__(self, other):
+        """
+        Semantic equality.
+        """
         if isinstance(self, type(other)):
             return self.messages == other.messages
         return False
@@ -139,7 +139,7 @@ class Product():
         if not product.objects:
             # p contains epsilon
             return True
-        if not self.objects:
+        elif not self.objects:
             # epsilon does not contain anything
             return False
 
@@ -181,6 +181,9 @@ class Product():
         return super().__new__(cls)
 
     def __eq__(self, other):
+        """
+        Structural equality.
+        """
         if isinstance(self, type(other)):
             return self.objects == other.objects
         return False

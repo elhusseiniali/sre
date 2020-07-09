@@ -117,7 +117,7 @@ class TestStarAtom():
     def test_entailment_success(self, x, y):
         """
         Input:
-            x, y: lists of allowed messages
+            x, y: sets of allowed messages
 
         e1 = StarAtom(x)
         e2 = StarAtom(x UNION y)
@@ -168,16 +168,14 @@ class TestLetterAtom():
         """
         Check that we cannot create a LetterAtom without passing a message.
         """
-        e1 = LetterAtom()
-        assert e1
+        LetterAtom()
 
     @pytest.mark.xfail(raises=ValueError)
     def test_empty_string_create(self):
         """
         Check that we cannot create a LetterAtom with an empty string.
         """
-        e1 = LetterAtom("")
-        e1
+        LetterAtom("")
 
     @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_single_letter(self, x):
@@ -194,8 +192,7 @@ class TestLetterAtom():
         Check that creation fails with a forbidden message.
         The pattern should be changed if ALLOWED_MESSAGES is changed.
         """
-        e1 = LetterAtom(x)
-        e1
+        LetterAtom(x)
 
     @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=2))
     @pytest.mark.xfail(raises=TypeError)
@@ -203,8 +200,7 @@ class TestLetterAtom():
         """
         Check that creation fails when more than one allowed message is passed.
         """
-        e1 = LetterAtom(*x)
-        e1
+        LetterAtom(*x)
 
     @given(lists(from_regex("[0-9]+", fullmatch=True), min_size=2))
     @pytest.mark.xfail(raises=TypeError)
@@ -212,8 +208,7 @@ class TestLetterAtom():
         """
         Check that creation fails when more than one bad message is passed.
         """
-        e1 = LetterAtom(*x)
-        e1
+        LetterAtom(*x)
 
     @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_naive_entailment_success(self, x):
@@ -233,7 +228,8 @@ class TestMixedAtoms():
         e1 = LetterAtom(x)
         e2 = StarAtom(x)
 
-        assert not e1.contains(e2) & e2.contains(e1)
+        assert not e1.contains(e2)
+        assert e2.contains(e1)
 
     @given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_empty_star_in_letter(self, x):

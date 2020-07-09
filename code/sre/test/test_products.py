@@ -24,7 +24,7 @@ class TestProduct():
         p = Product(e1)
         assert p
 
-    @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1),
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
            from_regex(ALLOWED_MESSAGES, fullmatch=True))
     def test_two_mixed_atoms(self, x, y):
         e1 = StarAtom(*x)
@@ -36,8 +36,7 @@ class TestProduct():
     @given(lists(integers))
     @pytest.mark.xfail(raises=TypeError)
     def test_creation_from_bad_objects(self, x):
-        p = Product(*x)
-        p
+        Product(*x)
 
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
            sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
@@ -69,20 +68,15 @@ class TestProduct():
         p1 = Product(e1)
         p2 = Product(e1)
 
-        assert p1.contains(p2) and p2.contains(p1)
+        assert p1.contains(p2)
+        assert p2.contains(p1)
 
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
-    def test_empty_containment_success(self, x):
+    def test_empty_containment(self, x):
         p0 = Product()
         p1 = Product(StarAtom(*x))
 
         assert p1.contains(p0)
-
-    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
-    def test_empty_containment_failure(self, x):
-        p0 = Product()
-        p1 = Product(StarAtom(*x))
-
         assert not p0.contains(p1)
 
     def test_containment_success(self):
@@ -99,7 +93,7 @@ class TestProduct():
     def test_entailment_success(self, x, y):
         """
         Input:
-            x, y: lists of allowed messages
+            x, y: sets of allowed messages
 
         e1 = StarAtom(x)
         e2 = StarAtom(x UNION y)
