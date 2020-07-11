@@ -110,6 +110,19 @@ class TestProduct():
 
         assert p2.contains(p1)
 
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
+           max_size=2),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
+    def test_entailment_failure(self, x, y):
+        z = set.union(x, y)
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*z)
+
+        p1 = Product(e1)
+        p2 = Product(e2)
+
+        assert not p1.contains(p2)
+
 
 '''Some suggestions for more entailment tests:
 Main interest is that it includes negative tests and non-trivial

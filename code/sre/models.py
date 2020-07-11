@@ -24,8 +24,8 @@ class Atom(ABC):
 
         Parameters
         ----------
-        atom : [type]
-            [description]
+        atom : [LetterAtom, StarAtom]
+            any valid Atom.
 
         Returns
         -------
