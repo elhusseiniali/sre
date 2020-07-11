@@ -44,25 +44,50 @@ class Atom(ABC):
         pass
 
     def contains(self, atom):
-        &#34;&#34;&#34;
-        This is the symmetric function to Entailment as defined in Lemma 4.1.
+        &#34;&#34;&#34;This is the symmetric function to Entailment as defined in Lemma 4.1.
         in [ACBJ04].
-        Input:
-            Some atom
-        Output:
-            True if input atom is a subset of (self) atom.
-            False otherwise.
+
+
+        Parameters
+        ----------
+        atom : [type]
+            [description]
+
+        Returns
+        -------
+        [bool]
+            True: if input atom is a subset of (self) atom.
+            False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+
+        Raises
+        ------
+        TypeError:
+            if anything other than an atom is passed.
         &#34;&#34;&#34;
         if not isinstance(atom, Atom):
             raise TypeError(&#34;You can only check if an atom&#34;
                             &#34; contains another atom!&#34;)
-        return set(atom.messages).issubset(set(self.messages))
+        if (isinstance(self, LetterAtom)
+           and isinstance(atom, StarAtom)):
+            return atom.messages == set()
+        else:
+            return set(atom.messages).issubset(set(self.messages))
+
+    def __eq__(self, other):
+        &#34;&#34;&#34;
+        Semantic equality.
+        &#34;&#34;&#34;
+        if isinstance(self, type(other)):
+            return self.messages == other.messages
+        return False
 
 
 class StarAtom(Atom):
     &#34;&#34;&#34;
     A star atom is an atom of the form (p1 + ... + pn)*
-    Usage:
+
+    Usage
+    -----
         messages: (two options)
             i. either StarAtom(message1, message2, etc...)
             ii. or StarAtom(set/list/tuple_of_messages)
@@ -77,8 +102,8 @@ class StarAtom(Atom):
         &#34;&#34;&#34;
         if messages:
             for message in messages:
-                if not message:
-                    raise TypeError(&#34;You can&#39;t pass an empty string!&#34;)
+                if message is None:
+                    raise TypeError(&#34;You can&#39;t pass None!&#34;)
 
                 if not ALLOWED_MESSAGES.match(message):
                     raise ValueError(&#34;Message has to start with a lower-case &#34;
@@ -96,17 +121,33 @@ class LetterAtom(Atom):
     &#34;&#34;&#34;
 
     def __new__(cls, *messages):
-        &#34;&#34;&#34;
-        Only create an atom if it is made from a single
+        &#34;&#34;&#34;Only create an atom if it is made from a single
         allowed message.
-        A message must be passed, because a LetterAtom
-        takes messages as arguments (as opposed to a sequence).
+
+        Returns
+        -------
+        [LetterAtom]
+            A LetterAtom from the message passed to the constructor.
+
+        Raises
+        ------
+        TypeError:
+            if no message is passed: because a LetterAtom takes
+            messages as arguments (as opposed to a sequence of messages).
+        TypeError:
+            if None is passed.
+        TypeError:
+            if more than one message is passed.
+        TypeError:
+            if anything other than a string is passed.
+        ValueError:
+            if a bad (not allowed) message is passed.
         &#34;&#34;&#34;
         if not messages:
             raise TypeError(&#34;You have to pass a message!&#34;)
 
-        if not messages[0]:
-            raise TypeError(&#34;You can&#39;t pass an empty string!&#34;)
+        if messages[0] is None:
+            raise TypeError(&#34;You can&#39;t pass None!&#34;)
 
         if len(messages) &gt; 1:
             raise TypeError(&#34;You can only pass a single message!&#34;)
@@ -128,27 +169,101 @@ class Product():
     &#34;&#34;&#34;
     A product is a concatenation (a list) of atoms.
     &#34;&#34;&#34;
-    def __init__(self, *atoms):
+    def __init__(self, *objects):
         &#34;&#34;&#34;
         TODO:
             - Make immutable
         &#34;&#34;&#34;
-        self.messages = list(atoms)
+        self.objects = []
+        for object in objects:
+            if isinstance(object, Product):
+                for item in object.objects:
+                    self.objects.append(item)
+            else:
+                self.objects.append(object)
 
-    def __new__(cls, *atoms):
+    def contains(self, product):
+        &#34;&#34;&#34;This is the symmetric of the entailment
+            function for products from [ACBJ04].
+            Run-time is linear (Lemma 4.2).
+            Function definition retrieved from Proof
+            of Lemma 4.2.
+
+        Parameters
+        ----------
+        product : A valid product or atom.
+            If an atom is passed, it is changed to a product.
+
+        Returns
+        -------
+        [bool]
+            True: if self contains input product.
+            False: otherwise.
+
+        Raises
+        ------
+        TypeError:
+            if anything other than a product or atom is passed.
         &#34;&#34;&#34;
-        Only create a product from valid atoms.
+        if not isinstance(product, Product):
+            if isinstance(product, Atom):
+                product = Product(product)
+            else:
+                raise TypeError(&#34;You can only pass a product or an atom!&#34;)
+
+        if not product.objects:
+            # p contains epsilon
+            return True
+        elif not self.objects:
+            # epsilon does not contain anything
+            return False
+
+        e1 = product.objects[0]
+        e2 = self.objects[0]
+
+        if not len(self.objects) &gt; 1:
+            p2 = Product()
+        else:
+            p2 = Product(*self.objects[1:])
+
+        if not len(product.objects) &gt; 1:
+            p1 = Product()
+        else:
+            p1 = Product(*product.objects[1:])
+
+        if (not e2.contains(e1)) and p2.contains(product):
+            return True
+        elif (isinstance(e1, LetterAtom) and e1.contains(e2)
+              and p2.contains(p1)):
+            return True
+        elif (isinstance(e2, StarAtom) and e2.contains(e1)
+              and self.contains(p1)):
+            return True
+        else:
+            return False
+
+    def __new__(cls, *objects):
         &#34;&#34;&#34;
-        for atom in atoms:
-            if (not isinstance(atom, Atom)
-               and not isinstance(atom, Product)):
-                raise TypeError(&#34;You need to pass a valid atom!&#34;)
+        Only create a product from valid atoms or products.
+        &#34;&#34;&#34;
+        for object in objects:
+            if (not isinstance(object, Atom)
+               and not isinstance(object, Product)):
+                raise TypeError(&#34;You need to pass a valid atom or product!&#34;)
 
         return super().__new__(cls)
 
+    def __eq__(self, other):
+        &#34;&#34;&#34;
+        Structural equality.
+        &#34;&#34;&#34;
+        if isinstance(self, type(other)):
+            return self.objects == other.objects
+        return False
+
     def __repr__(self):
         return(&#34;Product with:\n&#34;
-               f&#34;{self.messages}&#34;)
+               f&#34;{self.objects}&#34;)
 
 
 class SRE():
@@ -211,19 +326,42 @@ class SRE():
         pass
 
     def contains(self, atom):
-        &#34;&#34;&#34;
-        This is the symmetric function to Entailment as defined in Lemma 4.1.
+        &#34;&#34;&#34;This is the symmetric function to Entailment as defined in Lemma 4.1.
         in [ACBJ04].
-        Input:
-            Some atom
-        Output:
-            True if input atom is a subset of (self) atom.
-            False otherwise.
+
+
+        Parameters
+        ----------
+        atom : [type]
+            [description]
+
+        Returns
+        -------
+        [bool]
+            True: if input atom is a subset of (self) atom.
+            False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+
+        Raises
+        ------
+        TypeError:
+            if anything other than an atom is passed.
         &#34;&#34;&#34;
         if not isinstance(atom, Atom):
             raise TypeError(&#34;You can only check if an atom&#34;
                             &#34; contains another atom!&#34;)
-        return set(atom.messages).issubset(set(self.messages))</code></pre>
+        if (isinstance(self, LetterAtom)
+           and isinstance(atom, StarAtom)):
+            return atom.messages == set()
+        else:
+            return set(atom.messages).issubset(set(self.messages))
+
+    def __eq__(self, other):
+        &#34;&#34;&#34;
+        Semantic equality.
+        &#34;&#34;&#34;
+        if isinstance(self, type(other)):
+            return self.messages == other.messages
+        return False</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -242,29 +380,51 @@ class SRE():
 <dd>
 <div class="desc"><p>This is the symmetric function to Entailment as defined in Lemma 4.1.
 in [ACBJ04].</p>
-<h2 id="input">Input</h2>
-<p>Some atom</p>
-<h2 id="output">Output</h2>
-<p>True if input atom is a subset of (self) atom.
-False otherwise.</p></div>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>atom</code></strong> :&ensp;<code>[type]</code></dt>
+<dd>[description]</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>[bool]
+True: if input atom is a subset of (self) atom.
+False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
+<h2 id="raises">Raises</h2>
+<h2 id="typeerror">Typeerror</h2>
+<p>if anything other than an atom is passed.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def contains(self, atom):
-    &#34;&#34;&#34;
-    This is the symmetric function to Entailment as defined in Lemma 4.1.
+    &#34;&#34;&#34;This is the symmetric function to Entailment as defined in Lemma 4.1.
     in [ACBJ04].
-    Input:
-        Some atom
-    Output:
-        True if input atom is a subset of (self) atom.
-        False otherwise.
+
+
+    Parameters
+    ----------
+    atom : [type]
+        [description]
+
+    Returns
+    -------
+    [bool]
+        True: if input atom is a subset of (self) atom.
+        False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+
+    Raises
+    ------
+    TypeError:
+        if anything other than an atom is passed.
     &#34;&#34;&#34;
     if not isinstance(atom, Atom):
         raise TypeError(&#34;You can only check if an atom&#34;
                         &#34; contains another atom!&#34;)
-    return set(atom.messages).issubset(set(self.messages))</code></pre>
+    if (isinstance(self, LetterAtom)
+       and isinstance(atom, StarAtom)):
+        return atom.messages == set()
+    else:
+        return set(atom.messages).issubset(set(self.messages))</code></pre>
 </details>
 </dd>
 </dl>
@@ -285,17 +445,33 @@ False otherwise.</p></div>
     &#34;&#34;&#34;
 
     def __new__(cls, *messages):
-        &#34;&#34;&#34;
-        Only create an atom if it is made from a single
+        &#34;&#34;&#34;Only create an atom if it is made from a single
         allowed message.
-        A message must be passed, because a LetterAtom
-        takes messages as arguments (as opposed to a sequence).
+
+        Returns
+        -------
+        [LetterAtom]
+            A LetterAtom from the message passed to the constructor.
+
+        Raises
+        ------
+        TypeError:
+            if no message is passed: because a LetterAtom takes
+            messages as arguments (as opposed to a sequence of messages).
+        TypeError:
+            if None is passed.
+        TypeError:
+            if more than one message is passed.
+        TypeError:
+            if anything other than a string is passed.
+        ValueError:
+            if a bad (not allowed) message is passed.
         &#34;&#34;&#34;
         if not messages:
             raise TypeError(&#34;You have to pass a message!&#34;)
 
-        if not messages[0]:
-            raise TypeError(&#34;You can&#39;t pass an empty string!&#34;)
+        if messages[0] is None:
+            raise TypeError(&#34;You can&#39;t pass None!&#34;)
 
         if len(messages) &gt; 1:
             raise TypeError(&#34;You can only pass a single message!&#34;)
@@ -328,7 +504,7 @@ False otherwise.</p></div>
 </dd>
 <dt id="sre.models.Product"><code class="flex name class">
 <span>class <span class="ident">Product</span></span>
-<span>(</span><span>*atoms)</span>
+<span>(</span><span>*objects)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A product is a concatenation (a list) of atoms.</p>
@@ -344,28 +520,189 @@ False otherwise.</p></div>
     &#34;&#34;&#34;
     A product is a concatenation (a list) of atoms.
     &#34;&#34;&#34;
-    def __init__(self, *atoms):
+    def __init__(self, *objects):
         &#34;&#34;&#34;
         TODO:
             - Make immutable
         &#34;&#34;&#34;
-        self.messages = list(atoms)
+        self.objects = []
+        for object in objects:
+            if isinstance(object, Product):
+                for item in object.objects:
+                    self.objects.append(item)
+            else:
+                self.objects.append(object)
 
-    def __new__(cls, *atoms):
+    def contains(self, product):
+        &#34;&#34;&#34;This is the symmetric of the entailment
+            function for products from [ACBJ04].
+            Run-time is linear (Lemma 4.2).
+            Function definition retrieved from Proof
+            of Lemma 4.2.
+
+        Parameters
+        ----------
+        product : A valid product or atom.
+            If an atom is passed, it is changed to a product.
+
+        Returns
+        -------
+        [bool]
+            True: if self contains input product.
+            False: otherwise.
+
+        Raises
+        ------
+        TypeError:
+            if anything other than a product or atom is passed.
         &#34;&#34;&#34;
-        Only create a product from valid atoms.
+        if not isinstance(product, Product):
+            if isinstance(product, Atom):
+                product = Product(product)
+            else:
+                raise TypeError(&#34;You can only pass a product or an atom!&#34;)
+
+        if not product.objects:
+            # p contains epsilon
+            return True
+        elif not self.objects:
+            # epsilon does not contain anything
+            return False
+
+        e1 = product.objects[0]
+        e2 = self.objects[0]
+
+        if not len(self.objects) &gt; 1:
+            p2 = Product()
+        else:
+            p2 = Product(*self.objects[1:])
+
+        if not len(product.objects) &gt; 1:
+            p1 = Product()
+        else:
+            p1 = Product(*product.objects[1:])
+
+        if (not e2.contains(e1)) and p2.contains(product):
+            return True
+        elif (isinstance(e1, LetterAtom) and e1.contains(e2)
+              and p2.contains(p1)):
+            return True
+        elif (isinstance(e2, StarAtom) and e2.contains(e1)
+              and self.contains(p1)):
+            return True
+        else:
+            return False
+
+    def __new__(cls, *objects):
         &#34;&#34;&#34;
-        for atom in atoms:
-            if (not isinstance(atom, Atom)
-               and not isinstance(atom, Product)):
-                raise TypeError(&#34;You need to pass a valid atom!&#34;)
+        Only create a product from valid atoms or products.
+        &#34;&#34;&#34;
+        for object in objects:
+            if (not isinstance(object, Atom)
+               and not isinstance(object, Product)):
+                raise TypeError(&#34;You need to pass a valid atom or product!&#34;)
 
         return super().__new__(cls)
 
+    def __eq__(self, other):
+        &#34;&#34;&#34;
+        Structural equality.
+        &#34;&#34;&#34;
+        if isinstance(self, type(other)):
+            return self.objects == other.objects
+        return False
+
     def __repr__(self):
         return(&#34;Product with:\n&#34;
-               f&#34;{self.messages}&#34;)</code></pre>
+               f&#34;{self.objects}&#34;)</code></pre>
 </details>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.models.Product.contains"><code class="name flex">
+<span>def <span class="ident">contains</span></span>(<span>self, product)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is the symmetric of the entailment
+function for products from [ACBJ04].
+Run-time is linear (Lemma 4.2).
+Function definition retrieved from Proof
+of Lemma 4.2.</p>
+<h2 id="parameters">Parameters</h2>
+<p>product : A valid product or atom.
+If an atom is passed, it is changed to a product.</p>
+<h2 id="returns">Returns</h2>
+<p>[bool]
+True: if self contains input product.
+False: otherwise.</p>
+<h2 id="raises">Raises</h2>
+<h2 id="typeerror">Typeerror</h2>
+<p>if anything other than a product or atom is passed.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contains(self, product):
+    &#34;&#34;&#34;This is the symmetric of the entailment
+        function for products from [ACBJ04].
+        Run-time is linear (Lemma 4.2).
+        Function definition retrieved from Proof
+        of Lemma 4.2.
+
+    Parameters
+    ----------
+    product : A valid product or atom.
+        If an atom is passed, it is changed to a product.
+
+    Returns
+    -------
+    [bool]
+        True: if self contains input product.
+        False: otherwise.
+
+    Raises
+    ------
+    TypeError:
+        if anything other than a product or atom is passed.
+    &#34;&#34;&#34;
+    if not isinstance(product, Product):
+        if isinstance(product, Atom):
+            product = Product(product)
+        else:
+            raise TypeError(&#34;You can only pass a product or an atom!&#34;)
+
+    if not product.objects:
+        # p contains epsilon
+        return True
+    elif not self.objects:
+        # epsilon does not contain anything
+        return False
+
+    e1 = product.objects[0]
+    e2 = self.objects[0]
+
+    if not len(self.objects) &gt; 1:
+        p2 = Product()
+    else:
+        p2 = Product(*self.objects[1:])
+
+    if not len(product.objects) &gt; 1:
+        p1 = Product()
+    else:
+        p1 = Product(*product.objects[1:])
+
+    if (not e2.contains(e1)) and p2.contains(product):
+        return True
+    elif (isinstance(e1, LetterAtom) and e1.contains(e2)
+          and p2.contains(p1)):
+        return True
+    elif (isinstance(e2, StarAtom) and e2.contains(e1)
+          and self.contains(p1)):
+        return True
+    else:
+        return False</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="sre.models.SRE"><code class="flex name class">
 <span>class <span class="ident">SRE</span></span>
@@ -414,10 +751,11 @@ False otherwise.</p></div>
 <dd>
 <div class="desc"><p>A star atom is an atom of the form (p1 + &hellip; + pn)*</p>
 <h2 id="usage">Usage</h2>
-<p>messages: (two options)
-i. either StarAtom(message1, message2, etc&hellip;)
-ii. or StarAtom(set/list/tuple_of_messages)
-Check test cases for examples.</p></div>
+<pre><code>messages: (two options)
+    i. either StarAtom(message1, message2, etc...)
+    ii. or StarAtom(set/list/tuple_of_messages)
+    Check test cases for examples.
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -425,7 +763,9 @@ Check test cases for examples.</p></div>
 <pre><code class="python">class StarAtom(Atom):
     &#34;&#34;&#34;
     A star atom is an atom of the form (p1 + ... + pn)*
-    Usage:
+
+    Usage
+    -----
         messages: (two options)
             i. either StarAtom(message1, message2, etc...)
             ii. or StarAtom(set/list/tuple_of_messages)
@@ -440,8 +780,8 @@ Check test cases for examples.</p></div>
         &#34;&#34;&#34;
         if messages:
             for message in messages:
-                if not message:
-                    raise TypeError(&#34;You can&#39;t pass an empty string!&#34;)
+                if message is None:
+                    raise TypeError(&#34;You can&#39;t pass None!&#34;)
 
                 if not ALLOWED_MESSAGES.match(message):
                     raise ValueError(&#34;Message has to start with a lower-case &#34;
@@ -493,6 +833,9 @@ Check test cases for examples.</p></div>
 </li>
 <li>
 <h4><code><a title="sre.models.Product" href="#sre.models.Product">Product</a></code></h4>
+<ul class="">
+<li><code><a title="sre.models.Product.contains" href="#sre.models.Product.contains">contains</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="sre.models.SRE" href="#sre.models.SRE">SRE</a></code></h4>

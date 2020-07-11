@@ -18,16 +18,25 @@ class Atom(ABC):
         pass
 
     def contains(self, atom):
-        """
-        This is the symmetric function to Entailment as defined in Lemma 4.1.
+        """This is the symmetric function to Entailment as defined in Lemma 4.1.
         in [ACBJ04].
-        Input:
-            Some atom
-        Output:
-            True if input atom is a subset of (self) atom.
-            False otherwise.
-        Note:
-            A StarAtom cannot be contained in a LetterAtom.
+
+
+        Parameters
+        ----------
+        atom : [type]
+            [description]
+
+        Returns
+        -------
+        [bool]
+            True: if input atom is a subset of (self) atom.
+            False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+
+        Raises
+        ------
+        TypeError:
+            if anything other than an atom is passed.
         """
         if not isinstance(atom, Atom):
             raise TypeError("You can only check if an atom"
@@ -50,7 +59,9 @@ class Atom(ABC):
 class StarAtom(Atom):
     """
     A star atom is an atom of the form (p1 + ... + pn)*
-    Usage:
+
+    Usage
+    -----
         messages: (two options)
             i. either StarAtom(message1, message2, etc...)
             ii. or StarAtom(set/list/tuple_of_messages)
@@ -84,11 +95,27 @@ class LetterAtom(Atom):
     """
 
     def __new__(cls, *messages):
-        """
-        Only create an atom if it is made from a single
+        """Only create an atom if it is made from a single
         allowed message.
-        A message must be passed, because a LetterAtom
-        takes messages as arguments (as opposed to a sequence).
+
+        Returns
+        -------
+        [LetterAtom]
+            A LetterAtom from the message passed to the constructor.
+
+        Raises
+        ------
+        TypeError:
+            if no message is passed: because a LetterAtom takes
+            messages as arguments (as opposed to a sequence of messages).
+        TypeError:
+            if None is passed.
+        TypeError:
+            if more than one message is passed.
+        TypeError:
+            if anything other than a string is passed.
+        ValueError:
+            if a bad (not allowed) message is passed.
         """
         if not messages:
             raise TypeError("You have to pass a message!")
@@ -130,6 +157,28 @@ class Product():
                 self.objects.append(object)
 
     def contains(self, product):
+        """This is the symmetric of the entailment
+            function for products from [ACBJ04].
+            Run-time is linear (Lemma 4.2).
+            Function definition retrieved from Proof
+            of Lemma 4.2.
+
+        Parameters
+        ----------
+        product : A valid product or atom.
+            If an atom is passed, it is changed to a product.
+
+        Returns
+        -------
+        [bool]
+            True: if self contains input product.
+            False: otherwise.
+
+        Raises
+        ------
+        TypeError:
+            if anything other than a product or atom is passed.
+        """
         if not isinstance(product, Product):
             if isinstance(product, Atom):
                 product = Product(product)
