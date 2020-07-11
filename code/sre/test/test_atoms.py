@@ -14,8 +14,8 @@ class TestBaseAtom():
     def test_creation_fails(self):
         """
         Check that we cannot instantiate the base Atom class.
-        This should throw a TypeError exception, because we
-        cannot instantiate an abstract class.
+        This should throw a TypeError exception, because we cannot instantiate
+        an abstract class.
         """
         a = Atom()
         a
@@ -31,9 +31,8 @@ class TestStarAtom():
 
     def test_empty_create(self):
         """
-        Check that we can create an object of type StarAtom
-        without passing any messages (i.e. it is a language
-        over the empty sequence of messages).
+        Check that we can create an object of type StarAtom without passing
+        any messages (i.e. it is a language over the empty sequence of messages).
         """
         e1 = StarAtom()
         assert e1
@@ -49,8 +48,7 @@ class TestStarAtom():
 
     def test_list_creation(self):
         """
-        Check that you can create a StarAtom
-        using a list (or a set, or a tuple).
+        Check that you can create a StarAtom using a list (or a set, or a tuple).
         """
         # Use * if passing a list, set, or tuple
         e1 = StarAtom(*['a', 'b', 'c'])
