@@ -112,7 +112,8 @@ class TestProduct():
 
 
 '''Some suggestions for more entailment tests:
-Main interest is that it includes negative tests and non-trivial positive tests.
+Main interest is that it includes negative tests and non-trivial
+positive tests.
 Also it illustrates the different ways one can call a constructor.
 ea=LetterAtom('a')
 eb=LetterAtom('b')
