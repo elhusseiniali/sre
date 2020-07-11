@@ -143,33 +143,29 @@ class Product():
             # epsilon does not contain anything
             return False
 
-        self, product = product, self
-
         e1 = product.objects[0]
         e2 = self.objects[0]
 
-        if (len(product.objects) > 1
-           and len(self.objects) > 1):
-
-            p1 = Product(*self.objects[1:])
-            p2 = Product(*product.objects[1:])
-
-            print("First check")
-            print(e1, e2, self, p2)
-            if not e2.contains(e1) and p2.contains(self):
-                return True
-            print("Second check")
-            print(e1, e2, p1, p2)
-            if e1 == e2 and p2.contains(p1):
-                return True
-            print("Third check")
-            print(e1, e2, p1, product)
-            if e2.contains(e1) and product.contains(p1):
-                return True
-
-            return False
+        if not len(self.objects) > 1:
+            p2 = Product()
         else:
-            return e1.contains(e2)
+            p2 = Product(*self.objects[1:])
+
+        if not len(product.objects) > 1:
+            p1 = Product()
+        else:
+            p1 = Product(*product.objects[1:])
+
+        if (not e2.contains(e1)) and p2.contains(product):
+            return True
+        elif (isinstance(e1, LetterAtom) and e1.contains(e2)
+              and p2.contains(p1)):
+            return True
+        elif (isinstance(e2, StarAtom) and e2.contains(e1)
+              and self.contains(p1)):
+            return True
+        else:
+            return False
 
     def __new__(cls, *objects):
         """
