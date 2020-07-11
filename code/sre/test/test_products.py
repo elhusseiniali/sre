@@ -86,7 +86,7 @@ class TestProduct():
         p1 = Product(e1)
         p2 = Product(e2)
 
-        assert p2.contains(p1)
+        assert p1.contains(p2)
 
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
            sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
@@ -108,7 +108,7 @@ class TestProduct():
         p1 = Product(e1)
         p2 = Product(e2)
 
-        assert p1.contains(p2)
+        assert p2.contains(p1)
 
 
 '''Some suggestions for more entailment tests:

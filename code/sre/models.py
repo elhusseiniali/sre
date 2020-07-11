@@ -143,8 +143,10 @@ class Product():
             # epsilon does not contain anything
             return False
 
-        e1 = self.objects[0]
-        e2 = product.objects[0]
+        self, product = product, self
+
+        e1 = product.objects[0]
+        e2 = self.objects[0]
 
         if (len(product.objects) > 1
            and len(self.objects) > 1):
@@ -167,7 +169,7 @@ class Product():
 
             return False
         else:
-            return e2.contains(e1)
+            return e1.contains(e2)
 
     def __new__(cls, *objects):
         """
