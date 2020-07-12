@@ -1,5 +1,5 @@
 # A library to handle Simple Regular Expressions.
-(https://github.com/elhusseiniali/sre/workflows/build/badge.svg)
+![build](https://github.com/elhusseiniali/sre/workflows/build/badge.svg)
 The purpose of this library is to provide an implementation of the work done in [1].  
 
 References:  
