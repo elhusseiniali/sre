@@ -1,4 +1,4 @@
-# A library to handle Simple Regular Expressions. ![Build status](https://github.com/elhusseiniali/sre/workflows/Python%20package/badge.svg)
+# A library to handle Simple Regular Expressions. ![Build status]![build](https://github.com/elhusseiniali/sre/workflows/build/badge.svg)
 The purpose of this library is to provide an implementation of the work done in [1].  
 
 References:  
