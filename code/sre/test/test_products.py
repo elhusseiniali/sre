@@ -60,7 +60,7 @@ class TestProduct():
 
         assert all_atom_messages == set(all_product_items)"""
 
-        assert p2.objects == [e1, e2]
+        assert p2.objects == tuple([e1, e2])
 
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
     def test_containment_naive_success(self, x):

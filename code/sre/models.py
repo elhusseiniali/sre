@@ -9,9 +9,9 @@ class Atom(ABC):
     """
     def __init__(self, *messages):
         if messages:
-            self.messages = set(str(message) for message in messages)
+            self.messages = frozenset(str(message) for message in messages)
         else:
-            self.messages = set()
+            self.messages = frozenset()
 
     @abstractmethod
     def __repr__(self):
@@ -43,9 +43,12 @@ class Atom(ABC):
                             " contains another atom!")
         if (isinstance(self, LetterAtom)
            and isinstance(atom, StarAtom)):
-            return atom.messages == set()
+            return atom.messages == frozenset()
         else:
             return set(atom.messages).issubset(set(self.messages))
+
+    def __hash__(self):
+        return hash(self.messages)
 
     def __eq__(self, other):
         """
@@ -86,7 +89,7 @@ class StarAtom(Atom):
         return super().__new__(cls)
 
     def __repr__(self):
-        return (f"StarAtom with {self.messages}")
+        return (f"StarAtom with {set(self.messages)}")
 
 
 class LetterAtom(Atom):
@@ -136,7 +139,7 @@ class LetterAtom(Atom):
         return super().__new__(cls)
 
     def __repr__(self):
-        return(f"LetterAtom with {self.messages}")
+        return(f"LetterAtom with {set(self.messages)}")
 
 
 class Product():
@@ -155,6 +158,8 @@ class Product():
                     self.objects.append(item)
             else:
                 self.objects.append(object)
+
+        self.objects = tuple(self.objects)
 
     def contains(self, product):
         """This is the symmetric of the entailment
@@ -235,23 +240,39 @@ class Product():
             return self.objects == other.objects
         return False
 
+    def __hash__(self):
+        return hash(self.objects)
+
     def __repr__(self):
         return("Product with:\n"
-               f"{self.objects}")
+               f"{list(self.objects)}")
 
 
 class SRE():
     """
     An SRE is a set of products.
     """
-    def __init__(self, products):
+    def __init__(self, *products):
         """
         TODO:
             - Make immutable
         """
-        self.messages = set(products)
+        self.products = frozenset(products)
 
-    def __new__(cls, products):
+    def contains(self, other):
+        """Check if self contains other.
+
+        Parameters
+        ----------
+        other : [SRE]
+            [description]
+        """
+        for second in other.products:
+            if not any(self.products.contains(second)):
+                return False
+        return True
+
+    def __new__(cls, *products):
         """
         Only create an SRE from valid products.
         """
@@ -261,6 +282,9 @@ class SRE():
 
         return super().__new__(cls)
 
+    def __hash__(self):
+        return hash(self.products)
+
     def __repr__(self):
         return ("SRE made with:\n"
-                f"{self.messages}")
+                f"{set(self.products)}")
