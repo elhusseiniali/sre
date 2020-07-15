@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from sre import ALLOWED_MESSAGES
+from sre.iterators import Iterator
 
 
 class Atom(ABC):
@@ -12,10 +13,6 @@ class Atom(ABC):
             self.messages = frozenset(str(message) for message in messages)
         else:
             self.messages = frozenset()
-
-    @abstractmethod
-    def __repr__(self):
-        pass
 
     def contains(self, atom):
         """This is the symmetric function to Entailment as defined in Lemma 4.1.
@@ -45,18 +42,42 @@ class Atom(ABC):
            and isinstance(atom, StarAtom)):
             return atom.messages == frozenset()
         else:
-            return set(atom.messages).issubset(set(self.messages))
-
-    def __hash__(self):
-        return hash(self.messages)
+            return set(atom).issubset(set(self))
 
     def __eq__(self, other):
         """
-        Semantic equality.
+        Semantic equality:
+            Two atoms are equal iff they have the same messages
+            (and are of the same type).
         """
         if isinstance(self, type(other)):
             return self.messages == other.messages
         return False
+
+    def __hash__(self):
+        return hash(self.messages)
+
+    def __iter__(self):
+        return Iterator(self.messages)
+
+    def __next__(self):
+        return Iterator.__next__(self.messages)
+
+    def __len__(self):
+        """The number of messages in an atom.
+        Usage:
+        -------
+        len(e1)
+
+        Returns
+        -------
+        [int]
+        """
+        return len(self.messages)
+
+    @abstractmethod
+    def __repr__(self):
+        pass
 
 
 class StarAtom(Atom):
@@ -109,14 +130,12 @@ class LetterAtom(Atom):
         Raises
         ------
         TypeError:
-            if no message is passed: because a LetterAtom takes
-            messages as arguments (as opposed to a sequence of messages).
-        TypeError:
-            if None is passed.
-        TypeError:
-            if more than one message is passed.
-        TypeError:
-            if anything other than a string is passed.
+            -   if no message is passed: because a LetterAtom
+                takes messages as arguments (as opposed to a
+                sequence of messages).
+            -   if None is passed.
+            -   if more than one message is passed.
+            -   if anything other than a string is passed.
         ValueError:
             if a bad (not allowed) message is passed.
         """
@@ -143,23 +162,24 @@ class LetterAtom(Atom):
 
 
 class Product():
-    """
-    A product is a concatenation (a list) of atoms.
+    """A product is a concatenation (a list) of atoms.
+
+    If another product is passed, decompose it into
+    atoms and use the atoms to build the product.
+
+    Note: atoms stored in a tuple because tuples are
+          immutable.
     """
     def __init__(self, *objects):
-        """
-        TODO:
-            - Make immutable
-        """
-        self.objects = []
+        self.atoms = []
         for object in objects:
             if isinstance(object, Product):
-                for item in object.objects:
-                    self.objects.append(item)
+                for item in object.atoms:
+                    self.atoms.append(item)
             else:
-                self.objects.append(object)
+                self.atoms.append(object)
 
-        self.objects = tuple(self.objects)
+        self.atoms = tuple(self.atoms)
 
     def contains(self, product):
         """This is the symmetric of the entailment
@@ -190,25 +210,25 @@ class Product():
             else:
                 raise TypeError("You can only pass a product or an atom!")
 
-        if not product.objects:
+        if not product.atoms:
             # p contains epsilon
             return True
-        elif not self.objects:
+        elif not self.atoms:
             # epsilon does not contain anything
             return False
 
-        e1 = product.objects[0]
-        e2 = self.objects[0]
+        e1 = product.atoms[0]
+        e2 = self.atoms[0]
 
-        if not len(self.objects) > 1:
+        if not len(self.atoms) > 1:
             p2 = Product()
         else:
-            p2 = Product(*self.objects[1:])
+            p2 = Product(*self.atoms[1:])
 
-        if not len(product.objects) > 1:
+        if not len(product.atoms) > 1:
             p1 = Product()
         else:
-            p1 = Product(*product.objects[1:])
+            p1 = Product(*product.atoms[1:])
 
         if (not e2.contains(e1)) and p2.contains(product):
             return True
@@ -221,31 +241,50 @@ class Product():
         else:
             return False
 
-    def __new__(cls, *objects):
+    def __new__(cls, *messages):
         """
         Only create a product from valid atoms or products.
         """
-        for object in objects:
-            if (not isinstance(object, Atom)
-               and not isinstance(object, Product)):
+        for message in messages:
+            if (not isinstance(message, Atom)
+               and not isinstance(message, Product)):
                 raise TypeError("You need to pass a valid atom or product!")
 
         return super().__new__(cls)
 
     def __eq__(self, other):
         """
-        Structural equality.
+        Structural equality:
+            Two products are equal iff they have the same atoms.
         """
         if isinstance(self, type(other)):
-            return self.objects == other.objects
+            return self.atoms == other.atoms
         return False
 
     def __hash__(self):
-        return hash(self.objects)
+        return hash(self.atoms)
+
+    def __iter__(self):
+        return Iterator(self.atoms)
+
+    def __next__(self):
+        return Iterator.__next__(self.atoms)
+
+    def __len__(self):
+        """The number of atoms in a product.
+        Usage:
+        -------
+        len(11)
+
+        Returns
+        -------
+        [int]
+        """
+        return len(self.atoms)
 
     def __repr__(self):
         return("Product with:\n"
-               f"{list(self.objects)}")
+               f"{list(self.atoms)}")
 
 
 class SRE():
@@ -260,15 +299,23 @@ class SRE():
         self.products = frozenset(products)
 
     def contains(self, other):
-        """Check if self contains other.
+        """
+        An SRE s1 contains an SRE s2 iff every product
+        in s2 is contained in some product in s1.
 
         Parameters
         ----------
         other : [SRE]
-            [description]
+            any valid SRE.
+
+        Returns
+        -------
+        [bool]
+            True: if self contains input SRE.
+            False: otherwise.
         """
-        for second in other.products:
-            if not any(self.products.contains(second)):
+        for second in other:
+            if not any(first.contains(second) for first in self):
                 return False
         return True
 
@@ -284,6 +331,24 @@ class SRE():
 
     def __hash__(self):
         return hash(self.products)
+
+    def __iter__(self):
+        return Iterator(self.products)
+
+    def __next__(self):
+        return Iterator.__next__(self.products)
+
+    def __len__(self):
+        """The number of products in an SRE.
+        Usage
+        -------
+        len(s1)
+
+        Returns
+        -------
+        [int]
+        """
+        return len(self.products)
 
     def __repr__(self):
         return ("SRE made with:\n"
