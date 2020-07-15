@@ -36,7 +36,7 @@ class TestStarAtom():
         over the empty sequence of messages).
         """
         e1 = StarAtom()
-        assert e1
+        assert len(e1) == 0
 
     @pytest.mark.xfail(raises=ValueError)
     def test_empty_string_create_fail(self):
@@ -80,7 +80,7 @@ class TestStarAtom():
         Check that you can create a StarAtom using a list of allowed messages.
         """
         e1 = StarAtom(*x)
-        assert e1
+        assert e1 is not None
 
     @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
     def test_naive_entailment_success(self, x):
