@@ -38,11 +38,30 @@ class Atom(ABC):
         if not isinstance(atom, Atom):
             raise TypeError("You can only check if an atom"
                             " contains another atom!")
+
         if (isinstance(self, LetterAtom)
            and isinstance(atom, StarAtom)):
             return atom.messages == frozenset()
         else:
             return set(atom).issubset(set(self))
+
+    @abstractmethod
+    def absorbs(self, other):
+        """e1 absorbs e2 iff e1.e2 is equivalent to e1
+        iff e2.e1 is equivalent to e1
+
+        Parameters
+        ----------
+        other : [Atom]
+            any valid Atom
+
+        Returns
+        -------
+        [bool]
+            True if self absorbs other.
+            False otherwise.
+        """
+        raise NotImplementedError
 
     def __eq__(self, other):
         """
@@ -109,6 +128,28 @@ class StarAtom(Atom):
                                      "a number.")
         return super().__new__(cls)
 
+    def absorbs(self, other):
+        """Absorption test for StarAtom.
+
+        Parameters
+        ----------
+        other : [Atom]
+            any valid Atom
+
+        Returns
+        -------
+        [bool]
+            True if self absorbs other.
+            False otherwise.
+        """
+        if not isinstance(other, Atom):
+            raise TypeError("An atom can only absorb another atom!")
+
+        for message in other:
+            if not any(first == message for first in self):
+                return False
+        return True
+
     def __repr__(self):
         return (f"StarAtom with {set(self.messages)}")
 
@@ -156,6 +197,20 @@ class LetterAtom(Atom):
                              + " See docs for help.")
 
         return super().__new__(cls)
+
+    def absorbs(self, other):
+        """A letter atom can only absorb ∅*.
+
+        Returns
+        -------
+        [bool]
+            False if other is StarAtom() (i.e. ∅*)
+            True otherwise
+        """
+        if not isinstance(other, Atom):
+            raise TypeError("An atom can only absorb another atom!")
+
+        return not bool(other)
 
     def __repr__(self):
         return(f"LetterAtom with {set(self.messages)}")
@@ -292,10 +347,6 @@ class SRE():
     An SRE is a set of products.
     """
     def __init__(self, *products):
-        """
-        TODO:
-            - Make immutable
-        """
         self.products = frozenset(products)
 
     def contains(self, other):
