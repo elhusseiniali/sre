@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.3" />
-<title>sre API documentation</title>
+<title>sre.iterators API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,36 +19,66 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>sre</code></h1>
+<h1 class="title">Module <code>sre.iterators</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import re
+<pre><code class="python">class Iterator():
+    &#34;&#34;&#34;An iterator to allow us to iterate
+    over the data structures.
+    &#34;&#34;&#34;
+    def __init__(self, source):
+        self.source = source
+        self.count = 0
 
-ALLOWED_MESSAGES = re.compile(&#39;[a-z]+[0-9]*&#39;)</code></pre>
+    def __next__(self):
+        if self.count &gt;= len(self.source):
+            raise StopIteration
+
+        self.count += 1
+        return list(self.source)[self.count - 1]</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="sre.iterators" href="iterators.html">sre.iterators</a></code></dt>
+<dt id="sre.iterators.Iterator"><code class="flex name class">
+<span>class <span class="ident">Iterator</span></span>
+<span>(</span><span>source)</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="sre.models" href="models.html">sre.models</a></code></dt>
-<dd>
-<div class="desc"></div>
+<div class="desc"><p>An iterator to allow us to iterate
+over the data structures.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Iterator():
+    &#34;&#34;&#34;An iterator to allow us to iterate
+    over the data structures.
+    &#34;&#34;&#34;
+    def __init__(self, source):
+        self.source = source
+        self.count = 0
+
+    def __next__(self):
+        if self.count &gt;= len(self.source):
+            raise StopIteration
+
+        self.count += 1
+        return list(self.source)[self.count - 1]</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -57,10 +87,16 @@ ALLOWED_MESSAGES = re.compile(&#39;[a-z]+[0-9]*&#39;)</code></pre>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="sre.iterators" href="iterators.html">sre.iterators</a></code></li>
-<li><code><a title="sre.models" href="models.html">sre.models</a></code></li>
+<li><code><a title="sre" href="index.html">sre</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="sre.iterators.Iterator" href="#sre.iterators.Iterator">Iterator</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.8.1" />
+<meta name="generator" content="pdoc 0.8.3" />
 <title>sre.models API documentation</title>
 <meta name="description" content="" />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
 <body>
 <main>
@@ -27,6 +29,7 @@
 <pre><code class="python">from abc import ABC, abstractmethod
 
 from sre import ALLOWED_MESSAGES
+from sre.iterators import Iterator
 
 
 class Atom(ABC):
@@ -35,13 +38,9 @@ class Atom(ABC):
     &#34;&#34;&#34;
     def __init__(self, *messages):
         if messages:
-            self.messages = set(str(message) for message in messages)
+            self.messages = frozenset(str(message) for message in messages)
         else:
-            self.messages = set()
-
-    @abstractmethod
-    def __repr__(self):
-        pass
+            self.messages = frozenset()
 
     def contains(self, atom):
         &#34;&#34;&#34;This is the symmetric function to Entailment as defined in Lemma 4.1.
@@ -50,14 +49,18 @@ class Atom(ABC):
 
         Parameters
         ----------
-        atom : [type]
-            [description]
+        atom : [LetterAtom, StarAtom]
+            any valid Atom.
 
         Returns
         -------
         [bool]
-            True: if input atom is a subset of (self) atom.
-            False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+            True: if *atom* is a subset of *self*.
+            False: otherwise.
+
+        Note
+        -----
+        (A StarAtom cannot be contained in a LetterAtom.)
 
         Raises
         ------
@@ -67,19 +70,65 @@ class Atom(ABC):
         if not isinstance(atom, Atom):
             raise TypeError(&#34;You can only check if an atom&#34;
                             &#34; contains another atom!&#34;)
+
         if (isinstance(self, LetterAtom)
            and isinstance(atom, StarAtom)):
-            return atom.messages == set()
+            return atom.messages == frozenset()
         else:
-            return set(atom.messages).issubset(set(self.messages))
+            return set(atom).issubset(set(self))
+
+    @abstractmethod
+    def absorbs(self, other):
+        &#34;&#34;&#34;e1 absorbs e2 iff e1.e2 is equivalent to e1
+        iff e2.e1 is equivalent to e1
+
+        Parameters
+        ----------
+        other : [Atom]
+            any valid Atom
+
+        Returns
+        -------
+        [bool]
+            True if self absorbs other.
+            False otherwise.
+        &#34;&#34;&#34;
+        raise NotImplementedError
 
     def __eq__(self, other):
         &#34;&#34;&#34;
-        Semantic equality.
+        Semantic equality:
+            Two atoms are equal iff they have the same messages
+            (and are of the same type).
         &#34;&#34;&#34;
         if isinstance(self, type(other)):
             return self.messages == other.messages
         return False
+
+    def __hash__(self):
+        return hash(self.messages)
+
+    def __iter__(self):
+        return Iterator(self.messages)
+
+    def __next__(self):
+        return Iterator.__next__(self.messages)
+
+    def __len__(self):
+        &#34;&#34;&#34;The number of messages in an atom.
+        Usage:
+        -------
+        len(e1)
+
+        Returns
+        -------
+        [int]
+        &#34;&#34;&#34;
+        return len(self.messages)
+
+    @abstractmethod
+    def __repr__(self):
+        pass
 
 
 class StarAtom(Atom):
@@ -111,8 +160,30 @@ class StarAtom(Atom):
                                      &#34;a number.&#34;)
         return super().__new__(cls)
 
+    def absorbs(self, other):
+        &#34;&#34;&#34;Absorption test for StarAtom.
+
+        Parameters
+        ----------
+        other : [Atom]
+            any valid Atom
+
+        Returns
+        -------
+        [bool]
+            True if self absorbs other.
+            False otherwise.
+        &#34;&#34;&#34;
+        if not isinstance(other, Atom):
+            raise TypeError(&#34;An atom can only absorb another atom!&#34;)
+
+        for message in other:
+            if not any(first == message for first in self):
+                return False
+        return True
+
     def __repr__(self):
-        return (f&#34;StarAtom with {self.messages}&#34;)
+        return (f&#34;StarAtom with {set(self.messages)}&#34;)
 
 
 class LetterAtom(Atom):
@@ -132,14 +203,12 @@ class LetterAtom(Atom):
         Raises
         ------
         TypeError:
-            if no message is passed: because a LetterAtom takes
-            messages as arguments (as opposed to a sequence of messages).
-        TypeError:
-            if None is passed.
-        TypeError:
-            if more than one message is passed.
-        TypeError:
-            if anything other than a string is passed.
+            -   if no message is passed: because a LetterAtom
+                takes messages as arguments (as opposed to a
+                sequence of messages).
+            -   if None is passed.
+            -   if more than one message is passed.
+            -   if anything other than a string is passed.
         ValueError:
             if a bad (not allowed) message is passed.
         &#34;&#34;&#34;
@@ -161,26 +230,44 @@ class LetterAtom(Atom):
 
         return super().__new__(cls)
 
+    def absorbs(self, other):
+        &#34;&#34;&#34;A letter atom can only absorb ∅*.
+
+        Returns
+        -------
+        [bool]
+            False if other is StarAtom() (i.e. ∅*)
+            True otherwise
+        &#34;&#34;&#34;
+        if not isinstance(other, Atom):
+            raise TypeError(&#34;An atom can only absorb another atom!&#34;)
+
+        return not bool(other)
+
     def __repr__(self):
-        return(f&#34;LetterAtom with {self.messages}&#34;)
+        return(f&#34;LetterAtom with {set(self.messages)}&#34;)
 
 
 class Product():
-    &#34;&#34;&#34;
-    A product is a concatenation (a list) of atoms.
+    &#34;&#34;&#34;A product is a concatenation (a list) of atoms.
+
+    If another product is passed, decompose it into
+    atoms and use the atoms to build the product.
+
+    Note: atoms stored in a tuple because tuples are
+          immutable.
     &#34;&#34;&#34;
     def __init__(self, *objects):
-        &#34;&#34;&#34;
-        TODO:
-            - Make immutable
-        &#34;&#34;&#34;
-        self.objects = []
+        self.atoms = []
+
         for object in objects:
             if isinstance(object, Product):
-                for item in object.objects:
-                    self.objects.append(item)
+                for item in object.atoms:
+                    self.atoms.append(item)
             else:
-                self.objects.append(object)
+                self.atoms.append(object)
+
+        self.atoms = tuple(self.atoms)
 
     def contains(self, product):
         &#34;&#34;&#34;This is the symmetric of the entailment
@@ -211,25 +298,29 @@ class Product():
             else:
                 raise TypeError(&#34;You can only pass a product or an atom!&#34;)
 
-        if not product.objects:
-            # p contains epsilon
+        if self == product:
             return True
-        elif not self.objects:
+
+        if not product.atoms:
+            # product is epsilon
+            # self always contains epsilon
+            return True
+        elif not self.atoms:
             # epsilon does not contain anything
             return False
 
-        e1 = product.objects[0]
-        e2 = self.objects[0]
+        e1 = product.atoms[0]
+        e2 = self.atoms[0]
 
-        if not len(self.objects) &gt; 1:
+        if not len(self.atoms) &gt; 1:
             p2 = Product()
         else:
-            p2 = Product(*self.objects[1:])
+            p2 = Product(*self.atoms[1:])
 
-        if not len(product.objects) &gt; 1:
+        if not len(product.atoms) &gt; 1:
             p1 = Product()
         else:
-            p1 = Product(*product.objects[1:])
+            p1 = Product(*product.atoms[1:])
 
         if (not e2.contains(e1)) and p2.contains(product):
             return True
@@ -242,42 +333,101 @@ class Product():
         else:
             return False
 
-    def __new__(cls, *objects):
+    def __new__(cls, *messages):
         &#34;&#34;&#34;
         Only create a product from valid atoms or products.
         &#34;&#34;&#34;
-        for object in objects:
-            if (not isinstance(object, Atom)
-               and not isinstance(object, Product)):
+        for message in messages:
+            if (not isinstance(message, Atom)
+               and not isinstance(message, Product)):
                 raise TypeError(&#34;You need to pass a valid atom or product!&#34;)
 
         return super().__new__(cls)
 
     def __eq__(self, other):
         &#34;&#34;&#34;
-        Structural equality.
+        Semantic equality:
+            Two products are equal iff they have the same messages.
         &#34;&#34;&#34;
         if isinstance(self, type(other)):
-            return self.objects == other.objects
+            other_stars = []
+            other_letters = []
+            for atom in other:
+                for message in atom:
+                    if isinstance(atom, StarAtom):
+                        other_stars.append(message)
+                    elif isinstance(atom, LetterAtom):
+                        other_letters.append(message)
+
+            self_stars = []
+            self_letters = []
+            for atom in self:
+                for message in atom:
+                    if isinstance(atom, StarAtom):
+                        self_stars.append(message)
+                    elif isinstance(atom, LetterAtom):
+                        self_letters.append(message)
+
+            return set(other_stars) == set(self_stars)\
+                and set(other_letters) == set(other_letters)
+
         return False
+
+    def __hash__(self):
+        return hash(self.atoms)
+
+    def __iter__(self):
+        return Iterator(self.atoms)
+
+    def __next__(self):
+        return Iterator.__next__(self.atoms)
+
+    def __len__(self):
+        &#34;&#34;&#34;The number of atoms in a product.
+        Usage:
+        -------
+        len(11)
+
+        Returns
+        -------
+        [int]
+        &#34;&#34;&#34;
+        return len(self.atoms)
 
     def __repr__(self):
         return(&#34;Product with:\n&#34;
-               f&#34;{self.objects}&#34;)
+               f&#34;{list(self.atoms)}&#34;)
 
 
 class SRE():
     &#34;&#34;&#34;
     An SRE is a set of products.
     &#34;&#34;&#34;
-    def __init__(self, products):
-        &#34;&#34;&#34;
-        TODO:
-            - Make immutable
-        &#34;&#34;&#34;
-        self.messages = set(products)
+    def __init__(self, *products):
+        self.products = frozenset(products)
 
-    def __new__(cls, products):
+    def contains(self, other):
+        &#34;&#34;&#34;
+        An SRE s1 contains an SRE s2 iff every product
+        in s2 is contained in some product in s1.
+
+        Parameters
+        ----------
+        other : [SRE]
+            any valid SRE.
+
+        Returns
+        -------
+        [bool]
+            True: if self contains input SRE.
+            False: otherwise.
+        &#34;&#34;&#34;
+        for second in other:
+            if not any(first.contains(second) for first in self):
+                return False
+        return True
+
+    def __new__(cls, *products):
         &#34;&#34;&#34;
         Only create an SRE from valid products.
         &#34;&#34;&#34;
@@ -287,9 +437,30 @@ class SRE():
 
         return super().__new__(cls)
 
+    def __hash__(self):
+        return hash(self.products)
+
+    def __iter__(self):
+        return Iterator(self.products)
+
+    def __next__(self):
+        return Iterator.__next__(self.products)
+
+    def __len__(self):
+        &#34;&#34;&#34;The number of products in an SRE.
+        Usage
+        -------
+        len(s1)
+
+        Returns
+        -------
+        [int]
+        &#34;&#34;&#34;
+        return len(self.products)
+
     def __repr__(self):
         return (&#34;SRE made with:\n&#34;
-                f&#34;{self.messages}&#34;)</code></pre>
+                f&#34;{set(self.products)}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -317,13 +488,9 @@ class SRE():
     &#34;&#34;&#34;
     def __init__(self, *messages):
         if messages:
-            self.messages = set(str(message) for message in messages)
+            self.messages = frozenset(str(message) for message in messages)
         else:
-            self.messages = set()
-
-    @abstractmethod
-    def __repr__(self):
-        pass
+            self.messages = frozenset()
 
     def contains(self, atom):
         &#34;&#34;&#34;This is the symmetric function to Entailment as defined in Lemma 4.1.
@@ -332,14 +499,18 @@ class SRE():
 
         Parameters
         ----------
-        atom : [type]
-            [description]
+        atom : [LetterAtom, StarAtom]
+            any valid Atom.
 
         Returns
         -------
         [bool]
-            True: if input atom is a subset of (self) atom.
-            False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+            True: if *atom* is a subset of *self*.
+            False: otherwise.
+
+        Note
+        -----
+        (A StarAtom cannot be contained in a LetterAtom.)
 
         Raises
         ------
@@ -349,19 +520,65 @@ class SRE():
         if not isinstance(atom, Atom):
             raise TypeError(&#34;You can only check if an atom&#34;
                             &#34; contains another atom!&#34;)
+
         if (isinstance(self, LetterAtom)
            and isinstance(atom, StarAtom)):
-            return atom.messages == set()
+            return atom.messages == frozenset()
         else:
-            return set(atom.messages).issubset(set(self.messages))
+            return set(atom).issubset(set(self))
+
+    @abstractmethod
+    def absorbs(self, other):
+        &#34;&#34;&#34;e1 absorbs e2 iff e1.e2 is equivalent to e1
+        iff e2.e1 is equivalent to e1
+
+        Parameters
+        ----------
+        other : [Atom]
+            any valid Atom
+
+        Returns
+        -------
+        [bool]
+            True if self absorbs other.
+            False otherwise.
+        &#34;&#34;&#34;
+        raise NotImplementedError
 
     def __eq__(self, other):
         &#34;&#34;&#34;
-        Semantic equality.
+        Semantic equality:
+            Two atoms are equal iff they have the same messages
+            (and are of the same type).
         &#34;&#34;&#34;
         if isinstance(self, type(other)):
             return self.messages == other.messages
-        return False</code></pre>
+        return False
+
+    def __hash__(self):
+        return hash(self.messages)
+
+    def __iter__(self):
+        return Iterator(self.messages)
+
+    def __next__(self):
+        return Iterator.__next__(self.messages)
+
+    def __len__(self):
+        &#34;&#34;&#34;The number of messages in an atom.
+        Usage:
+        -------
+        len(e1)
+
+        Returns
+        -------
+        [int]
+        &#34;&#34;&#34;
+        return len(self.messages)
+
+    @abstractmethod
+    def __repr__(self):
+        pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -374,6 +591,44 @@ class SRE():
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="sre.models.Atom.absorbs"><code class="name flex">
+<span>def <span class="ident">absorbs</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>e1 absorbs e2 iff e1.e2 is equivalent to e1
+iff e2.e1 is equivalent to e1</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>other</code></strong> :&ensp;<code>[<a title="sre.models.Atom" href="#sre.models.Atom">Atom</a>]</code></dt>
+<dd>any valid Atom</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>[bool]
+True if self absorbs other.
+False otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def absorbs(self, other):
+    &#34;&#34;&#34;e1 absorbs e2 iff e1.e2 is equivalent to e1
+    iff e2.e1 is equivalent to e1
+
+    Parameters
+    ----------
+    other : [Atom]
+        any valid Atom
+
+    Returns
+    -------
+    [bool]
+        True if self absorbs other.
+        False otherwise.
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
 <dt id="sre.models.Atom.contains"><code class="name flex">
 <span>def <span class="ident">contains</span></span>(<span>self, atom)</span>
 </code></dt>
@@ -382,13 +637,15 @@ class SRE():
 in [ACBJ04].</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>atom</code></strong> :&ensp;<code>[type]</code></dt>
-<dd>[description]</dd>
+<dt><strong><code>atom</code></strong> :&ensp;<code>[<a title="sre.models.LetterAtom" href="#sre.models.LetterAtom">LetterAtom</a>, <a title="sre.models.StarAtom" href="#sre.models.StarAtom">StarAtom</a>]</code></dt>
+<dd>any valid Atom.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>[bool]
-True: if input atom is a subset of (self) atom.
-False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
+True: if <em>atom</em> is a subset of <em>self</em>.
+False: otherwise.</p>
+<h2 id="note">Note</h2>
+<p>(A StarAtom cannot be contained in a LetterAtom.)</p>
 <h2 id="raises">Raises</h2>
 <h2 id="typeerror">Typeerror</h2>
 <p>if anything other than an atom is passed.</p></div>
@@ -403,14 +660,18 @@ False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
 
     Parameters
     ----------
-    atom : [type]
-        [description]
+    atom : [LetterAtom, StarAtom]
+        any valid Atom.
 
     Returns
     -------
     [bool]
-        True: if input atom is a subset of (self) atom.
-        False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+        True: if *atom* is a subset of *self*.
+        False: otherwise.
+
+    Note
+    -----
+    (A StarAtom cannot be contained in a LetterAtom.)
 
     Raises
     ------
@@ -420,11 +681,12 @@ False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
     if not isinstance(atom, Atom):
         raise TypeError(&#34;You can only check if an atom&#34;
                         &#34; contains another atom!&#34;)
+
     if (isinstance(self, LetterAtom)
        and isinstance(atom, StarAtom)):
-        return atom.messages == set()
+        return atom.messages == frozenset()
     else:
-        return set(atom.messages).issubset(set(self.messages))</code></pre>
+        return set(atom).issubset(set(self))</code></pre>
 </details>
 </dd>
 </dl>
@@ -456,14 +718,12 @@ False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
         Raises
         ------
         TypeError:
-            if no message is passed: because a LetterAtom takes
-            messages as arguments (as opposed to a sequence of messages).
-        TypeError:
-            if None is passed.
-        TypeError:
-            if more than one message is passed.
-        TypeError:
-            if anything other than a string is passed.
+            -   if no message is passed: because a LetterAtom
+                takes messages as arguments (as opposed to a
+                sequence of messages).
+            -   if None is passed.
+            -   if more than one message is passed.
+            -   if anything other than a string is passed.
         ValueError:
             if a bad (not allowed) message is passed.
         &#34;&#34;&#34;
@@ -485,14 +745,59 @@ False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
 
         return super().__new__(cls)
 
+    def absorbs(self, other):
+        &#34;&#34;&#34;A letter atom can only absorb ∅*.
+
+        Returns
+        -------
+        [bool]
+            False if other is StarAtom() (i.e. ∅*)
+            True otherwise
+        &#34;&#34;&#34;
+        if not isinstance(other, Atom):
+            raise TypeError(&#34;An atom can only absorb another atom!&#34;)
+
+        return not bool(other)
+
     def __repr__(self):
-        return(f&#34;LetterAtom with {self.messages}&#34;)</code></pre>
+        return(f&#34;LetterAtom with {set(self.messages)}&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.models.LetterAtom.absorbs"><code class="name flex">
+<span>def <span class="ident">absorbs</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A letter atom can only absorb ∅*.</p>
+<h2 id="returns">Returns</h2>
+<p>[bool]
+False if other is StarAtom() (i.e. ∅*)
+True otherwise</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def absorbs(self, other):
+    &#34;&#34;&#34;A letter atom can only absorb ∅*.
+
+    Returns
+    -------
+    [bool]
+        False if other is StarAtom() (i.e. ∅*)
+        True otherwise
+    &#34;&#34;&#34;
+    if not isinstance(other, Atom):
+        raise TypeError(&#34;An atom can only absorb another atom!&#34;)
+
+    return not bool(other)</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></b></code>:
@@ -504,34 +809,38 @@ False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
 </dd>
 <dt id="sre.models.Product"><code class="flex name class">
 <span>class <span class="ident">Product</span></span>
-<span>(</span><span>*objects)</span>
+<span>(</span><span>*messages)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A product is a concatenation (a list) of atoms.</p>
-<h2 id="todo">Todo</h2>
-<ul>
-<li>Make immutable</li>
-</ul></div>
+<p>If another product is passed, decompose it into
+atoms and use the atoms to build the product.</p>
+<p>Note: atoms stored in a tuple because tuples are
+immutable.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Product():
-    &#34;&#34;&#34;
-    A product is a concatenation (a list) of atoms.
+    &#34;&#34;&#34;A product is a concatenation (a list) of atoms.
+
+    If another product is passed, decompose it into
+    atoms and use the atoms to build the product.
+
+    Note: atoms stored in a tuple because tuples are
+          immutable.
     &#34;&#34;&#34;
     def __init__(self, *objects):
-        &#34;&#34;&#34;
-        TODO:
-            - Make immutable
-        &#34;&#34;&#34;
-        self.objects = []
+        self.atoms = []
+
         for object in objects:
             if isinstance(object, Product):
-                for item in object.objects:
-                    self.objects.append(item)
+                for item in object.atoms:
+                    self.atoms.append(item)
             else:
-                self.objects.append(object)
+                self.atoms.append(object)
+
+        self.atoms = tuple(self.atoms)
 
     def contains(self, product):
         &#34;&#34;&#34;This is the symmetric of the entailment
@@ -562,25 +871,29 @@ False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
             else:
                 raise TypeError(&#34;You can only pass a product or an atom!&#34;)
 
-        if not product.objects:
-            # p contains epsilon
+        if self == product:
             return True
-        elif not self.objects:
+
+        if not product.atoms:
+            # product is epsilon
+            # self always contains epsilon
+            return True
+        elif not self.atoms:
             # epsilon does not contain anything
             return False
 
-        e1 = product.objects[0]
-        e2 = self.objects[0]
+        e1 = product.atoms[0]
+        e2 = self.atoms[0]
 
-        if not len(self.objects) &gt; 1:
+        if not len(self.atoms) &gt; 1:
             p2 = Product()
         else:
-            p2 = Product(*self.objects[1:])
+            p2 = Product(*self.atoms[1:])
 
-        if not len(product.objects) &gt; 1:
+        if not len(product.atoms) &gt; 1:
             p1 = Product()
         else:
-            p1 = Product(*product.objects[1:])
+            p1 = Product(*product.atoms[1:])
 
         if (not e2.contains(e1)) and p2.contains(product):
             return True
@@ -593,28 +906,70 @@ False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)</p>
         else:
             return False
 
-    def __new__(cls, *objects):
+    def __new__(cls, *messages):
         &#34;&#34;&#34;
         Only create a product from valid atoms or products.
         &#34;&#34;&#34;
-        for object in objects:
-            if (not isinstance(object, Atom)
-               and not isinstance(object, Product)):
+        for message in messages:
+            if (not isinstance(message, Atom)
+               and not isinstance(message, Product)):
                 raise TypeError(&#34;You need to pass a valid atom or product!&#34;)
 
         return super().__new__(cls)
 
     def __eq__(self, other):
         &#34;&#34;&#34;
-        Structural equality.
+        Semantic equality:
+            Two products are equal iff they have the same messages.
         &#34;&#34;&#34;
         if isinstance(self, type(other)):
-            return self.objects == other.objects
+            other_stars = []
+            other_letters = []
+            for atom in other:
+                for message in atom:
+                    if isinstance(atom, StarAtom):
+                        other_stars.append(message)
+                    elif isinstance(atom, LetterAtom):
+                        other_letters.append(message)
+
+            self_stars = []
+            self_letters = []
+            for atom in self:
+                for message in atom:
+                    if isinstance(atom, StarAtom):
+                        self_stars.append(message)
+                    elif isinstance(atom, LetterAtom):
+                        self_letters.append(message)
+
+            return set(other_stars) == set(self_stars)\
+                and set(other_letters) == set(other_letters)
+
         return False
+
+    def __hash__(self):
+        return hash(self.atoms)
+
+    def __iter__(self):
+        return Iterator(self.atoms)
+
+    def __next__(self):
+        return Iterator.__next__(self.atoms)
+
+    def __len__(self):
+        &#34;&#34;&#34;The number of atoms in a product.
+        Usage:
+        -------
+        len(11)
+
+        Returns
+        -------
+        [int]
+        &#34;&#34;&#34;
+        return len(self.atoms)
 
     def __repr__(self):
         return(&#34;Product with:\n&#34;
-               f&#34;{self.objects}&#34;)</code></pre>
+               f&#34;{list(self.atoms)}&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -670,25 +1025,29 @@ False: otherwise.</p>
         else:
             raise TypeError(&#34;You can only pass a product or an atom!&#34;)
 
-    if not product.objects:
-        # p contains epsilon
+    if self == product:
         return True
-    elif not self.objects:
+
+    if not product.atoms:
+        # product is epsilon
+        # self always contains epsilon
+        return True
+    elif not self.atoms:
         # epsilon does not contain anything
         return False
 
-    e1 = product.objects[0]
-    e2 = self.objects[0]
+    e1 = product.atoms[0]
+    e2 = self.atoms[0]
 
-    if not len(self.objects) &gt; 1:
+    if not len(self.atoms) &gt; 1:
         p2 = Product()
     else:
-        p2 = Product(*self.objects[1:])
+        p2 = Product(*self.atoms[1:])
 
-    if not len(product.objects) &gt; 1:
+    if not len(product.atoms) &gt; 1:
         p1 = Product()
     else:
-        p1 = Product(*product.objects[1:])
+        p1 = Product(*product.atoms[1:])
 
     if (not e2.contains(e1)) and p2.contains(product):
         return True
@@ -706,14 +1065,10 @@ False: otherwise.</p>
 </dd>
 <dt id="sre.models.SRE"><code class="flex name class">
 <span>class <span class="ident">SRE</span></span>
-<span>(</span><span>products)</span>
+<span>(</span><span>*products)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>An SRE is a set of products.</p>
-<h2 id="todo">Todo</h2>
-<ul>
-<li>Make immutable</li>
-</ul></div>
+<div class="desc"><p>An SRE is a set of products.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -722,14 +1077,31 @@ False: otherwise.</p>
     &#34;&#34;&#34;
     An SRE is a set of products.
     &#34;&#34;&#34;
-    def __init__(self, products):
-        &#34;&#34;&#34;
-        TODO:
-            - Make immutable
-        &#34;&#34;&#34;
-        self.messages = set(products)
+    def __init__(self, *products):
+        self.products = frozenset(products)
 
-    def __new__(cls, products):
+    def contains(self, other):
+        &#34;&#34;&#34;
+        An SRE s1 contains an SRE s2 iff every product
+        in s2 is contained in some product in s1.
+
+        Parameters
+        ----------
+        other : [SRE]
+            any valid SRE.
+
+        Returns
+        -------
+        [bool]
+            True: if self contains input SRE.
+            False: otherwise.
+        &#34;&#34;&#34;
+        for second in other:
+            if not any(first.contains(second) for first in self):
+                return False
+        return True
+
+    def __new__(cls, *products):
         &#34;&#34;&#34;
         Only create an SRE from valid products.
         &#34;&#34;&#34;
@@ -739,10 +1111,75 @@ False: otherwise.</p>
 
         return super().__new__(cls)
 
+    def __hash__(self):
+        return hash(self.products)
+
+    def __iter__(self):
+        return Iterator(self.products)
+
+    def __next__(self):
+        return Iterator.__next__(self.products)
+
+    def __len__(self):
+        &#34;&#34;&#34;The number of products in an SRE.
+        Usage
+        -------
+        len(s1)
+
+        Returns
+        -------
+        [int]
+        &#34;&#34;&#34;
+        return len(self.products)
+
     def __repr__(self):
         return (&#34;SRE made with:\n&#34;
-                f&#34;{self.messages}&#34;)</code></pre>
+                f&#34;{set(self.products)}&#34;)</code></pre>
 </details>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.models.SRE.contains"><code class="name flex">
+<span>def <span class="ident">contains</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An SRE s1 contains an SRE s2 iff every product
+in s2 is contained in some product in s1.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>other</code></strong> :&ensp;<code>[<a title="sre.models.SRE" href="#sre.models.SRE">SRE</a>]</code></dt>
+<dd>any valid SRE.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>[bool]
+True: if self contains input SRE.
+False: otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contains(self, other):
+    &#34;&#34;&#34;
+    An SRE s1 contains an SRE s2 iff every product
+    in s2 is contained in some product in s1.
+
+    Parameters
+    ----------
+    other : [SRE]
+        any valid SRE.
+
+    Returns
+    -------
+    [bool]
+        True: if self contains input SRE.
+        False: otherwise.
+    &#34;&#34;&#34;
+    for second in other:
+        if not any(first.contains(second) for first in self):
+            return False
+    return True</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="sre.models.StarAtom"><code class="flex name class">
 <span>class <span class="ident">StarAtom</span></span>
@@ -789,14 +1226,80 @@ False: otherwise.</p>
                                      &#34;a number.&#34;)
         return super().__new__(cls)
 
+    def absorbs(self, other):
+        &#34;&#34;&#34;Absorption test for StarAtom.
+
+        Parameters
+        ----------
+        other : [Atom]
+            any valid Atom
+
+        Returns
+        -------
+        [bool]
+            True if self absorbs other.
+            False otherwise.
+        &#34;&#34;&#34;
+        if not isinstance(other, Atom):
+            raise TypeError(&#34;An atom can only absorb another atom!&#34;)
+
+        for message in other:
+            if not any(first == message for first in self):
+                return False
+        return True
+
     def __repr__(self):
-        return (f&#34;StarAtom with {self.messages}&#34;)</code></pre>
+        return (f&#34;StarAtom with {set(self.messages)}&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></li>
 <li>abc.ABC</li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.models.StarAtom.absorbs"><code class="name flex">
+<span>def <span class="ident">absorbs</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Absorption test for StarAtom.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>other</code></strong> :&ensp;<code>[<a title="sre.models.Atom" href="#sre.models.Atom">Atom</a>]</code></dt>
+<dd>any valid Atom</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>[bool]
+True if self absorbs other.
+False otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def absorbs(self, other):
+    &#34;&#34;&#34;Absorption test for StarAtom.
+
+    Parameters
+    ----------
+    other : [Atom]
+        any valid Atom
+
+    Returns
+    -------
+    [bool]
+        True if self absorbs other.
+        False otherwise.
+    &#34;&#34;&#34;
+    if not isinstance(other, Atom):
+        raise TypeError(&#34;An atom can only absorb another atom!&#34;)
+
+    for message in other:
+        if not any(first == message for first in self):
+            return False
+    return True</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></b></code>:
@@ -825,11 +1328,15 @@ False: otherwise.</p>
 <li>
 <h4><code><a title="sre.models.Atom" href="#sre.models.Atom">Atom</a></code></h4>
 <ul class="">
+<li><code><a title="sre.models.Atom.absorbs" href="#sre.models.Atom.absorbs">absorbs</a></code></li>
 <li><code><a title="sre.models.Atom.contains" href="#sre.models.Atom.contains">contains</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="sre.models.LetterAtom" href="#sre.models.LetterAtom">LetterAtom</a></code></h4>
+<ul class="">
+<li><code><a title="sre.models.LetterAtom.absorbs" href="#sre.models.LetterAtom.absorbs">absorbs</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="sre.models.Product" href="#sre.models.Product">Product</a></code></h4>
@@ -839,9 +1346,15 @@ False: otherwise.</p>
 </li>
 <li>
 <h4><code><a title="sre.models.SRE" href="#sre.models.SRE">SRE</a></code></h4>
+<ul class="">
+<li><code><a title="sre.models.SRE.contains" href="#sre.models.SRE.contains">contains</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="sre.models.StarAtom" href="#sre.models.StarAtom">StarAtom</a></code></h4>
+<ul class="">
+<li><code><a title="sre.models.StarAtom.absorbs" href="#sre.models.StarAtom.absorbs">absorbs</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
@@ -849,9 +1362,7 @@ False: otherwise.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.3</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>

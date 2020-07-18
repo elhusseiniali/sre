@@ -27,8 +27,12 @@ class Atom(ABC):
         Returns
         -------
         [bool]
-            True: if input atom is a subset of (self) atom.
-            False: otherwise. (A StarAtom cannot be contained in a LetterAtom.)
+            True: if *atom* is a subset of *self*.
+            False: otherwise.
+
+        Note
+        -----
+        (A StarAtom cannot be contained in a LetterAtom.)
 
         Raises
         ------
@@ -227,6 +231,7 @@ class Product():
     """
     def __init__(self, *objects):
         self.atoms = []
+
         for object in objects:
             if isinstance(object, Product):
                 for item in object.atoms:
@@ -265,8 +270,12 @@ class Product():
             else:
                 raise TypeError("You can only pass a product or an atom!")
 
+        if self == product:
+            return True
+
         if not product.atoms:
-            # p contains epsilon
+            # product is epsilon
+            # self always contains epsilon
             return True
         elif not self.atoms:
             # epsilon does not contain anything
@@ -309,11 +318,31 @@ class Product():
 
     def __eq__(self, other):
         """
-        Structural equality:
-            Two products are equal iff they have the same atoms.
+        Semantic equality:
+            Two products are equal iff they have the same messages.
         """
         if isinstance(self, type(other)):
-            return self.atoms == other.atoms
+            other_stars = []
+            other_letters = []
+            for atom in other:
+                for message in atom:
+                    if isinstance(atom, StarAtom):
+                        other_stars.append(message)
+                    elif isinstance(atom, LetterAtom):
+                        other_letters.append(message)
+
+            self_stars = []
+            self_letters = []
+            for atom in self:
+                for message in atom:
+                    if isinstance(atom, StarAtom):
+                        self_stars.append(message)
+                    elif isinstance(atom, LetterAtom):
+                        self_letters.append(message)
+
+            return set(other_stars) == set(self_stars)\
+                and set(other_letters) == set(other_letters)
+
         return False
 
     def __hash__(self):
