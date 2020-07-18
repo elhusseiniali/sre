@@ -1,5 +1,6 @@
 # A library to handle Simple Regular Expressions.
 ![build](https://github.com/elhusseiniali/sre/workflows/build/badge.svg)
+[![Known Vulnerabilities](https://snyk.io/test/github/elhusseiniali/sre/badge.svg)](https://snyk.io/test/github/elhusseiniali/sre)
 
 
 The purpose of this library is to provide an implementation of the work done in [1].  
