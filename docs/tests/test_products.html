@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.3" />
-<title>tests.test_products API documentation</title>
+<title>sre.tests.test_products API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>tests.test_products</code></h1>
+<h1 class="title">Module <code>sre.tests.test_products</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -202,7 +202,7 @@ assert not as.contains(Product(ea,abs,eb))
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="tests.test_products.TestProduct"><code class="flex name class">
+<dt id="sre.tests.test_products.TestProduct"><code class="flex name class">
 <span>class <span class="ident">TestProduct</span></span>
 </code></dt>
 <dd>
@@ -331,7 +331,7 @@ assert not as.contains(Product(ea,abs,eb))
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="tests.test_products.TestProduct.test_composite_empty_entailment"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_composite_empty_entailment"><code class="name flex">
 <span>def <span class="ident">test_composite_empty_entailment</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -345,7 +345,7 @@ assert not as.contains(Product(ea,abs,eb))
     assert Product().contains(Product(StarAtom()))</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_containment_naive_success"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_containment_naive_success"><code class="name flex">
 <span>def <span class="ident">test_containment_naive_success</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -364,7 +364,7 @@ def test_containment_naive_success(self, x):
     assert p2.contains(p1)</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_containment_success"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_containment_success"><code class="name flex">
 <span>def <span class="ident">test_containment_success</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -383,7 +383,7 @@ def test_containment_naive_success(self, x):
     assert p1.contains(p2)</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_create_from_product"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_create_from_product"><code class="name flex">
 <span>def <span class="ident">test_create_from_product</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -418,7 +418,7 @@ def test_create_from_product(self, x, y):
     assert p2.atoms == tuple([e1, e2])</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_creation_from_bad_objects"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_creation_from_bad_objects"><code class="name flex">
 <span>def <span class="ident">test_creation_from_bad_objects</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -433,7 +433,7 @@ def test_creation_from_bad_objects(self, x):
     Product(*x)</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_empty_containment"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_empty_containment"><code class="name flex">
 <span>def <span class="ident">test_empty_containment</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -451,7 +451,7 @@ def test_empty_containment(self, x):
     assert not p0.contains(p1)</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_entailment_failure"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_entailment_failure"><code class="name flex">
 <span>def <span class="ident">test_entailment_failure</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -474,7 +474,7 @@ def test_entailment_failure(self, x, y):
     assert not p1.contains(p2)</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_entailment_success"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_entailment_success"><code class="name flex">
 <span>def <span class="ident">test_entailment_success</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -510,7 +510,7 @@ def test_entailment_success(self, x, y):
     assert p2.contains(p1)</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_letter_atom"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_letter_atom"><code class="name flex">
 <span>def <span class="ident">test_letter_atom</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -527,7 +527,7 @@ def test_letter_atom(self, x):
     assert p</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_star_atom"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_star_atom"><code class="name flex">
 <span>def <span class="ident">test_star_atom</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -544,7 +544,7 @@ def test_star_atom(self, x):
     assert p</code></pre>
 </details>
 </dd>
-<dt id="tests.test_products.TestProduct.test_two_mixed_atoms"><code class="name flex">
+<dt id="sre.tests.test_products.TestProduct.test_two_mixed_atoms"><code class="name flex">
 <span>def <span class="ident">test_two_mixed_atoms</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -576,25 +576,25 @@ def test_two_mixed_atoms(self, x, y):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="tests" href="index.html">tests</a></code></li>
+<li><code><a title="sre.tests" href="index.html">sre.tests</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="tests.test_products.TestProduct" href="#tests.test_products.TestProduct">TestProduct</a></code></h4>
+<h4><code><a title="sre.tests.test_products.TestProduct" href="#sre.tests.test_products.TestProduct">TestProduct</a></code></h4>
 <ul class="">
-<li><code><a title="tests.test_products.TestProduct.test_composite_empty_entailment" href="#tests.test_products.TestProduct.test_composite_empty_entailment">test_composite_empty_entailment</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_containment_naive_success" href="#tests.test_products.TestProduct.test_containment_naive_success">test_containment_naive_success</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_containment_success" href="#tests.test_products.TestProduct.test_containment_success">test_containment_success</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_create_from_product" href="#tests.test_products.TestProduct.test_create_from_product">test_create_from_product</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_creation_from_bad_objects" href="#tests.test_products.TestProduct.test_creation_from_bad_objects">test_creation_from_bad_objects</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_empty_containment" href="#tests.test_products.TestProduct.test_empty_containment">test_empty_containment</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_entailment_failure" href="#tests.test_products.TestProduct.test_entailment_failure">test_entailment_failure</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_entailment_success" href="#tests.test_products.TestProduct.test_entailment_success">test_entailment_success</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_letter_atom" href="#tests.test_products.TestProduct.test_letter_atom">test_letter_atom</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_star_atom" href="#tests.test_products.TestProduct.test_star_atom">test_star_atom</a></code></li>
-<li><code><a title="tests.test_products.TestProduct.test_two_mixed_atoms" href="#tests.test_products.TestProduct.test_two_mixed_atoms">test_two_mixed_atoms</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_composite_empty_entailment" href="#sre.tests.test_products.TestProduct.test_composite_empty_entailment">test_composite_empty_entailment</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_containment_naive_success" href="#sre.tests.test_products.TestProduct.test_containment_naive_success">test_containment_naive_success</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_containment_success" href="#sre.tests.test_products.TestProduct.test_containment_success">test_containment_success</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_create_from_product" href="#sre.tests.test_products.TestProduct.test_create_from_product">test_create_from_product</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_creation_from_bad_objects" href="#sre.tests.test_products.TestProduct.test_creation_from_bad_objects">test_creation_from_bad_objects</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_empty_containment" href="#sre.tests.test_products.TestProduct.test_empty_containment">test_empty_containment</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_entailment_failure" href="#sre.tests.test_products.TestProduct.test_entailment_failure">test_entailment_failure</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_entailment_success" href="#sre.tests.test_products.TestProduct.test_entailment_success">test_entailment_success</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_letter_atom" href="#sre.tests.test_products.TestProduct.test_letter_atom">test_letter_atom</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_star_atom" href="#sre.tests.test_products.TestProduct.test_star_atom">test_star_atom</a></code></li>
+<li><code><a title="sre.tests.test_products.TestProduct.test_two_mixed_atoms" href="#sre.tests.test_products.TestProduct.test_two_mixed_atoms">test_two_mixed_atoms</a></code></li>
 </ul>
 </li>
 </ul>
