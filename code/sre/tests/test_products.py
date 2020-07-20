@@ -9,7 +9,7 @@ from hypothesis.strategies import from_regex, lists, integers, sets
 import pytest
 
 
-class TestProduct():
+class TestCreation():
     @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
     def test_star_atom(self, x):
         e1 = StarAtom(*x)
@@ -51,17 +51,10 @@ class TestProduct():
         p1 = Product(e1)
         p2 = Product(p1, e2)
 
-        """all_atom_messages = e1.messages.union(e2.messages)
-        all_product_items = []
-
-        for object in p2.objects:
-            for message in object.messages:
-                all_product_items.append(message)
-
-        assert all_atom_messages == set(all_product_items)"""
-
         assert p2.atoms == tuple([e1, e2])
 
+
+class TestEntailment():
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
     def test_containment_naive_success(self, x):
         e1 = StarAtom(*x)
@@ -90,16 +83,16 @@ class TestProduct():
 
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
            sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
-    def test_entailment_success(self, x, y):
-        """
-        Input:
-            x, y: sets of allowed messages
+    def test_general_containment_success(self, x, y):
+        """Check that a bigger product contains a smaller one.
+
+        Parameters
+        ----------
+        x, y : [set]
+            sets of allowed messages.
 
         e1 = StarAtom(x)
         e2 = StarAtom(x UNION y)
-
-        Output:
-
         """
         z = set.union(x, y)
         e1 = StarAtom(*x)
@@ -113,7 +106,7 @@ class TestProduct():
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
            max_size=2),
            sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
-    def test_entailment_failure(self, x, y):
+    def test_containment_failure(self, x, y):
         z = set.union(x, y)
         e1 = StarAtom(*x)
         e2 = StarAtom(*z)
@@ -123,9 +116,15 @@ class TestProduct():
 
         assert not p1.contains(p2)
 
-    def test_composite_empty_entailment(self):
-        assert Product(StarAtom()).contains(Product())
-        assert Product().contains(Product(StarAtom()))
+    def test_plain_empty_containment(self):
+        """ Check that the empty product and the product made with the empty
+        StarAtom contain each other.
+        """
+        p1 = Product(StarAtom())
+        p2 = Product()
+
+        assert p1.contains(p2)
+        assert p2.contains(p1)
 
 
 '''Some suggestions for more entailment tests:

@@ -271,6 +271,7 @@ class Product():
                 raise TypeError("You can only pass a product or an atom!")
 
         if self == product:
+            # if both products are semantically equal
             return True
 
         if not product.atoms:
@@ -305,6 +306,29 @@ class Product():
         else:
             return False
 
+    def messages(self):
+        """Return a list of all messages.
+        Messages in star atoms are put in sets.
+        Returns
+        -------
+        [list]
+            A list of sets and strings.
+            Messages from consecutive StarAtoms are placed in a set.
+        """
+        messages = []
+        stars = []
+
+        for atom in self:
+            if isinstance(atom, StarAtom):
+                stars = stars + list(atom.messages)
+            else:
+                messages = messages + [set(stars)]
+                messages = messages + list(atom.messages)
+                stars = []
+        messages = messages + [set(stars)]
+
+        return messages
+
     def __new__(cls, *messages):
         """
         Only create a product from valid atoms or products.
@@ -322,26 +346,7 @@ class Product():
             Two products are equal iff they have the same messages.
         """
         if isinstance(self, type(other)):
-            other_stars = []
-            other_letters = []
-            for atom in other:
-                for message in atom:
-                    if isinstance(atom, StarAtom):
-                        other_stars.append(message)
-                    elif isinstance(atom, LetterAtom):
-                        other_letters.append(message)
-
-            self_stars = []
-            self_letters = []
-            for atom in self:
-                for message in atom:
-                    if isinstance(atom, StarAtom):
-                        self_stars.append(message)
-                    elif isinstance(atom, LetterAtom):
-                        self_letters.append(message)
-
-            return set(other_stars) == set(self_stars)\
-                and set(other_letters) == set(other_letters)
+            return self.messages() == other.messages()
 
         return False
 
