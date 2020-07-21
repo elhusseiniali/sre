@@ -381,7 +381,14 @@ class SRE():
     An SRE is a set of products.
     """
     def __init__(self, *products):
-        self.products = frozenset(products)
+        self.products = []
+        for product in products:
+            if isinstance(product, Atom):
+                self.products.append(Product(product))
+            else:
+                self.products.append(product)
+
+        self.products = frozenset(self.products)
 
     def contains(self, other):
         """
@@ -410,7 +417,9 @@ class SRE():
         """
         for product in products:
             if not isinstance(product, Product):
-                raise TypeError("You need to pass a valid product!")
+                if not isinstance(product, Atom):
+                    raise TypeError("You need to pass a valid product"
+                                    " or atom!")
 
         return super().__new__(cls)
 
