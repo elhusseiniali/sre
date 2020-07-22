@@ -73,7 +73,7 @@ class TestEntailment():
         @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
                sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
         def test_general_containment_success(self, x, y):
-            """Check that a bigger SRE contains a smaller one.
+            """Check that a bigger (or equal) SRE contains a smaller one.
 
             Parameters
             ----------

@@ -413,7 +413,7 @@ class SRE():
 
     def __new__(cls, *products):
         """
-        Only create an SRE from valid products.
+        Only create an SRE from valid products or atoms.
         """
         for product in products:
             if not isinstance(product, Product):
