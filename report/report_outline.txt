@@ -17,7 +17,19 @@
           hash-consing techniques [BRB90], allowing unit-time entailment test.
 
     [****************]
+2. SREs and computing with downward-closed languages 5-6p
+    2.0. motivations
+    2.1. definition and expressiveness
+    2.2. entailment and normal forms
+    2.3. post-image in verification
+3. Implementing an SRE library 2-3p
+    3.1. Tools and design decisions(?) [section 3 described below]
+    3.2. Discuss classes
+4. Related work 1-2p
+5. Conclusion
+    [****************]
 
+[move to the end]
 2.  Related work
     2.1. the authors implemented their work using TreX, to verify the following examples:
     [list examples].
@@ -33,18 +45,34 @@
         ***Here I am only writing based on my own intuition:***
         However, the work is not as developed for the purposes of this internship: more constructions need to be made to apply
         the work for our purposes.
+
+        notes from phs:
+            they generalize SREs (see message on slack for specific sections)
+            a WQO is a more general set than an alphabet (alphabet: ordering is trivial)
+            SREs for arbitrary WQO; similar algorithms that worry about ordering, and sometimes not PTIME
+            a product is an ideal
+            sre is downward-closed language
+            some section for subwords and using SREs
+            overall the paper is much more general than [ACBJ04].
+            this means the algorithms too powerful/general than the ones in [ACBJ04].
         2.2.2.   [Boigelot] symbolic Verification of Communication Protocols with Infinite State Spaces using QDDs
         The authors of this paper have similar purposes to those in [ACBJ04], but their approach is different: they use
         more traditional automata (QDDs) to achieve their goals.
         ***I don't really know why we chose [ACBJ04] over this; for me, the way we did things was more fun;
         I think dealing with regular expressions is more interesting than working with automata.***
+        notes from phs:
+            languages here are not downwad-closed (because systems are not lossy)
+            downward-closed operations are faster but more complicated (lossy channels); handling SREs
+            is simpler than handling automata (because downwards-closed languages); lemma 6.4. is their work
+            for SREs
+
 
 3.  Tools used
     3.1. Python: pytest, hypothesis
     3.2. GitHub: repo (host code), actions (to run tests),
                  pages (host documentation), projects (kanban)
 
-4.  Data structures:
+4.  Implementation:
     Maybe the most fundamental building block is the ALLOWED_MESSAGE: a regular
     expression defined in __init__.py. This allows us to construct strings of
     an accepted format to pass as messages to our classes.
@@ -60,3 +88,7 @@
 6.  Conclusion
     At the very least, we managed to provide a modern, well-written library to allow for the verification of some protocols.
     I don't yet know how much of the work will be done, so I'll write this at the end.
+
+
+
+SREs and SREs for Downwards closed languages

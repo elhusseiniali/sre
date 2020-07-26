@@ -271,7 +271,10 @@ class Product():
                 raise TypeError("You can only pass a product or an atom!")
 
         if self == product:
-            # if both products are semantically equal
+            # if both products are structurally equal
+            return True
+
+        if self.messages() == product.messages():
             return True
 
         if not product.atoms:
@@ -308,26 +311,36 @@ class Product():
 
     def messages(self):
         """Return a list of all messages.
-        Messages in star atoms are put in sets.
+
         Returns
         -------
         [list]
-            A list of sets and strings.
-            Messages from consecutive StarAtoms are placed in a set.
+            A list of sets (of messages in StarAtoms)
+            and strings (messages from LetterAtoms).
         """
         messages = []
-        stars = []
 
         for atom in self:
             if isinstance(atom, StarAtom):
-                stars = stars + list(atom.messages)
-            else:
-                messages = messages + [set(stars)]
-                messages = messages + list(atom.messages)
-                stars = []
-        messages = messages + [set(stars)]
+                if atom.messages:
+                    messages.append(set(atom.messages))
+            elif isinstance(atom, LetterAtom):
+                messages.append(*atom.messages)
 
         return messages
+
+    def is_normal(self):
+
+        for i in range(len(self) - 1):
+            if(
+                Product(self.atoms[i], self.atoms[i+1]).contains(self.atoms[i])
+               or
+                Product(self.atoms[i]).contains(self.atoms[i], self.atoms[i+1])
+               or
+                not self.atoms[i]
+               ):
+                return False
+        return True
 
     def __new__(cls, *messages):
         """
@@ -342,11 +355,11 @@ class Product():
 
     def __eq__(self, other):
         """
-        Semantic equality:
-            Two products are equal iff they have the same messages.
+        Structural equality:
+            Two products are equal iff they have the same structure.
         """
         if isinstance(self, type(other)):
-            return self.messages() == other.messages()
+            return self.atoms == other.atoms
 
         return False
 
