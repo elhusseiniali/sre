@@ -330,17 +330,48 @@ class Product():
         return messages
 
     def is_normal(self):
+        """Check if a product is normal, as per definition 5.2.
+        Change made: a normal product does not have empty atoms inside.
 
+        Returns
+        -------
+        [bool]
+            True if self is normal, False otherwise.
+        """
         for i in range(len(self) - 1):
             if(
-                Product(self.atoms[i], self.atoms[i+1]).contains(self.atoms[i])
+                Product(self.atoms[i],
+                        self.atoms[i+1]).contains(Product(self.atoms[i]))
                or
-                Product(self.atoms[i]).contains(self.atoms[i], self.atoms[i+1])
+                Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                        self.atoms[i+1]))
                or
                 not self.atoms[i]
                ):
                 return False
         return True
+
+    def normalize(self):
+        """Normalize a product (Definition 5.2. in [ACBJ04]).
+        Change made: a normal product does not have empty atoms inside.
+        self is modified.
+        """
+        discard = []
+        for i in range(len(self) - 1):
+            if Product(self.atoms[i],
+                       self.atoms[i+1]).contains(Product(self.atoms[i])):
+                discard.append(i)
+            elif Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                         self.atoms[i+1])):
+                discard.append(i+1)
+            elif not self.atoms[i]:
+                discard.append(i)
+
+        atoms = list(self.atoms)
+        for index in sorted(discard, reverse=True):
+            del atoms[index]
+
+        self.atoms = tuple(atoms)
 
     def __new__(cls, *messages):
         """
@@ -423,6 +454,39 @@ class SRE():
             if not any(first.contains(second) for first in self):
                 return False
         return True
+
+    def is_normal(self):
+        """An SRE is normal iff all the products inside it are normal.
+        (Lemma 5.4)
+        Returns
+        -------
+        [bool]
+            True if self is normal, False otherwise.
+        """
+        for product in self:
+            if not product.is_normal():
+                return False
+        return True
+
+    def messages(self):
+        """
+        Returns
+        -------
+        [set]
+            All messages in an SRE.
+        """
+        messages = []
+        for product in self:
+            for atom in product:
+                messages.extend(atom.messages)
+        return set(messages)
+
+    def normalize(self):
+        """Normalize self.
+        """
+        for product in self:
+            if not product.is_normal():
+                product.normalize()
 
     def __new__(cls, *products):
         """
