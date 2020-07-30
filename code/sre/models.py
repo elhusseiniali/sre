@@ -456,17 +456,48 @@ class SRE():
         return True
 
     def is_normal(self):
-        """An SRE is normal iff all the products inside it are normal.
-        (Lemma 5.4)
+        """An SRE is normal iff no two products contain each other, and
+        all products are normal.
+        (Definition 5.3.)
         Returns
         -------
         [bool]
             True if self is normal, False otherwise.
         """
-        for product in self:
-            if not product.is_normal():
+        products = list(self.products)
+        for i in range(len(self)):
+            if not products[i].is_normal():
                 return False
+
+            for j in range(len(self)):
+                if i != j:
+                    if products[i].contains(products[j]):
+                        return False
+                    elif products[j].contains(products[i]):
+                        return False
         return True
+
+    def normalize(self):
+        """Normalize self.
+        """
+        products = list(self.products)
+        discard = []
+        for i in range(len(self)):
+            if not products[i].is_normal():
+                products[i].normalize()
+
+            for j in range(len(self)):
+                if i != j:
+                    if products[i].contains(products[j]):
+                        discard.append(j)
+                    elif products[j].contains(products[i]):
+                        discard.append(i)
+        discard = set(discard)
+
+        for index in sorted(discard, reverse=True):
+            del products[index]
+
+        self.products = frozenset(products)
 
     def messages(self):
         """
@@ -480,13 +511,6 @@ class SRE():
             for atom in product:
                 messages.extend(atom.messages)
         return set(messages)
-
-    def normalize(self):
-        """Normalize self.
-        """
-        for product in self:
-            if not product.is_normal():
-                product.normalize()
 
     def __new__(cls, *products):
         """
