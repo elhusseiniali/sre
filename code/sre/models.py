@@ -371,7 +371,7 @@ class Product():
         for index in sorted(discard, reverse=True):
             del atoms[index]
 
-        self.atoms = tuple(atoms)
+        return SRE(*atoms)
 
     def __new__(cls, *messages):
         """
@@ -497,7 +497,7 @@ class SRE():
         for index in sorted(discard, reverse=True):
             del products[index]
 
-        self.products = frozenset(products)
+        return SRE(*products)
 
     def messages(self):
         """
