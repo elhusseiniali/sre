@@ -373,6 +373,59 @@ class Product():
 
         return SRE(*atoms)
 
+    def read(self, message):
+        """This is part of Lemma 6.1.
+        Compute the effect of a single operation (read) on a product.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new product that represents the resulting language.
+        """
+        if not ALLOWED_MESSAGES.match(message):
+            raise ValueError("You can only pass an allowed message!")
+
+        if not self:
+            # Reading from the empty product
+            # returns the empty language.
+            # Note to self: revise this.
+            return self
+
+        e = self.atoms[0]
+
+        try:
+            p1 = Product(self.atoms[1:])
+        except Exception:
+            p1 = Product()
+
+        if e.contains(LetterAtom(message)):
+            if isinstance(e, StarAtom):
+                return self
+            elif isinstance(e, LetterAtom):
+                return p1
+        else:
+            return p1.read(message)
+
+    def write(self, message):
+        """This is part of Lemma 6.1.
+        Compute the effect of a single operation (write) on a product.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new product that represents the resulting language, i.e.
+        just concatenating a LetterAtom(message) to the old product.
+        """
+        return Product(self, LetterAtom(message))
+
     def __new__(cls, *messages):
         """
         Only create a product from valid atoms or products.
@@ -511,6 +564,38 @@ class SRE():
             for atom in product:
                 messages.extend(atom.messages)
         return set(messages)
+
+    def read(self, message):
+        """This is part of Lemma 6.1.
+        Compute the effect of a single operation (read) on an SRE.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new SRE that represents the resulting language, i.e. the union
+        of all the products in the SRE after applying the operation to them.
+        """
+        return SRE(*set(product.read(message) for product in self))
+
+    def write(self, message):
+        """This is part of Lemma 6.1.
+        Compute the effect of a single operation (write) on an SRE.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new SRE that represents the resulting language, i.e. the union
+        of all the products in the SRE after applying the operation to them.
+        """
+        return SRE(*set(product.write(message) for product in self))
 
     def __new__(cls, *products):
         """
