@@ -22,6 +22,121 @@
 <h1 class="title">Module <code>sre.tests.test_sre</code></h1>
 </header>
 <section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from sre.models import StarAtom, LetterAtom
+from sre.models import Product
+from sre.models import SRE
+
+from sre import ALLOWED_MESSAGES
+
+from hypothesis import given
+from hypothesis.strategies import from_regex, sets
+
+import pytest
+
+
+class TestCreation():
+    def test_simple_creation(self):
+        &#34;&#34;&#34;Check that we can plainly create an SRE from atoms
+        or from products.
+        &#34;&#34;&#34;
+        e1 = StarAtom(&#34;start&#34;, &#34;stop&#34;)
+        e2 = LetterAtom(&#34;reset&#34;)
+        e3 = StarAtom(&#34;help&#34;)
+
+        p1 = Product(e1, e2)
+        p2 = Product(e3)
+
+        s1 = SRE(p1, p2)
+        s2 = SRE(e1, e2, e3)
+        assert s1
+        assert s2
+
+    def test_empty_creation(self):
+        &#34;&#34;&#34;Check that we can create an SRe from the empty StarAtom
+        or from the empty Product, or from Product(StarAtom()).
+        &#34;&#34;&#34;
+        e1 = StarAtom()
+        p1 = Product(e1)
+        p2 = Product()
+
+        s1 = SRE(p1, p2)
+
+        assert s1
+
+    @pytest.mark.xfail(raises=TypeError)
+    def test_bad_creation(self):
+        &#34;&#34;&#34;Check that creation fails with some non-atom/non-product.
+        &#34;&#34;&#34;
+        s1 = SRE(1, 2, 3)
+        assert not s1
+
+
+class TestEntailment():
+    def test_naive_containment(self):
+        &#34;&#34;&#34;Check that two SREs made of the same products contain each other.
+        Also check that an SRE made from a product made of one atom,
+        contains an SRE made of the atom directly.
+        &#34;&#34;&#34;
+        e1 = StarAtom(&#34;start&#34;)
+        p1 = Product(e1)
+
+        s0 = SRE()
+        s1 = SRE(p1)
+        s2 = SRE(p1)
+        s3 = SRE(e1)
+
+        assert s1.contains(s2)
+        assert s2.contains(s1)
+        assert s1.contains(s0)
+        assert s2.contains(s0)
+        assert not s0.contains(s1)
+        assert not s0.contains(s2)
+        assert s3.contains(s1)
+        assert s1.contains(s3)
+
+        @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
+               sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
+        def test_general_containment_success(self, x, y):
+            &#34;&#34;&#34;Check that a bigger (or equal) SRE contains a smaller one.
+
+            Parameters
+            ----------
+            x, y : [set]
+                sets of allowed messages.
+            &#34;&#34;&#34;
+            z = set.union(x, y)
+            e1 = StarAtom(*x)
+            e2 = StarAtom(*z)
+
+            s1 = SRE(e1)
+            s2 = SRE(e2)
+
+            assert s2.contains(s1)
+
+        @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
+               max_size=2),
+               sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
+        def test_containment_failure(self, x, y):
+            &#34;&#34;&#34;Check that a smaller SRE does not contain a larger one.
+
+            Parameters
+            ----------
+            x, y : [set]
+                sets of allowed messages.
+            &#34;&#34;&#34;
+            z = set.union(x, y)
+            e1 = StarAtom(*x)
+            e2 = StarAtom(*z)
+
+            s1 = SRE(e1)
+            s2 = SRE(e2)
+
+            assert not s1.contains(s2)</code></pre>
+</details>
 </section>
 <section>
 </section>
@@ -30,6 +145,273 @@
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="sre.tests.test_sre.TestCreation"><code class="flex name class">
+<span>class <span class="ident">TestCreation</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestCreation():
+    def test_simple_creation(self):
+        &#34;&#34;&#34;Check that we can plainly create an SRE from atoms
+        or from products.
+        &#34;&#34;&#34;
+        e1 = StarAtom(&#34;start&#34;, &#34;stop&#34;)
+        e2 = LetterAtom(&#34;reset&#34;)
+        e3 = StarAtom(&#34;help&#34;)
+
+        p1 = Product(e1, e2)
+        p2 = Product(e3)
+
+        s1 = SRE(p1, p2)
+        s2 = SRE(e1, e2, e3)
+        assert s1
+        assert s2
+
+    def test_empty_creation(self):
+        &#34;&#34;&#34;Check that we can create an SRe from the empty StarAtom
+        or from the empty Product, or from Product(StarAtom()).
+        &#34;&#34;&#34;
+        e1 = StarAtom()
+        p1 = Product(e1)
+        p2 = Product()
+
+        s1 = SRE(p1, p2)
+
+        assert s1
+
+    @pytest.mark.xfail(raises=TypeError)
+    def test_bad_creation(self):
+        &#34;&#34;&#34;Check that creation fails with some non-atom/non-product.
+        &#34;&#34;&#34;
+        s1 = SRE(1, 2, 3)
+        assert not s1</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.tests.test_sre.TestCreation.test_bad_creation"><code class="name flex">
+<span>def <span class="ident">test_bad_creation</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check that creation fails with some non-atom/non-product.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@pytest.mark.xfail(raises=TypeError)
+def test_bad_creation(self):
+    &#34;&#34;&#34;Check that creation fails with some non-atom/non-product.
+    &#34;&#34;&#34;
+    s1 = SRE(1, 2, 3)
+    assert not s1</code></pre>
+</details>
+</dd>
+<dt id="sre.tests.test_sre.TestCreation.test_empty_creation"><code class="name flex">
+<span>def <span class="ident">test_empty_creation</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check that we can create an SRe from the empty StarAtom
+or from the empty Product, or from Product(StarAtom()).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_empty_creation(self):
+    &#34;&#34;&#34;Check that we can create an SRe from the empty StarAtom
+    or from the empty Product, or from Product(StarAtom()).
+    &#34;&#34;&#34;
+    e1 = StarAtom()
+    p1 = Product(e1)
+    p2 = Product()
+
+    s1 = SRE(p1, p2)
+
+    assert s1</code></pre>
+</details>
+</dd>
+<dt id="sre.tests.test_sre.TestCreation.test_simple_creation"><code class="name flex">
+<span>def <span class="ident">test_simple_creation</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check that we can plainly create an SRE from atoms
+or from products.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_simple_creation(self):
+    &#34;&#34;&#34;Check that we can plainly create an SRE from atoms
+    or from products.
+    &#34;&#34;&#34;
+    e1 = StarAtom(&#34;start&#34;, &#34;stop&#34;)
+    e2 = LetterAtom(&#34;reset&#34;)
+    e3 = StarAtom(&#34;help&#34;)
+
+    p1 = Product(e1, e2)
+    p2 = Product(e3)
+
+    s1 = SRE(p1, p2)
+    s2 = SRE(e1, e2, e3)
+    assert s1
+    assert s2</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="sre.tests.test_sre.TestEntailment"><code class="flex name class">
+<span>class <span class="ident">TestEntailment</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestEntailment():
+    def test_naive_containment(self):
+        &#34;&#34;&#34;Check that two SREs made of the same products contain each other.
+        Also check that an SRE made from a product made of one atom,
+        contains an SRE made of the atom directly.
+        &#34;&#34;&#34;
+        e1 = StarAtom(&#34;start&#34;)
+        p1 = Product(e1)
+
+        s0 = SRE()
+        s1 = SRE(p1)
+        s2 = SRE(p1)
+        s3 = SRE(e1)
+
+        assert s1.contains(s2)
+        assert s2.contains(s1)
+        assert s1.contains(s0)
+        assert s2.contains(s0)
+        assert not s0.contains(s1)
+        assert not s0.contains(s2)
+        assert s3.contains(s1)
+        assert s1.contains(s3)
+
+        @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
+               sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
+        def test_general_containment_success(self, x, y):
+            &#34;&#34;&#34;Check that a bigger (or equal) SRE contains a smaller one.
+
+            Parameters
+            ----------
+            x, y : [set]
+                sets of allowed messages.
+            &#34;&#34;&#34;
+            z = set.union(x, y)
+            e1 = StarAtom(*x)
+            e2 = StarAtom(*z)
+
+            s1 = SRE(e1)
+            s2 = SRE(e2)
+
+            assert s2.contains(s1)
+
+        @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
+               max_size=2),
+               sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
+        def test_containment_failure(self, x, y):
+            &#34;&#34;&#34;Check that a smaller SRE does not contain a larger one.
+
+            Parameters
+            ----------
+            x, y : [set]
+                sets of allowed messages.
+            &#34;&#34;&#34;
+            z = set.union(x, y)
+            e1 = StarAtom(*x)
+            e2 = StarAtom(*z)
+
+            s1 = SRE(e1)
+            s2 = SRE(e2)
+
+            assert not s1.contains(s2)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.tests.test_sre.TestEntailment.test_naive_containment"><code class="name flex">
+<span>def <span class="ident">test_naive_containment</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check that two SREs made of the same products contain each other.
+Also check that an SRE made from a product made of one atom,
+contains an SRE made of the atom directly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_naive_containment(self):
+    &#34;&#34;&#34;Check that two SREs made of the same products contain each other.
+    Also check that an SRE made from a product made of one atom,
+    contains an SRE made of the atom directly.
+    &#34;&#34;&#34;
+    e1 = StarAtom(&#34;start&#34;)
+    p1 = Product(e1)
+
+    s0 = SRE()
+    s1 = SRE(p1)
+    s2 = SRE(p1)
+    s3 = SRE(e1)
+
+    assert s1.contains(s2)
+    assert s2.contains(s1)
+    assert s1.contains(s0)
+    assert s2.contains(s0)
+    assert not s0.contains(s1)
+    assert not s0.contains(s2)
+    assert s3.contains(s1)
+    assert s1.contains(s3)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
+    def test_general_containment_success(self, x, y):
+        &#34;&#34;&#34;Check that a bigger (or equal) SRE contains a smaller one.
+
+        Parameters
+        ----------
+        x, y : [set]
+            sets of allowed messages.
+        &#34;&#34;&#34;
+        z = set.union(x, y)
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*z)
+
+        s1 = SRE(e1)
+        s2 = SRE(e2)
+
+        assert s2.contains(s1)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
+           max_size=2),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
+    def test_containment_failure(self, x, y):
+        &#34;&#34;&#34;Check that a smaller SRE does not contain a larger one.
+
+        Parameters
+        ----------
+        x, y : [set]
+            sets of allowed messages.
+        &#34;&#34;&#34;
+        z = set.union(x, y)
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*z)
+
+        s1 = SRE(e1)
+        s2 = SRE(e2)
+
+        assert not s1.contains(s2)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -41,6 +423,24 @@
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="sre.tests" href="index.html">sre.tests</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="sre.tests.test_sre.TestCreation" href="#sre.tests.test_sre.TestCreation">TestCreation</a></code></h4>
+<ul class="">
+<li><code><a title="sre.tests.test_sre.TestCreation.test_bad_creation" href="#sre.tests.test_sre.TestCreation.test_bad_creation">test_bad_creation</a></code></li>
+<li><code><a title="sre.tests.test_sre.TestCreation.test_empty_creation" href="#sre.tests.test_sre.TestCreation.test_empty_creation">test_empty_creation</a></code></li>
+<li><code><a title="sre.tests.test_sre.TestCreation.test_simple_creation" href="#sre.tests.test_sre.TestCreation.test_simple_creation">test_simple_creation</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sre.tests.test_sre.TestEntailment" href="#sre.tests.test_sre.TestEntailment">TestEntailment</a></code></h4>
+<ul class="">
+<li><code><a title="sre.tests.test_sre.TestEntailment.test_naive_containment" href="#sre.tests.test_sre.TestEntailment.test_naive_containment">test_naive_containment</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

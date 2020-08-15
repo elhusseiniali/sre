@@ -299,6 +299,10 @@ class Product():
                 raise TypeError(&#34;You can only pass a product or an atom!&#34;)
 
         if self == product:
+            # if both products are structurally equal
+            return True
+
+        if self.messages() == product.messages():
             return True
 
         if not product.atoms:
@@ -333,6 +337,123 @@ class Product():
         else:
             return False
 
+    def messages(self):
+        &#34;&#34;&#34;Return a list of all messages.
+
+        Returns
+        -------
+        [list]
+            A list of sets (of messages in StarAtoms)
+            and strings (messages from LetterAtoms).
+        &#34;&#34;&#34;
+        messages = []
+
+        for atom in self:
+            if isinstance(atom, StarAtom):
+                if atom.messages:
+                    messages.append(set(atom.messages))
+            elif isinstance(atom, LetterAtom):
+                messages.append(*atom.messages)
+
+        return messages
+
+    def is_normal(self):
+        &#34;&#34;&#34;Check if a product is normal, as per definition 5.2.
+        Change made: a normal product does not have empty atoms inside.
+
+        Returns
+        -------
+        [bool]
+            True if self is normal, False otherwise.
+        &#34;&#34;&#34;
+        for i in range(len(self) - 1):
+            if(
+                Product(self.atoms[i],
+                        self.atoms[i+1]).contains(Product(self.atoms[i]))
+               or
+                Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                        self.atoms[i+1]))
+               or
+                not self.atoms[i]
+               ):
+                return False
+        return True
+
+    def normalize(self):
+        &#34;&#34;&#34;Normalize a product (Definition 5.2. in [ACBJ04]).
+        Change made: a normal product does not have empty atoms inside.
+        self is modified.
+        &#34;&#34;&#34;
+        discard = []
+        for i in range(len(self) - 1):
+            if Product(self.atoms[i],
+                       self.atoms[i+1]).contains(Product(self.atoms[i])):
+                discard.append(i)
+            elif Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                         self.atoms[i+1])):
+                discard.append(i+1)
+            elif not self.atoms[i]:
+                discard.append(i)
+
+        atoms = list(self.atoms)
+        for index in sorted(discard, reverse=True):
+            del atoms[index]
+
+        return SRE(*atoms)
+
+    def read(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (read) on a product.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new product that represents the resulting language.
+        &#34;&#34;&#34;
+        if not ALLOWED_MESSAGES.match(message):
+            raise ValueError(&#34;You can only pass an allowed message!&#34;)
+
+        if not self:
+            # Reading from the empty product
+            # returns the empty language.
+            # Note to self: revise this.
+            return self
+
+        e = self.atoms[0]
+
+        try:
+            p1 = Product(self.atoms[1:])
+        except Exception:
+            p1 = Product()
+
+        if e.contains(LetterAtom(message)):
+            if isinstance(e, StarAtom):
+                return self
+            elif isinstance(e, LetterAtom):
+                return p1
+        else:
+            return p1.read(message)
+
+    def write(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (write) on a product.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new product that represents the resulting language, i.e.
+        just concatenating a LetterAtom(message) to the old product.
+        &#34;&#34;&#34;
+        return Product(self, LetterAtom(message))
+
     def __new__(cls, *messages):
         &#34;&#34;&#34;
         Only create a product from valid atoms or products.
@@ -346,30 +467,11 @@ class Product():
 
     def __eq__(self, other):
         &#34;&#34;&#34;
-        Semantic equality:
-            Two products are equal iff they have the same messages.
+        Structural equality:
+            Two products are equal iff they have the same structure.
         &#34;&#34;&#34;
         if isinstance(self, type(other)):
-            other_stars = []
-            other_letters = []
-            for atom in other:
-                for message in atom:
-                    if isinstance(atom, StarAtom):
-                        other_stars.append(message)
-                    elif isinstance(atom, LetterAtom):
-                        other_letters.append(message)
-
-            self_stars = []
-            self_letters = []
-            for atom in self:
-                for message in atom:
-                    if isinstance(atom, StarAtom):
-                        self_stars.append(message)
-                    elif isinstance(atom, LetterAtom):
-                        self_letters.append(message)
-
-            return set(other_stars) == set(self_stars)\
-                and set(other_letters) == set(other_letters)
+            return self.atoms == other.atoms
 
         return False
 
@@ -404,7 +506,14 @@ class SRE():
     An SRE is a set of products.
     &#34;&#34;&#34;
     def __init__(self, *products):
-        self.products = frozenset(products)
+        self.products = []
+        for product in products:
+            if isinstance(product, Atom):
+                self.products.append(Product(product))
+            else:
+                self.products.append(product)
+
+        self.products = frozenset(self.products)
 
     def contains(self, other):
         &#34;&#34;&#34;
@@ -427,13 +536,104 @@ class SRE():
                 return False
         return True
 
+    def is_normal(self):
+        &#34;&#34;&#34;An SRE is normal iff no two products contain each other, and
+        all products are normal.
+        (Definition 5.3.)
+        Returns
+        -------
+        [bool]
+            True if self is normal, False otherwise.
+        &#34;&#34;&#34;
+        products = list(self.products)
+        for i in range(len(self)):
+            if not products[i].is_normal():
+                return False
+
+            for j in range(len(self)):
+                if i != j:
+                    if products[i].contains(products[j]):
+                        return False
+                    elif products[j].contains(products[i]):
+                        return False
+        return True
+
+    def normalize(self):
+        &#34;&#34;&#34;Normalize self.
+        &#34;&#34;&#34;
+        products = list(self.products)
+        discard = []
+        for i in range(len(self)):
+            if not products[i].is_normal():
+                products[i].normalize()
+
+            for j in range(len(self)):
+                if i != j:
+                    if products[i].contains(products[j]):
+                        discard.append(j)
+                    elif products[j].contains(products[i]):
+                        discard.append(i)
+        discard = set(discard)
+
+        for index in sorted(discard, reverse=True):
+            del products[index]
+
+        return SRE(*products)
+
+    def messages(self):
+        &#34;&#34;&#34;
+        Returns
+        -------
+        [set]
+            All messages in an SRE.
+        &#34;&#34;&#34;
+        messages = []
+        for product in self:
+            for atom in product:
+                messages.extend(atom.messages)
+        return set(messages)
+
+    def read(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (read) on an SRE.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new SRE that represents the resulting language, i.e. the union
+        of all the products in the SRE after applying the operation to them.
+        &#34;&#34;&#34;
+        return SRE(*set(product.read(message) for product in self))
+
+    def write(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (write) on an SRE.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new SRE that represents the resulting language, i.e. the union
+        of all the products in the SRE after applying the operation to them.
+        &#34;&#34;&#34;
+        return SRE(*set(product.write(message) for product in self))
+
     def __new__(cls, *products):
         &#34;&#34;&#34;
-        Only create an SRE from valid products.
+        Only create an SRE from valid products or atoms.
         &#34;&#34;&#34;
         for product in products:
             if not isinstance(product, Product):
-                raise TypeError(&#34;You need to pass a valid product!&#34;)
+                if not isinstance(product, Atom):
+                    raise TypeError(&#34;You need to pass a valid product&#34;
+                                    &#34; or atom!&#34;)
 
         return super().__new__(cls)
 
@@ -872,6 +1072,10 @@ immutable.</p></div>
                 raise TypeError(&#34;You can only pass a product or an atom!&#34;)
 
         if self == product:
+            # if both products are structurally equal
+            return True
+
+        if self.messages() == product.messages():
             return True
 
         if not product.atoms:
@@ -906,6 +1110,123 @@ immutable.</p></div>
         else:
             return False
 
+    def messages(self):
+        &#34;&#34;&#34;Return a list of all messages.
+
+        Returns
+        -------
+        [list]
+            A list of sets (of messages in StarAtoms)
+            and strings (messages from LetterAtoms).
+        &#34;&#34;&#34;
+        messages = []
+
+        for atom in self:
+            if isinstance(atom, StarAtom):
+                if atom.messages:
+                    messages.append(set(atom.messages))
+            elif isinstance(atom, LetterAtom):
+                messages.append(*atom.messages)
+
+        return messages
+
+    def is_normal(self):
+        &#34;&#34;&#34;Check if a product is normal, as per definition 5.2.
+        Change made: a normal product does not have empty atoms inside.
+
+        Returns
+        -------
+        [bool]
+            True if self is normal, False otherwise.
+        &#34;&#34;&#34;
+        for i in range(len(self) - 1):
+            if(
+                Product(self.atoms[i],
+                        self.atoms[i+1]).contains(Product(self.atoms[i]))
+               or
+                Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                        self.atoms[i+1]))
+               or
+                not self.atoms[i]
+               ):
+                return False
+        return True
+
+    def normalize(self):
+        &#34;&#34;&#34;Normalize a product (Definition 5.2. in [ACBJ04]).
+        Change made: a normal product does not have empty atoms inside.
+        self is modified.
+        &#34;&#34;&#34;
+        discard = []
+        for i in range(len(self) - 1):
+            if Product(self.atoms[i],
+                       self.atoms[i+1]).contains(Product(self.atoms[i])):
+                discard.append(i)
+            elif Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                         self.atoms[i+1])):
+                discard.append(i+1)
+            elif not self.atoms[i]:
+                discard.append(i)
+
+        atoms = list(self.atoms)
+        for index in sorted(discard, reverse=True):
+            del atoms[index]
+
+        return SRE(*atoms)
+
+    def read(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (read) on a product.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new product that represents the resulting language.
+        &#34;&#34;&#34;
+        if not ALLOWED_MESSAGES.match(message):
+            raise ValueError(&#34;You can only pass an allowed message!&#34;)
+
+        if not self:
+            # Reading from the empty product
+            # returns the empty language.
+            # Note to self: revise this.
+            return self
+
+        e = self.atoms[0]
+
+        try:
+            p1 = Product(self.atoms[1:])
+        except Exception:
+            p1 = Product()
+
+        if e.contains(LetterAtom(message)):
+            if isinstance(e, StarAtom):
+                return self
+            elif isinstance(e, LetterAtom):
+                return p1
+        else:
+            return p1.read(message)
+
+    def write(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (write) on a product.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new product that represents the resulting language, i.e.
+        just concatenating a LetterAtom(message) to the old product.
+        &#34;&#34;&#34;
+        return Product(self, LetterAtom(message))
+
     def __new__(cls, *messages):
         &#34;&#34;&#34;
         Only create a product from valid atoms or products.
@@ -919,30 +1240,11 @@ immutable.</p></div>
 
     def __eq__(self, other):
         &#34;&#34;&#34;
-        Semantic equality:
-            Two products are equal iff they have the same messages.
+        Structural equality:
+            Two products are equal iff they have the same structure.
         &#34;&#34;&#34;
         if isinstance(self, type(other)):
-            other_stars = []
-            other_letters = []
-            for atom in other:
-                for message in atom:
-                    if isinstance(atom, StarAtom):
-                        other_stars.append(message)
-                    elif isinstance(atom, LetterAtom):
-                        other_letters.append(message)
-
-            self_stars = []
-            self_letters = []
-            for atom in self:
-                for message in atom:
-                    if isinstance(atom, StarAtom):
-                        self_stars.append(message)
-                    elif isinstance(atom, LetterAtom):
-                        self_letters.append(message)
-
-            return set(other_stars) == set(self_stars)\
-                and set(other_letters) == set(other_letters)
+            return self.atoms == other.atoms
 
         return False
 
@@ -1026,6 +1328,10 @@ False: otherwise.</p>
             raise TypeError(&#34;You can only pass a product or an atom!&#34;)
 
     if self == product:
+        # if both products are structurally equal
+        return True
+
+    if self.messages() == product.messages():
         return True
 
     if not product.atoms:
@@ -1061,6 +1367,200 @@ False: otherwise.</p>
         return False</code></pre>
 </details>
 </dd>
+<dt id="sre.models.Product.is_normal"><code class="name flex">
+<span>def <span class="ident">is_normal</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if a product is normal, as per definition 5.2.
+Change made: a normal product does not have empty atoms inside.</p>
+<h2 id="returns">Returns</h2>
+<p>[bool]
+True if self is normal, False otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_normal(self):
+    &#34;&#34;&#34;Check if a product is normal, as per definition 5.2.
+    Change made: a normal product does not have empty atoms inside.
+
+    Returns
+    -------
+    [bool]
+        True if self is normal, False otherwise.
+    &#34;&#34;&#34;
+    for i in range(len(self) - 1):
+        if(
+            Product(self.atoms[i],
+                    self.atoms[i+1]).contains(Product(self.atoms[i]))
+           or
+            Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                    self.atoms[i+1]))
+           or
+            not self.atoms[i]
+           ):
+            return False
+    return True</code></pre>
+</details>
+</dd>
+<dt id="sre.models.Product.messages"><code class="name flex">
+<span>def <span class="ident">messages</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a list of all messages.</p>
+<h2 id="returns">Returns</h2>
+<p>[list]
+A list of sets (of messages in StarAtoms)
+and strings (messages from LetterAtoms).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def messages(self):
+    &#34;&#34;&#34;Return a list of all messages.
+
+    Returns
+    -------
+    [list]
+        A list of sets (of messages in StarAtoms)
+        and strings (messages from LetterAtoms).
+    &#34;&#34;&#34;
+    messages = []
+
+    for atom in self:
+        if isinstance(atom, StarAtom):
+            if atom.messages:
+                messages.append(set(atom.messages))
+        elif isinstance(atom, LetterAtom):
+            messages.append(*atom.messages)
+
+    return messages</code></pre>
+</details>
+</dd>
+<dt id="sre.models.Product.normalize"><code class="name flex">
+<span>def <span class="ident">normalize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Normalize a product (Definition 5.2. in [ACBJ04]).
+Change made: a normal product does not have empty atoms inside.
+self is modified.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def normalize(self):
+    &#34;&#34;&#34;Normalize a product (Definition 5.2. in [ACBJ04]).
+    Change made: a normal product does not have empty atoms inside.
+    self is modified.
+    &#34;&#34;&#34;
+    discard = []
+    for i in range(len(self) - 1):
+        if Product(self.atoms[i],
+                   self.atoms[i+1]).contains(Product(self.atoms[i])):
+            discard.append(i)
+        elif Product(self.atoms[i]).contains(Product(self.atoms[i],
+                                                     self.atoms[i+1])):
+            discard.append(i+1)
+        elif not self.atoms[i]:
+            discard.append(i)
+
+    atoms = list(self.atoms)
+    for index in sorted(discard, reverse=True):
+        del atoms[index]
+
+    return SRE(*atoms)</code></pre>
+</details>
+</dd>
+<dt id="sre.models.Product.read"><code class="name flex">
+<span>def <span class="ident">read</span></span>(<span>self, message)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is part of Lemma 6.1.
+Compute the effect of a single operation (read) on a product.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>message</code></strong> :&ensp;<code>[string]</code></dt>
+<dd>A valid message.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A new product that represents the resulting language.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read(self, message):
+    &#34;&#34;&#34;This is part of Lemma 6.1.
+    Compute the effect of a single operation (read) on a product.
+
+    Parameters
+    ----------
+    message : [string]
+        A valid message.
+
+    Returns
+    -------
+    A new product that represents the resulting language.
+    &#34;&#34;&#34;
+    if not ALLOWED_MESSAGES.match(message):
+        raise ValueError(&#34;You can only pass an allowed message!&#34;)
+
+    if not self:
+        # Reading from the empty product
+        # returns the empty language.
+        # Note to self: revise this.
+        return self
+
+    e = self.atoms[0]
+
+    try:
+        p1 = Product(self.atoms[1:])
+    except Exception:
+        p1 = Product()
+
+    if e.contains(LetterAtom(message)):
+        if isinstance(e, StarAtom):
+            return self
+        elif isinstance(e, LetterAtom):
+            return p1
+    else:
+        return p1.read(message)</code></pre>
+</details>
+</dd>
+<dt id="sre.models.Product.write"><code class="name flex">
+<span>def <span class="ident">write</span></span>(<span>self, message)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is part of Lemma 6.1.
+Compute the effect of a single operation (write) on a product.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>message</code></strong> :&ensp;<code>[string]</code></dt>
+<dd>A valid message.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A new product that represents the resulting language, i.e.
+just concatenating a LetterAtom(message) to the old product.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write(self, message):
+    &#34;&#34;&#34;This is part of Lemma 6.1.
+    Compute the effect of a single operation (write) on a product.
+
+    Parameters
+    ----------
+    message : [string]
+        A valid message.
+
+    Returns
+    -------
+    A new product that represents the resulting language, i.e.
+    just concatenating a LetterAtom(message) to the old product.
+    &#34;&#34;&#34;
+    return Product(self, LetterAtom(message))</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 <dt id="sre.models.SRE"><code class="flex name class">
@@ -1078,7 +1578,14 @@ False: otherwise.</p>
     An SRE is a set of products.
     &#34;&#34;&#34;
     def __init__(self, *products):
-        self.products = frozenset(products)
+        self.products = []
+        for product in products:
+            if isinstance(product, Atom):
+                self.products.append(Product(product))
+            else:
+                self.products.append(product)
+
+        self.products = frozenset(self.products)
 
     def contains(self, other):
         &#34;&#34;&#34;
@@ -1101,13 +1608,104 @@ False: otherwise.</p>
                 return False
         return True
 
+    def is_normal(self):
+        &#34;&#34;&#34;An SRE is normal iff no two products contain each other, and
+        all products are normal.
+        (Definition 5.3.)
+        Returns
+        -------
+        [bool]
+            True if self is normal, False otherwise.
+        &#34;&#34;&#34;
+        products = list(self.products)
+        for i in range(len(self)):
+            if not products[i].is_normal():
+                return False
+
+            for j in range(len(self)):
+                if i != j:
+                    if products[i].contains(products[j]):
+                        return False
+                    elif products[j].contains(products[i]):
+                        return False
+        return True
+
+    def normalize(self):
+        &#34;&#34;&#34;Normalize self.
+        &#34;&#34;&#34;
+        products = list(self.products)
+        discard = []
+        for i in range(len(self)):
+            if not products[i].is_normal():
+                products[i].normalize()
+
+            for j in range(len(self)):
+                if i != j:
+                    if products[i].contains(products[j]):
+                        discard.append(j)
+                    elif products[j].contains(products[i]):
+                        discard.append(i)
+        discard = set(discard)
+
+        for index in sorted(discard, reverse=True):
+            del products[index]
+
+        return SRE(*products)
+
+    def messages(self):
+        &#34;&#34;&#34;
+        Returns
+        -------
+        [set]
+            All messages in an SRE.
+        &#34;&#34;&#34;
+        messages = []
+        for product in self:
+            for atom in product:
+                messages.extend(atom.messages)
+        return set(messages)
+
+    def read(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (read) on an SRE.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new SRE that represents the resulting language, i.e. the union
+        of all the products in the SRE after applying the operation to them.
+        &#34;&#34;&#34;
+        return SRE(*set(product.read(message) for product in self))
+
+    def write(self, message):
+        &#34;&#34;&#34;This is part of Lemma 6.1.
+        Compute the effect of a single operation (write) on an SRE.
+
+        Parameters
+        ----------
+        message : [string]
+            A valid message.
+
+        Returns
+        -------
+        A new SRE that represents the resulting language, i.e. the union
+        of all the products in the SRE after applying the operation to them.
+        &#34;&#34;&#34;
+        return SRE(*set(product.write(message) for product in self))
+
     def __new__(cls, *products):
         &#34;&#34;&#34;
-        Only create an SRE from valid products.
+        Only create an SRE from valid products or atoms.
         &#34;&#34;&#34;
         for product in products:
             if not isinstance(product, Product):
-                raise TypeError(&#34;You need to pass a valid product!&#34;)
+                if not isinstance(product, Atom):
+                    raise TypeError(&#34;You need to pass a valid product&#34;
+                                    &#34; or atom!&#34;)
 
         return super().__new__(cls)
 
@@ -1177,6 +1775,177 @@ False: otherwise.</p></div>
         if not any(first.contains(second) for first in self):
             return False
     return True</code></pre>
+</details>
+</dd>
+<dt id="sre.models.SRE.is_normal"><code class="name flex">
+<span>def <span class="ident">is_normal</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An SRE is normal iff no two products contain each other, and
+all products are normal.
+(Definition 5.3.)
+Returns</p>
+<hr>
+<p>[bool]
+True if self is normal, False otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_normal(self):
+    &#34;&#34;&#34;An SRE is normal iff no two products contain each other, and
+    all products are normal.
+    (Definition 5.3.)
+    Returns
+    -------
+    [bool]
+        True if self is normal, False otherwise.
+    &#34;&#34;&#34;
+    products = list(self.products)
+    for i in range(len(self)):
+        if not products[i].is_normal():
+            return False
+
+        for j in range(len(self)):
+            if i != j:
+                if products[i].contains(products[j]):
+                    return False
+                elif products[j].contains(products[i]):
+                    return False
+    return True</code></pre>
+</details>
+</dd>
+<dt id="sre.models.SRE.messages"><code class="name flex">
+<span>def <span class="ident">messages</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="returns">Returns</h2>
+<p>[set]
+All messages in an SRE.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def messages(self):
+    &#34;&#34;&#34;
+    Returns
+    -------
+    [set]
+        All messages in an SRE.
+    &#34;&#34;&#34;
+    messages = []
+    for product in self:
+        for atom in product:
+            messages.extend(atom.messages)
+    return set(messages)</code></pre>
+</details>
+</dd>
+<dt id="sre.models.SRE.normalize"><code class="name flex">
+<span>def <span class="ident">normalize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Normalize self.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def normalize(self):
+    &#34;&#34;&#34;Normalize self.
+    &#34;&#34;&#34;
+    products = list(self.products)
+    discard = []
+    for i in range(len(self)):
+        if not products[i].is_normal():
+            products[i].normalize()
+
+        for j in range(len(self)):
+            if i != j:
+                if products[i].contains(products[j]):
+                    discard.append(j)
+                elif products[j].contains(products[i]):
+                    discard.append(i)
+    discard = set(discard)
+
+    for index in sorted(discard, reverse=True):
+        del products[index]
+
+    return SRE(*products)</code></pre>
+</details>
+</dd>
+<dt id="sre.models.SRE.read"><code class="name flex">
+<span>def <span class="ident">read</span></span>(<span>self, message)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is part of Lemma 6.1.
+Compute the effect of a single operation (read) on an SRE.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>message</code></strong> :&ensp;<code>[string]</code></dt>
+<dd>A valid message.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A new <a title="sre.models.SRE" href="#sre.models.SRE">SRE</a> that represents the resulting language, i.e. the union</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>of all the products in the SRE after applying the operation to them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read(self, message):
+    &#34;&#34;&#34;This is part of Lemma 6.1.
+    Compute the effect of a single operation (read) on an SRE.
+
+    Parameters
+    ----------
+    message : [string]
+        A valid message.
+
+    Returns
+    -------
+    A new SRE that represents the resulting language, i.e. the union
+    of all the products in the SRE after applying the operation to them.
+    &#34;&#34;&#34;
+    return SRE(*set(product.read(message) for product in self))</code></pre>
+</details>
+</dd>
+<dt id="sre.models.SRE.write"><code class="name flex">
+<span>def <span class="ident">write</span></span>(<span>self, message)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is part of Lemma 6.1.
+Compute the effect of a single operation (write) on an SRE.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>message</code></strong> :&ensp;<code>[string]</code></dt>
+<dd>A valid message.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A new <a title="sre.models.SRE" href="#sre.models.SRE">SRE</a> that represents the resulting language, i.e. the union</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>of all the products in the SRE after applying the operation to them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write(self, message):
+    &#34;&#34;&#34;This is part of Lemma 6.1.
+    Compute the effect of a single operation (write) on an SRE.
+
+    Parameters
+    ----------
+    message : [string]
+        A valid message.
+
+    Returns
+    -------
+    A new SRE that represents the resulting language, i.e. the union
+    of all the products in the SRE after applying the operation to them.
+    &#34;&#34;&#34;
+    return SRE(*set(product.write(message) for product in self))</code></pre>
 </details>
 </dd>
 </dl>
@@ -1340,14 +2109,24 @@ False otherwise.</p></div>
 </li>
 <li>
 <h4><code><a title="sre.models.Product" href="#sre.models.Product">Product</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="sre.models.Product.contains" href="#sre.models.Product.contains">contains</a></code></li>
+<li><code><a title="sre.models.Product.is_normal" href="#sre.models.Product.is_normal">is_normal</a></code></li>
+<li><code><a title="sre.models.Product.messages" href="#sre.models.Product.messages">messages</a></code></li>
+<li><code><a title="sre.models.Product.normalize" href="#sre.models.Product.normalize">normalize</a></code></li>
+<li><code><a title="sre.models.Product.read" href="#sre.models.Product.read">read</a></code></li>
+<li><code><a title="sre.models.Product.write" href="#sre.models.Product.write">write</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="sre.models.SRE" href="#sre.models.SRE">SRE</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="sre.models.SRE.contains" href="#sre.models.SRE.contains">contains</a></code></li>
+<li><code><a title="sre.models.SRE.is_normal" href="#sre.models.SRE.is_normal">is_normal</a></code></li>
+<li><code><a title="sre.models.SRE.messages" href="#sre.models.SRE.messages">messages</a></code></li>
+<li><code><a title="sre.models.SRE.normalize" href="#sre.models.SRE.normalize">normalize</a></code></li>
+<li><code><a title="sre.models.SRE.read" href="#sre.models.SRE.read">read</a></code></li>
+<li><code><a title="sre.models.SRE.write" href="#sre.models.SRE.write">write</a></code></li>
 </ul>
 </li>
 <li>

@@ -37,7 +37,7 @@ from hypothesis.strategies import from_regex, lists, integers, sets
 import pytest
 
 
-class TestProduct():
+class TestCreation():
     @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
     def test_star_atom(self, x):
         e1 = StarAtom(*x)
@@ -79,17 +79,10 @@ class TestProduct():
         p1 = Product(e1)
         p2 = Product(p1, e2)
 
-        &#34;&#34;&#34;all_atom_messages = e1.messages.union(e2.messages)
-        all_product_items = []
-
-        for object in p2.objects:
-            for message in object.messages:
-                all_product_items.append(message)
-
-        assert all_atom_messages == set(all_product_items)&#34;&#34;&#34;
-
         assert p2.atoms == tuple([e1, e2])
 
+
+class TestEntailment():
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
     def test_containment_naive_success(self, x):
         e1 = StarAtom(*x)
@@ -118,16 +111,16 @@ class TestProduct():
 
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
            sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
-    def test_entailment_success(self, x, y):
-        &#34;&#34;&#34;
-        Input:
-            x, y: sets of allowed messages
+    def test_general_containment_success(self, x, y):
+        &#34;&#34;&#34;Check that a bigger product contains a smaller one.
+
+        Parameters
+        ----------
+        x, y : [set]
+            sets of allowed messages.
 
         e1 = StarAtom(x)
         e2 = StarAtom(x UNION y)
-
-        Output:
-
         &#34;&#34;&#34;
         z = set.union(x, y)
         e1 = StarAtom(*x)
@@ -141,7 +134,7 @@ class TestProduct():
     @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
            max_size=2),
            sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
-    def test_entailment_failure(self, x, y):
+    def test_containment_failure(self, x, y):
         z = set.union(x, y)
         e1 = StarAtom(*x)
         e2 = StarAtom(*z)
@@ -151,46 +144,50 @@ class TestProduct():
 
         assert not p1.contains(p2)
 
-    def test_composite_empty_entailment(self):
-        assert Product(StarAtom()).contains(Product())
-        assert Product().contains(Product(StarAtom()))
+    def test_plain_empty_containment(self):
+        &#34;&#34;&#34; Check that the empty product and the product made with the empty
+        StarAtom contain each other.
+        &#34;&#34;&#34;
+        p1 = Product(StarAtom())
+        p2 = Product()
 
+        assert p1.contains(p2)
+        assert p2.contains(p1)
 
-&#39;&#39;&#39;Some suggestions for more entailment tests:
-Main interest is that it includes negative tests and non-trivial
-positive tests.
-Also it illustrates the different ways one can call a constructor.
-ea=LetterAtom(&#39;a&#39;)
-eb=LetterAtom(&#39;b&#39;)
-zs=StarAtom()
-as=StarAtom(&#39;a&#39;)
-bs=StarAtom(&#39;b&#39;)
-abs=StarAtom(&#39;a&#39;,&#39;b&#39;)
-ep=Product()
-DONE assert ea.contains(zs)
-???? assert ea.contains(ep)
-DONE assert not ea.contains(as)
-DONE assert as.contains(ea)
-DONE assert as.contains(zs)
-???? assert as.contains(ep)
-DONE assert not as.contains(bs)
-DONE assert not as.contains(abs)
-???? assert not ep.contains(ea)
-???? assert not ep.contains(as)
-???? assert not ep.contains(abs)
-assert not ep.contains(Product(ea,ea))
-assert ep.contains(ep)
-assert ep.contains(zs)
-assert ep.contains(Product(zs))
-assert ep.contains(Product(zs,zs))
-DONE assert ea.contains(zs)
-assert ea.contains(Product(zs,ep,ea,zs))
-DONE assert not ea.contains(as)
-assert as.contains(Product(ea,as))
-assert as.contains(Product(ea,ep,zs,ea,as))
-assert abs.contains(Product(ea,bs,as,bs))
-assert not as.contains(Product(ea,abs,eb))
-&#39;&#39;&#39;</code></pre>
+    def test_phs(self):
+        &#39;&#39;&#39;Suggested tests by Dr. Philippe (phs75).
+        &#39;&#39;&#39;
+        ea = LetterAtom(&#39;a&#39;)
+        eb = LetterAtom(&#39;b&#39;)
+        zs = StarAtom()
+        a_s = StarAtom(&#39;a&#39;)
+        bs = StarAtom(&#39;b&#39;)
+        a_bs = StarAtom(&#39;a&#39;, &#39;b&#39;)
+        ep = Product()
+
+        assert ea.contains(zs)
+        assert Product(ea).contains(ep)
+        assert not ea.contains(a_s)
+        assert a_s.contains(ea)
+        assert a_s.contains(zs)
+        assert Product(a_s).contains(ep)
+        assert not a_s.contains(bs)
+        assert not a_s.contains(a_bs)
+        assert not ep.contains(ea)
+        assert not ep.contains(a_s)
+        assert not ep.contains(a_bs)
+        assert not ep.contains(Product(ea, ea))
+        assert ep.contains(ep)
+        assert ep.contains(zs)
+        assert ep.contains(Product(zs))
+        assert ep.contains(Product(zs, zs))
+        assert ea.contains(zs)
+        assert Product(ea).contains(Product(zs, ep, ea, zs))
+        assert not ea.contains(a_s)
+        assert Product(a_s).contains(Product(ea, a_s))
+        assert Product(a_s).contains(Product(ea, ep, zs, ea, a_s))
+        assert Product(a_bs).contains(Product(ea, bs, a_s, bs))
+        assert not Product(a_s).contains(Product(ea, a_bs, eb))</code></pre>
 </details>
 </section>
 <section>
@@ -202,8 +199,8 @@ assert not as.contains(Product(ea,abs,eb))
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="sre.tests.test_products.TestProduct"><code class="flex name class">
-<span>class <span class="ident">TestProduct</span></span>
+<dt id="sre.tests.test_products.TestCreation"><code class="flex name class">
+<span>class <span class="ident">TestCreation</span></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -211,7 +208,7 @@ assert not as.contains(Product(ea,abs,eb))
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class TestProduct():
+<pre><code class="python">class TestCreation():
     @given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
     def test_star_atom(self, x):
         e1 = StarAtom(*x)
@@ -253,137 +250,11 @@ assert not as.contains(Product(ea,abs,eb))
         p1 = Product(e1)
         p2 = Product(p1, e2)
 
-        &#34;&#34;&#34;all_atom_messages = e1.messages.union(e2.messages)
-        all_product_items = []
-
-        for object in p2.objects:
-            for message in object.messages:
-                all_product_items.append(message)
-
-        assert all_atom_messages == set(all_product_items)&#34;&#34;&#34;
-
-        assert p2.atoms == tuple([e1, e2])
-
-    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
-    def test_containment_naive_success(self, x):
-        e1 = StarAtom(*x)
-        p1 = Product(e1)
-        p2 = Product(e1)
-
-        assert p1.contains(p2)
-        assert p2.contains(p1)
-
-    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
-    def test_empty_containment(self, x):
-        p0 = Product()
-        p1 = Product(StarAtom(*x))
-
-        assert p1.contains(p0)
-        assert not p0.contains(p1)
-
-    def test_containment_success(self):
-        e1 = StarAtom(&#34;start&#34;, &#34;stop&#34;)
-        e2 = StarAtom(&#34;start&#34;)
-
-        p1 = Product(e1)
-        p2 = Product(e2)
-
-        assert p1.contains(p2)
-
-    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
-           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
-    def test_entailment_success(self, x, y):
-        &#34;&#34;&#34;
-        Input:
-            x, y: sets of allowed messages
-
-        e1 = StarAtom(x)
-        e2 = StarAtom(x UNION y)
-
-        Output:
-
-        &#34;&#34;&#34;
-        z = set.union(x, y)
-        e1 = StarAtom(*x)
-        e2 = StarAtom(*z)
-
-        p1 = Product(e1)
-        p2 = Product(e2)
-
-        assert p2.contains(p1)
-
-    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
-           max_size=2),
-           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
-    def test_entailment_failure(self, x, y):
-        z = set.union(x, y)
-        e1 = StarAtom(*x)
-        e2 = StarAtom(*z)
-
-        p1 = Product(e1)
-        p2 = Product(e2)
-
-        assert not p1.contains(p2)
-
-    def test_composite_empty_entailment(self):
-        assert Product(StarAtom()).contains(Product())
-        assert Product().contains(Product(StarAtom()))</code></pre>
+        assert p2.atoms == tuple([e1, e2])</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="sre.tests.test_products.TestProduct.test_composite_empty_entailment"><code class="name flex">
-<span>def <span class="ident">test_composite_empty_entailment</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def test_composite_empty_entailment(self):
-    assert Product(StarAtom()).contains(Product())
-    assert Product().contains(Product(StarAtom()))</code></pre>
-</details>
-</dd>
-<dt id="sre.tests.test_products.TestProduct.test_containment_naive_success"><code class="name flex">
-<span>def <span class="ident">test_containment_naive_success</span></span>(<span>self) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
-def test_containment_naive_success(self, x):
-    e1 = StarAtom(*x)
-    p1 = Product(e1)
-    p2 = Product(e1)
-
-    assert p1.contains(p2)
-    assert p2.contains(p1)</code></pre>
-</details>
-</dd>
-<dt id="sre.tests.test_products.TestProduct.test_containment_success"><code class="name flex">
-<span>def <span class="ident">test_containment_success</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def test_containment_success(self):
-    e1 = StarAtom(&#34;start&#34;, &#34;stop&#34;)
-    e2 = StarAtom(&#34;start&#34;)
-
-    p1 = Product(e1)
-    p2 = Product(e2)
-
-    assert p1.contains(p2)</code></pre>
-</details>
-</dd>
-<dt id="sre.tests.test_products.TestProduct.test_create_from_product"><code class="name flex">
+<dt id="sre.tests.test_products.TestCreation.test_create_from_product"><code class="name flex">
 <span>def <span class="ident">test_create_from_product</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -406,19 +277,10 @@ def test_create_from_product(self, x, y):
     p1 = Product(e1)
     p2 = Product(p1, e2)
 
-    &#34;&#34;&#34;all_atom_messages = e1.messages.union(e2.messages)
-    all_product_items = []
-
-    for object in p2.objects:
-        for message in object.messages:
-            all_product_items.append(message)
-
-    assert all_atom_messages == set(all_product_items)&#34;&#34;&#34;
-
     assert p2.atoms == tuple([e1, e2])</code></pre>
 </details>
 </dd>
-<dt id="sre.tests.test_products.TestProduct.test_creation_from_bad_objects"><code class="name flex">
+<dt id="sre.tests.test_products.TestCreation.test_creation_from_bad_objects"><code class="name flex">
 <span>def <span class="ident">test_creation_from_bad_objects</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -433,7 +295,241 @@ def test_creation_from_bad_objects(self, x):
     Product(*x)</code></pre>
 </details>
 </dd>
-<dt id="sre.tests.test_products.TestProduct.test_empty_containment"><code class="name flex">
+<dt id="sre.tests.test_products.TestCreation.test_letter_atom"><code class="name flex">
+<span>def <span class="ident">test_letter_atom</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
+def test_letter_atom(self, x):
+    e1 = LetterAtom(x)
+
+    p = Product(e1)
+    assert p</code></pre>
+</details>
+</dd>
+<dt id="sre.tests.test_products.TestCreation.test_star_atom"><code class="name flex">
+<span>def <span class="ident">test_star_atom</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+def test_star_atom(self, x):
+    e1 = StarAtom(*x)
+
+    p = Product(e1)
+    assert p</code></pre>
+</details>
+</dd>
+<dt id="sre.tests.test_products.TestCreation.test_two_mixed_atoms"><code class="name flex">
+<span>def <span class="ident">test_two_mixed_atoms</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
+       from_regex(ALLOWED_MESSAGES, fullmatch=True))
+def test_two_mixed_atoms(self, x, y):
+    e1 = StarAtom(*x)
+    e2 = LetterAtom(y)
+
+    p = Product(e1, e2)
+    assert p</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="sre.tests.test_products.TestEntailment"><code class="flex name class">
+<span>class <span class="ident">TestEntailment</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestEntailment():
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+    def test_containment_naive_success(self, x):
+        e1 = StarAtom(*x)
+        p1 = Product(e1)
+        p2 = Product(e1)
+
+        assert p1.contains(p2)
+        assert p2.contains(p1)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
+    def test_empty_containment(self, x):
+        p0 = Product()
+        p1 = Product(StarAtom(*x))
+
+        assert p1.contains(p0)
+        assert not p0.contains(p1)
+
+    def test_containment_success(self):
+        e1 = StarAtom(&#34;start&#34;, &#34;stop&#34;)
+        e2 = StarAtom(&#34;start&#34;)
+
+        p1 = Product(e1)
+        p2 = Product(e2)
+
+        assert p1.contains(p2)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
+    def test_general_containment_success(self, x, y):
+        &#34;&#34;&#34;Check that a bigger product contains a smaller one.
+
+        Parameters
+        ----------
+        x, y : [set]
+            sets of allowed messages.
+
+        e1 = StarAtom(x)
+        e2 = StarAtom(x UNION y)
+        &#34;&#34;&#34;
+        z = set.union(x, y)
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*z)
+
+        p1 = Product(e1)
+        p2 = Product(e2)
+
+        assert p2.contains(p1)
+
+    @given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
+           max_size=2),
+           sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
+    def test_containment_failure(self, x, y):
+        z = set.union(x, y)
+        e1 = StarAtom(*x)
+        e2 = StarAtom(*z)
+
+        p1 = Product(e1)
+        p2 = Product(e2)
+
+        assert not p1.contains(p2)
+
+    def test_plain_empty_containment(self):
+        &#34;&#34;&#34; Check that the empty product and the product made with the empty
+        StarAtom contain each other.
+        &#34;&#34;&#34;
+        p1 = Product(StarAtom())
+        p2 = Product()
+
+        assert p1.contains(p2)
+        assert p2.contains(p1)
+
+    def test_phs(self):
+        &#39;&#39;&#39;Suggested tests by Dr. Philippe (phs75).
+        &#39;&#39;&#39;
+        ea = LetterAtom(&#39;a&#39;)
+        eb = LetterAtom(&#39;b&#39;)
+        zs = StarAtom()
+        a_s = StarAtom(&#39;a&#39;)
+        bs = StarAtom(&#39;b&#39;)
+        a_bs = StarAtom(&#39;a&#39;, &#39;b&#39;)
+        ep = Product()
+
+        assert ea.contains(zs)
+        assert Product(ea).contains(ep)
+        assert not ea.contains(a_s)
+        assert a_s.contains(ea)
+        assert a_s.contains(zs)
+        assert Product(a_s).contains(ep)
+        assert not a_s.contains(bs)
+        assert not a_s.contains(a_bs)
+        assert not ep.contains(ea)
+        assert not ep.contains(a_s)
+        assert not ep.contains(a_bs)
+        assert not ep.contains(Product(ea, ea))
+        assert ep.contains(ep)
+        assert ep.contains(zs)
+        assert ep.contains(Product(zs))
+        assert ep.contains(Product(zs, zs))
+        assert ea.contains(zs)
+        assert Product(ea).contains(Product(zs, ep, ea, zs))
+        assert not ea.contains(a_s)
+        assert Product(a_s).contains(Product(ea, a_s))
+        assert Product(a_s).contains(Product(ea, ep, zs, ea, a_s))
+        assert Product(a_bs).contains(Product(ea, bs, a_s, bs))
+        assert not Product(a_s).contains(Product(ea, a_bs, eb))</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="sre.tests.test_products.TestEntailment.test_containment_failure"><code class="name flex">
+<span>def <span class="ident">test_containment_failure</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
+       max_size=2),
+       sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
+def test_containment_failure(self, x, y):
+    z = set.union(x, y)
+    e1 = StarAtom(*x)
+    e2 = StarAtom(*z)
+
+    p1 = Product(e1)
+    p2 = Product(e2)
+
+    assert not p1.contains(p2)</code></pre>
+</details>
+</dd>
+<dt id="sre.tests.test_products.TestEntailment.test_containment_naive_success"><code class="name flex">
+<span>def <span class="ident">test_containment_naive_success</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)))
+def test_containment_naive_success(self, x):
+    e1 = StarAtom(*x)
+    p1 = Product(e1)
+    p2 = Product(e1)
+
+    assert p1.contains(p2)
+    assert p2.contains(p1)</code></pre>
+</details>
+</dd>
+<dt id="sre.tests.test_products.TestEntailment.test_containment_success"><code class="name flex">
+<span>def <span class="ident">test_containment_success</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_containment_success(self):
+    e1 = StarAtom(&#34;start&#34;, &#34;stop&#34;)
+    e2 = StarAtom(&#34;start&#34;)
+
+    p1 = Product(e1)
+    p2 = Product(e2)
+
+    assert p1.contains(p2)</code></pre>
+</details>
+</dd>
+<dt id="sre.tests.test_products.TestEntailment.test_empty_containment"><code class="name flex">
 <span>def <span class="ident">test_empty_containment</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -451,54 +547,34 @@ def test_empty_containment(self, x):
     assert not p0.contains(p1)</code></pre>
 </details>
 </dd>
-<dt id="sre.tests.test_products.TestProduct.test_entailment_failure"><code class="name flex">
-<span>def <span class="ident">test_entailment_failure</span></span>(<span>self) ‑> NoneType</span>
+<dt id="sre.tests.test_products.TestEntailment.test_general_containment_success"><code class="name flex">
+<span>def <span class="ident">test_general_containment_success</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0,
-       max_size=2),
-       sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=3))
-def test_entailment_failure(self, x, y):
-    z = set.union(x, y)
-    e1 = StarAtom(*x)
-    e2 = StarAtom(*z)
-
-    p1 = Product(e1)
-    p2 = Product(e2)
-
-    assert not p1.contains(p2)</code></pre>
-</details>
-</dd>
-<dt id="sre.tests.test_products.TestProduct.test_entailment_success"><code class="name flex">
-<span>def <span class="ident">test_entailment_success</span></span>(<span>self) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"><h2 id="input">Input</h2>
-<p>x, y: sets of allowed messages</p>
+<div class="desc"><p>Check that a bigger product contains a smaller one.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x</code></strong>, <strong><code>y</code></strong> :&ensp;<code>[set]</code></dt>
+<dd>sets of allowed messages.</dd>
+</dl>
 <p>e1 = StarAtom(x)
-e2 = StarAtom(x UNION y)</p>
-<p>Output:</p></div>
+e2 = StarAtom(x UNION y)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0),
        sets(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=0))
-def test_entailment_success(self, x, y):
-    &#34;&#34;&#34;
-    Input:
-        x, y: sets of allowed messages
+def test_general_containment_success(self, x, y):
+    &#34;&#34;&#34;Check that a bigger product contains a smaller one.
+
+    Parameters
+    ----------
+    x, y : [set]
+        sets of allowed messages.
 
     e1 = StarAtom(x)
     e2 = StarAtom(x UNION y)
-
-    Output:
-
     &#34;&#34;&#34;
     z = set.union(x, y)
     e1 = StarAtom(*x)
@@ -510,57 +586,70 @@ def test_entailment_success(self, x, y):
     assert p2.contains(p1)</code></pre>
 </details>
 </dd>
-<dt id="sre.tests.test_products.TestProduct.test_letter_atom"><code class="name flex">
-<span>def <span class="ident">test_letter_atom</span></span>(<span>self) ‑> NoneType</span>
+<dt id="sre.tests.test_products.TestEntailment.test_phs"><code class="name flex">
+<span>def <span class="ident">test_phs</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Suggested tests by Dr. Philippe (phs75).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@given(from_regex(ALLOWED_MESSAGES, fullmatch=True))
-def test_letter_atom(self, x):
-    e1 = LetterAtom(x)
+<pre><code class="python">def test_phs(self):
+    &#39;&#39;&#39;Suggested tests by Dr. Philippe (phs75).
+    &#39;&#39;&#39;
+    ea = LetterAtom(&#39;a&#39;)
+    eb = LetterAtom(&#39;b&#39;)
+    zs = StarAtom()
+    a_s = StarAtom(&#39;a&#39;)
+    bs = StarAtom(&#39;b&#39;)
+    a_bs = StarAtom(&#39;a&#39;, &#39;b&#39;)
+    ep = Product()
 
-    p = Product(e1)
-    assert p</code></pre>
+    assert ea.contains(zs)
+    assert Product(ea).contains(ep)
+    assert not ea.contains(a_s)
+    assert a_s.contains(ea)
+    assert a_s.contains(zs)
+    assert Product(a_s).contains(ep)
+    assert not a_s.contains(bs)
+    assert not a_s.contains(a_bs)
+    assert not ep.contains(ea)
+    assert not ep.contains(a_s)
+    assert not ep.contains(a_bs)
+    assert not ep.contains(Product(ea, ea))
+    assert ep.contains(ep)
+    assert ep.contains(zs)
+    assert ep.contains(Product(zs))
+    assert ep.contains(Product(zs, zs))
+    assert ea.contains(zs)
+    assert Product(ea).contains(Product(zs, ep, ea, zs))
+    assert not ea.contains(a_s)
+    assert Product(a_s).contains(Product(ea, a_s))
+    assert Product(a_s).contains(Product(ea, ep, zs, ea, a_s))
+    assert Product(a_bs).contains(Product(ea, bs, a_s, bs))
+    assert not Product(a_s).contains(Product(ea, a_bs, eb))</code></pre>
 </details>
 </dd>
-<dt id="sre.tests.test_products.TestProduct.test_star_atom"><code class="name flex">
-<span>def <span class="ident">test_star_atom</span></span>(<span>self) ‑> NoneType</span>
+<dt id="sre.tests.test_products.TestEntailment.test_plain_empty_containment"><code class="name flex">
+<span>def <span class="ident">test_plain_empty_containment</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Check that the empty product and the product made with the empty
+StarAtom contain each other.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@given(lists(from_regex(ALLOWED_MESSAGES, fullmatch=True), min_size=1))
-def test_star_atom(self, x):
-    e1 = StarAtom(*x)
+<pre><code class="python">def test_plain_empty_containment(self):
+    &#34;&#34;&#34; Check that the empty product and the product made with the empty
+    StarAtom contain each other.
+    &#34;&#34;&#34;
+    p1 = Product(StarAtom())
+    p2 = Product()
 
-    p = Product(e1)
-    assert p</code></pre>
-</details>
-</dd>
-<dt id="sre.tests.test_products.TestProduct.test_two_mixed_atoms"><code class="name flex">
-<span>def <span class="ident">test_two_mixed_atoms</span></span>(<span>self) ‑> NoneType</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@given(sets(from_regex(ALLOWED_MESSAGES, fullmatch=True)),
-       from_regex(ALLOWED_MESSAGES, fullmatch=True))
-def test_two_mixed_atoms(self, x, y):
-    e1 = StarAtom(*x)
-    e2 = LetterAtom(y)
-
-    p = Product(e1, e2)
-    assert p</code></pre>
+    assert p1.contains(p2)
+    assert p2.contains(p1)</code></pre>
 </details>
 </dd>
 </dl>
@@ -582,19 +671,25 @@ def test_two_mixed_atoms(self, x, y):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="sre.tests.test_products.TestProduct" href="#sre.tests.test_products.TestProduct">TestProduct</a></code></h4>
+<h4><code><a title="sre.tests.test_products.TestCreation" href="#sre.tests.test_products.TestCreation">TestCreation</a></code></h4>
 <ul class="">
-<li><code><a title="sre.tests.test_products.TestProduct.test_composite_empty_entailment" href="#sre.tests.test_products.TestProduct.test_composite_empty_entailment">test_composite_empty_entailment</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_containment_naive_success" href="#sre.tests.test_products.TestProduct.test_containment_naive_success">test_containment_naive_success</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_containment_success" href="#sre.tests.test_products.TestProduct.test_containment_success">test_containment_success</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_create_from_product" href="#sre.tests.test_products.TestProduct.test_create_from_product">test_create_from_product</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_creation_from_bad_objects" href="#sre.tests.test_products.TestProduct.test_creation_from_bad_objects">test_creation_from_bad_objects</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_empty_containment" href="#sre.tests.test_products.TestProduct.test_empty_containment">test_empty_containment</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_entailment_failure" href="#sre.tests.test_products.TestProduct.test_entailment_failure">test_entailment_failure</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_entailment_success" href="#sre.tests.test_products.TestProduct.test_entailment_success">test_entailment_success</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_letter_atom" href="#sre.tests.test_products.TestProduct.test_letter_atom">test_letter_atom</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_star_atom" href="#sre.tests.test_products.TestProduct.test_star_atom">test_star_atom</a></code></li>
-<li><code><a title="sre.tests.test_products.TestProduct.test_two_mixed_atoms" href="#sre.tests.test_products.TestProduct.test_two_mixed_atoms">test_two_mixed_atoms</a></code></li>
+<li><code><a title="sre.tests.test_products.TestCreation.test_create_from_product" href="#sre.tests.test_products.TestCreation.test_create_from_product">test_create_from_product</a></code></li>
+<li><code><a title="sre.tests.test_products.TestCreation.test_creation_from_bad_objects" href="#sre.tests.test_products.TestCreation.test_creation_from_bad_objects">test_creation_from_bad_objects</a></code></li>
+<li><code><a title="sre.tests.test_products.TestCreation.test_letter_atom" href="#sre.tests.test_products.TestCreation.test_letter_atom">test_letter_atom</a></code></li>
+<li><code><a title="sre.tests.test_products.TestCreation.test_star_atom" href="#sre.tests.test_products.TestCreation.test_star_atom">test_star_atom</a></code></li>
+<li><code><a title="sre.tests.test_products.TestCreation.test_two_mixed_atoms" href="#sre.tests.test_products.TestCreation.test_two_mixed_atoms">test_two_mixed_atoms</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="sre.tests.test_products.TestEntailment" href="#sre.tests.test_products.TestEntailment">TestEntailment</a></code></h4>
+<ul class="">
+<li><code><a title="sre.tests.test_products.TestEntailment.test_containment_failure" href="#sre.tests.test_products.TestEntailment.test_containment_failure">test_containment_failure</a></code></li>
+<li><code><a title="sre.tests.test_products.TestEntailment.test_containment_naive_success" href="#sre.tests.test_products.TestEntailment.test_containment_naive_success">test_containment_naive_success</a></code></li>
+<li><code><a title="sre.tests.test_products.TestEntailment.test_containment_success" href="#sre.tests.test_products.TestEntailment.test_containment_success">test_containment_success</a></code></li>
+<li><code><a title="sre.tests.test_products.TestEntailment.test_empty_containment" href="#sre.tests.test_products.TestEntailment.test_empty_containment">test_empty_containment</a></code></li>
+<li><code><a title="sre.tests.test_products.TestEntailment.test_general_containment_success" href="#sre.tests.test_products.TestEntailment.test_general_containment_success">test_general_containment_success</a></code></li>
+<li><code><a title="sre.tests.test_products.TestEntailment.test_phs" href="#sre.tests.test_products.TestEntailment.test_phs">test_phs</a></code></li>
+<li><code><a title="sre.tests.test_products.TestEntailment.test_plain_empty_containment" href="#sre.tests.test_products.TestEntailment.test_plain_empty_containment">test_plain_empty_containment</a></code></li>
 </ul>
 </li>
 </ul>
