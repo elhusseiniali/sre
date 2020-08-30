@@ -371,7 +371,7 @@ class Product():
         for index in sorted(discard, reverse=True):
             del atoms[index]
 
-        return SRE(*atoms)
+        return Product(*atoms)
 
     def read(self, message):
         """This is part of Lemma 6.1.
