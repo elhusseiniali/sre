@@ -399,7 +399,7 @@ class Product():
         for index in sorted(discard, reverse=True):
             del atoms[index]
 
-        return SRE(*atoms)
+        return Product(*atoms)
 
     def read(self, message):
         &#34;&#34;&#34;This is part of Lemma 6.1.
@@ -1172,7 +1172,7 @@ immutable.</p></div>
         for index in sorted(discard, reverse=True):
             del atoms[index]
 
-        return SRE(*atoms)
+        return Product(*atoms)
 
     def read(self, message):
         &#34;&#34;&#34;This is part of Lemma 6.1.
@@ -1468,7 +1468,7 @@ self is modified.</p></div>
     for index in sorted(discard, reverse=True):
         del atoms[index]
 
-    return SRE(*atoms)</code></pre>
+    return Product(*atoms)</code></pre>
 </details>
 </dd>
 <dt id="sre.models.Product.read"><code class="name flex">
