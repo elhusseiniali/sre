@@ -9,7 +9,7 @@ pdoc3==0.9.1
 pluggy==0.13.1
 py==1.9.0
 pyparsing==2.4.7
-pytest==6.2.0
+pytest==6.2.4
 six==1.15.0
 sortedcontainers==2.2.2
 wcwidth==0.2.5
